@@ -1,0 +1,12 @@
+/mammothV2/
+/l2p/
+/dualprompt/
+/codaprompt/
+/repos_aux/
+/results*/
+/data/
+/datasets/
+*.pth
+__pycache__/
+.DS_Store
+Thumbs.db
