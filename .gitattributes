@@ -1,0 +1,15 @@
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.tar.gz binary
+*.pth binary
+
+*.md text
+*.tex text
+*.xml text
+*.bib text
+*.sty text
+*.cls text
+*.bst text
+*.lua text
