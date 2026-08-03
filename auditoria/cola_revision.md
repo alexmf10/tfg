@@ -205,6 +205,17 @@ DualPrompt G-HEAD no se marca mixto: sus propuestas son solo-repo o coincidentes
 | FD-03 | CODA A03/E01 / OBS-09 | Ruta default parcial, sin preset `best` de reproducción. |
 | FD-04 | Entorno, veredicto CODA | `n_epochs=1` no es ejecutable en una corrida: `CosineSchedule` exige K>1. Fase B confirma parser E=1, derivación estática `K=1/runtime_valid=false` y frontera pre-modelo del dump; `reconciliacion_fase_b.md`. |
 
+## Agenda dirigida post-piloto — reunión de Fase B
+
+Estas entradas consolidan las consultas del 2026-08-03. No cambian el eje, los valores propuestos ni ningún `valor final`.
+
+| id | tipo y filas de referencia | evidencia / cuestión que llega a reunión | estado |
+|---|---|---|---|
+| PD-01 | **Batch/OOM y árbol D31.** Entorno `A-C15`, `A-C17`; `L2P-A10/A12`; DualPrompt «Batch de train/eval CIFAR» y «Acumulación de gradiente»; `CODA-A10/A11`. | Batch128 está cerrado por D31: hecho previo 128 OOM/64 cabe (`PLAN_MAESTRO.md:163`), OOM v1 reproducido en Mammoth@cda7f236 (`infra/servidor.md`) y uniformidad común. Q1 determina que no hay acumulación real común por CLI/config: L2P/DP hacen update por minibatch y CODA N>1 borra gradientes (`entorno.md:34`, `comportamiento.md:90-96`). Llevar a la reunión la consecuencia del árbol D31 —64 real uniforme con flag S en G-OPT— sin escribir aún un valor final. | **PENDIENTE→reunión**; batch128 **DECIDIDO→D31**. |
+| PD-02 | **Peldaño mínimo del eje.** Entorno `E-C01`, `E-C08`; `CODA-E01/E02/E05`; FD-04/HB-09. | E=1 es limpio para L2P/DualPrompt, pero CODA deriva `K=n_epochs` y exige K>1. El piloto usa E=2 solo por D32. Elegir humanamente entre escalera `{2,5,20}` y autorizar un parche del scheduler; no presentar `iters` como equivalente. Evidencia: `reconciliacion_fase_b.md:60-82`, `entorno.md:51,58,91-100`. | **PENDIENTE→reunión**; D33. |
+| PD-03 | **Preprocesado común.** Entorno `A-C10`, `A-C12`, `A-C14`; L2P `A07/A08`; filas DualPrompt «Augmentación train CIFAR»/«Preprocesado de evaluación»; CODA `A07-A09`. | L2P/DualPrompt cargan YAML `l2p`; CODA carga `coda_prompt`. Difieren RRC/resize/crop/interpolación y la normalización de CODA depende de `best`. Tuberías observadas en `reconciliacion_fase_b.md:49-58`. Elegir una sola tubería en Fase D; no homogeneizarla en silencio. | **PENDIENTE→reunión**. |
+| PD-04 | **`model_config=best/default` frente a cascada.** `L2P-B15/B28/B29`; DualPrompt «Learning rate nominal/configurado — CIFAR», «Learning rate efectivo — CIFAR», longitud E y selección batchwise; `CODA-A09/E04-E08`; CP-01/02/04/05/07 y GM-01/03/06/07/09. | Los tres `best` son overlays de Mammoth; los YAML carecen de bloque `default`. No equivalen globalmente a las recetas originales. En DualPrompt, 0,03 es LR nominal del dump y el optimizador recibe 0,015 con batch128; las dos filas son `CASO 3 CONFLICTO→PAPER` y proponen 0,005. Revisar los grupos/cascada y construir la matriz solo desde `configuracion_final`, nunca trasladando `best/default` en bloque. | **PENDIENTE→reunión**. |
+
 ## Embudo global
 
 ### Suma de los tres embudos

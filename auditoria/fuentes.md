@@ -228,6 +228,39 @@ La frontera del script es esencial: el último paso ejecutado fue `main.check_ar
 
 Advertencia reproducible: aunque no entrena, el import eager del parser puede poblar `checkpoints/ViT-B-16/` con unos 599 MB de OpenCLIP. No es una descarga de CIFAR-100 ni una construcción intencionada del método seleccionado; es el efecto lateral descrito en §3.5. Los dos stderr son idénticos y contienen solo el aviso de OpenCLIP de que esos pesos se entrenaron con QuickGELU pero la configuración importada no lo activa. Por la frontera del script, el aviso se registra como efecto lateral del import y no se atribuye a L2P, DualPrompt o CODA-Prompt.
 
+### 6.2 Paquete post-piloto y OOM del Piloto-0 v1
+
+El 2026-08-03 se recibió `C:\Users\alex\Downloads\faseA_servidor_piloto0_oom_20260803_154958.tar.gz`. Su sidecar y el cálculo local coinciden en SHA-256 `6e9fc8d88595f8219f5a60f16274c281e3c4ab077e909d86c304eec88e3e0d25`. Antes de extraerlo fuera del repo se comprobaron sus 19 entradas: no hay rutas absolutas ni componentes `..`. El tar contiene la copia exacta del paquete anterior `auditoria_dumps_e1_e20.tar.gz`, SHA-256 `7254a9033d174398b8e9ef2a35ba1951e3ece32fa0e0a48a51bb49d358fa19c8`.
+
+| artefacto dentro del tar | SHA-256 | uso como evidencia |
+|---|---|---|
+| `logs/piloto0/diagnostico_oom_20260803_154949.txt` | `b6818073dd03ed61bc76f1d069bfc6ddba42aeaf3c7ba74d349559fee64fbccf` | commit/host/entorno, CLI, estado GPU, código de salida, recursos y traceback OOM. |
+| `logs/piloto0/l2p_seq-cifar100-224_seed0_e1.run.log` | `0954299a32d5b70425271ad14d7aab5a92df1c156faffc3fa6ebae0713e18ec7` | configuración efectiva visible y fallo de L2P en tarea 1. |
+| `logs/piloto0/l2p_seq-cifar100-224_seed0_e1.time.txt` | `a43f360fa489b40263bf62b52432cd49d8e6ca7781bb7c4ed850eb8ab828e2b7` | comando, 17,21 s hasta el fallo y código 1. |
+| `logs/piloto0/run_piloto0.sh` | `5c92f72b12e86323a5fa5cec9cc30fc9bf10107c21fcbde5c815048d5affc21d` | demuestra el encadenamiento v1 y la salida al primer fallo. |
+
+El intento resolvió `model_config=best`, batch 128, LR nominal 0,03 y E=1. L2P falló al intentar reservar 334 MiB: el log registra 11,62 GiB de capacidad, 135,88 MiB libres y 10,79 GiB usados por el proceso. Había además dos kernels ajenos con 304 y 332 MiB. El paquete no permite determinar si liberar esos procesos o activar `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` habría evitado este OOM concreto.
+
+El lanzador v1 solo contenía L2P y DualPrompt y salía ante el fallo del primero; por tanto DualPrompt no se ejecutó y CODA-Prompt no formó parte del intento. No se generó `logs.pyd`. El paquete tampoco contiene una corrida a batch 64: el hecho previo de que 64 cabe está registrado en `PLAN_MAESTRO.md:163`, no demostrado por este tar. La incidencia y el procedimiento posterior se desarrollan en `infra/servidor.md` y `auditoria/piloto0.md`.
+
+La discrepancia de dependencias queda precisada con la misma evidencia del servidor: `requirements.txt:9` declara `ftfy` sin versión y omite `open-clip-torch`, mientras `pyproject.toml:27,33` exige `ftfy>=6.3.1` y `open-clip-torch>=2.32.0`. Antes faltaban ambos imports (`environment_before_openclip.txt:55-58`) y después el overlay aportó exactamente esas versiones (`environment_after_openclip.txt:5-6`). No se modificaron los manifiestos.
+
+### 6.3 Significado de `model_config=best/default`
+
+La interfaz acepta `default`/`base` o `best`, y usa `default` si se omite (`utils/args.py:228-231`). `load_model_config` lee `models/config/<modelo>.yaml`; `default` devuelve el bloque literal `default:` o `{}` si falta, mientras `best` mezcla ese bloque con la entrada cuyo nombre es el dataset (`models/utils/__init__.py:47-82`). Si el overlay contiene `dataset_config`, se carga ese YAML; en otro caso se usa el solicitado por CLI o `default.yaml` (`main.py:169-186`; `datasets/utils/__init__.py:125-151`). La CLI explícita se aplica después (`main.py:308-351`).
+
+Los tres YAML auditados carecen de bloque `default:` y solo tienen una entrada `seq-cifar100-224`:
+
+| método | `best` en Mammoth | `default` efectivo sin `--dataset_config` explícito |
+|---|---|---|
+| L2P | `models/config/l2p.yaml:1-6`: `batchwise_prompt=1`, `dataset_config=l2p`, LR0,03, pull0,5 y modelo L2P; carga `datasets/configs/seq-cifar100-224/l2p.yaml:1-28` con batch128/E5. | Overlay de modelo `{}` + defaults de `models/l2p.py:26-49` + `datasets/configs/seq-cifar100-224/default.yaml:1-25`. No aporta LR y `--lr` sigue siendo obligatorio (`utils/args.py:263-266`): no es una receta completa por sí solo. |
+| DualPrompt | `models/config/dualprompt.yaml:1-6`: `dataset_config=l2p`, batch128, LR0,03, modelo y clave inerte `use_fix_permute=0`; carga el mismo YAML `l2p`. El flag funcional se llama `use_permute_fix` (`models/dualprompt.py:30`). | Overlay `{}` + defaults de `models/dualprompt.py:27-61` + YAML de dataset `default`. Tampoco aporta LR; requiere `--lr` manual. |
+| CODA-Prompt | `models/config/coda_prompt.yaml:1-8`: `dataset_config=coda_prompt`, batch128, LR0,001, Adam, `optim_mom=0.9` y E20; carga `datasets/configs/seq-cifar100-224/coda_prompt.yaml:1-23`. | Overlay `{}` + defaults de `models/coda_prompt.py:26-32` —sí incluyen LR0,001/Adam/momento0,9— + YAML de dataset `default`. Usa las estadísticas/transforms ImageNet de `default.yaml`, no la identidad de la receta CODA; fila `CODA-A09`. |
+
+Los comandos de reproducción Mammoth invocan `best` para CODA, DualPrompt y L2P (`scripts/reproduce.json:49-52,79-82,170-173`). La documentación solo afirma que esos hiperparámetros pueden proceder de los autores **o** de búsquedas de Mammoth, sin trazar el origen de cada campo (`docs/getting_started/reproducibility.rst:8-12`); esa autoría parámetro a parámetro queda `NO_DETERMINABLE`.
+
+Por tanto, `best` es un overlay mantenido por Mammoth y no se equipara globalmente a la receta original. La auditoría demuestra, entre otros ejemplos, voto batchwise y LR aplicado0,015 en L2P (`valores_l2p.md`, `L2P-B15/B29`), LR nominal0,03/efectivo0,015 frente a0,005 en DualPrompt (`valores_dualprompt.md:91-92`) y scheduler CODA construido pero no avanzado (`comportamiento_coda.md:7-12`). Algunos escalares coinciden; la procedencia o equivalencia total no se infiere.
+
 ## 7. Bloqueos y pendientes declarados
 
 1. **CODA-Prompt / Piloto-0 con una época:** `CodaPrompt.begin_task` deriva `CosineSchedule.K=n_epochs`, pero `CosineSchedule` exige `K>1`. No existe un comando CLI que complete exactamente una época por tarea sin modificar código. Evidencia y comando diagnóstico en `auditoria/piloto0.md`.

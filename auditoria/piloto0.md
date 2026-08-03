@@ -1,143 +1,278 @@
-# Piloto-0: CIFAR-100, 10 tareas y 1 época por tarea
+# Piloto-0 v2: CIFAR-100 con lanzadores independientes
 
-## Alcance y estado
+## Alcance, decisiones aplicadas y límites
 
-Los comandos están escritos para Linux, desde la raíz de un clon de `https://github.com/alexmf10/mammothV2` situado en la rama `tfg-auditoria`. El dataset correcto para estos métodos es `seq-cifar100-224`: declara 10 tareas, 10 clases por tarea y 100 clases (`datasets/seq_cifar100_224.py:39-43`). `seq-cifar100` no es equivalente porque usa el backbone por defecto de esa otra clase de dataset.
+Los comandos están escritos para Linux, desde la raíz de un clon de `https://github.com/alexmf10/mammothV2`, rama `tfg-auditoria`, commit `cda7f23681f7bffacee460d99e990bc803bccf04`. El dataset es `seq-cifar100-224`: 10 tareas, 10 clases por tarea y 100 clases (`datasets/seq_cifar100_224.py:39-43`).
 
-| método | estado del Piloto-0 solicitado | motivo |
-|---|---|---|
-| L2P | EJECUTABLE | La CLI acepta la receta `best` y `n_epochs=1`. |
-| DualPrompt | EJECUTABLE | La CLI acepta la receta `best` y `n_epochs=1`. |
-| CODA-Prompt | BLOQUEANTE / NO_EJECUTABLE | Su scheduler exige `n_epochs > 1`; no existe flag para desactivarlo. |
+| método | presupuesto del piloto v2 | batch | motivo |
+|---|---:|---:|---|
+| L2P | E=1 por tarea | 64 | CLI limpia; lanzador independiente. |
+| DualPrompt | E=1 por tarea | 64 | CLI limpia; lanzador independiente. |
+| CODA-Prompt | E=2 por tarea | 64 | E=1 aborta en `begin_task` porque `CosineSchedule` exige `K=n_epochs>1`. |
 
-No se presenta una corrida fallida de CODA-Prompt como si fuera completa.
+E=2 para CODA es una excepción operativa del Piloto-0 v2 decidida en D32: sirve para comprobar el bucle completo y derivar coste por época-tarea. **No modifica el eje experimental**, cuyo peldaño mínimo sigue pendiente en D33. Batch 64 aplica D31/D32 al piloto; la columna `valor final` de la auditoría sigue vacía.
 
-## Preparación común en el servidor
+Los tres lanzadores usan `model_config=best` únicamente como baseline diagnóstico heredado del Piloto-0. La matriz final no debe reutilizar `best/default` en bloque: se construirá desde `configuracion_final` después de la revisión humana (`PLAN_MAESTRO.md:221`).
+
+## Resultado del Piloto-0 v1: evidencia de infraestructura
+
+Paquete: `C:\Users\alex\Downloads\faseA_servidor_piloto0_oom_20260803_154958.tar.gz`, SHA-256 `6e9fc8d88595f8219f5a60f16274c281e3c4ab077e909d86c304eec88e3e0d25`.
+
+- L2P resolvió `best`, batch 128, LR nominal 0,03 y E=1, alcanzó la tarea 1 y abortó con OOM; `logs/piloto0/driver.log:24-35,83-108,141-198` y `diagnostico_oom_20260803_154949.txt:207-263` dentro del paquete.
+- Código de salida 1, 17,21 s hasta el fallo y ningún `logs.pyd`; `diagnostico_oom_20260803_154949.txt:117-123,138-162`.
+- El lanzador v1 salía en el primer error; DualPrompt no llegó a ejecutarse y CODA-Prompt no estaba incluido; `run_piloto0.sh:43-49,60-61`.
+- Había dos kernels ajenos consumiendo 304 y 332 MiB. Esto limita la atribución fina del margen de VRAM, pero no convierte el intento en un piloto completado; `diagnostico_oom_20260803_154949.txt:31-45,263`.
+
+Por D31, batch 128 permanece cerrado. El v1 se conserva como evidencia de infraestructura y no como Piloto-0 satisfactorio. El paquete no contiene una corrida a batch 64; el hecho previo de que 64 cabe está registrado en `PLAN_MAESTRO.md:163`.
+
+## Precondiciones comunes
+
+Cada bloque posterior es autocontenido y puede lanzarse por separado. Antes de medir tiempos, el usuario debe coordinar la liberación de procesos de cómputo ajenos; no se incluyen órdenes para terminarlos. Cada lanzador guarda el estado GPU previo para poder invalidar una medición contaminada.
+
+El overlay privado ya comprobado debe seguir accesible:
 
 ```bash
-git switch tfg-auditoria
-git rev-parse HEAD
+export PYTHONPATH="$HOME/.local/mammoth-pydeps${PYTHONPATH:+:$PYTHONPATH}"
+/opt/environment/bin/python -c 'import open_clip, ftfy; print(open_clip.__version__, ftfy.__version__)'
+```
 
+Resultado esperado del entorno auditado: `open-clip-torch==2.32.0` y `ftfy==6.3.1`; evidencia en `infra/servidor.md`.
+
+## Lanzador independiente: L2P, E=1
+
+```bash
+#!/usr/bin/env bash
+set -u
 set -o pipefail
-mkdir -p logs/piloto0
-unset WANDB_ENTITY WANDB_PROJECT
+
+cd "$HOME/mammothV2"
+EXPECTED_COMMIT="cda7f23681f7bffacee460d99e990bc803bccf04"
+ACTUAL_COMMIT="$(git rev-parse HEAD)"
+test "$ACTUAL_COMMIT" = "$EXPECTED_COMMIT" || {
+  echo "ERROR: HEAD=$ACTUAL_COMMIT; esperado=$EXPECTED_COMMIT" >&2
+  exit 2
+}
+
+PYTHON_BIN="/opt/environment/bin/python"
+export PYTHONPATH="$HOME/.local/mammoth-pydeps${PYTHONPATH:+:$PYTHONPATH}"
 export MAMMOTH_TEST=1
 export PYTHONUNBUFFERED=1
+unset WANDB_ENTITY WANDB_PROJECT
+
+mkdir -p logs/piloto0_v2
+prefix="logs/piloto0_v2/l2p_seq-cifar100-224_seed0_b64_e1"
+result_file="data/results_piloto0_v2/class-il/seq-cifar100-224/l2p/logs.pyd"
+before_lines=0
+test ! -f "$result_file" || before_lines="$(wc -l < "$result_file")"
+nvidia-smi --query-compute-apps=pid,process_name,used_memory \
+  --format=csv,noheader > "${prefix}.gpu_before.txt"
+
+/usr/bin/time -v -o "${prefix}.time.txt" \
+  "$PYTHON_BIN" -u main.py \
+    --model l2p \
+    --dataset seq-cifar100-224 \
+    --model_config best \
+    --batch_size 64 \
+    --fitting_mode epochs \
+    --n_epochs 1 \
+    --stop_after 10 \
+    --seed 0 \
+    --permute_classes 0 \
+    --base_path ./data/ \
+    --results_path results_piloto0_v2/ \
+    --notes piloto0_v2_cifar100_l2p_seed0_b64_e1 \
+    --non_verbose 1 \
+    --code_optimization 0 \
+    --distributed no \
+    2>&1 | tee "${prefix}.run.log"
+
+status=${PIPESTATUS[0]}
+printf '%s\n' "$status" > "${prefix}.exit_code.txt"
+test "$status" -eq 0 || exit "$status"
+test -s "$result_file" || exit 81
+after_lines="$(wc -l < "$result_file")"
+test "$after_lines" -gt "$before_lines" || exit 82
+tail -n 1 "$result_file"
 ```
 
-`MAMMOTH_TEST=1` evita cargar un `.env` local (`main.py:50-64`). Al dejar sin definir `WANDB_ENTITY` y `WANDB_PROJECT`, Mammoth desactiva W&B durante `extend_args` (`main.py:447-457`). No se fija `num_workers`: Mammoth conserva su resolución dependiente del entorno; es infraestructura y debe anotarse al comparar tiempos.
-
-## L2P
+## Lanzador independiente: DualPrompt, E=1
 
 ```bash
-/usr/bin/time -v -o logs/piloto0/l2p_seq-cifar100-224_seed0_e1.time.txt \
-python main.py \
-  --model l2p \
-  --dataset seq-cifar100-224 \
-  --model_config best \
-  --fitting_mode epochs \
-  --n_epochs 1 \
-  --stop_after 10 \
-  --seed 0 \
-  --permute_classes 0 \
-  --base_path ./data/ \
-  --results_path results_piloto0/ \
-  --notes piloto0_cifar100_l2p_seed0_e1 \
-  --non_verbose 1 \
-  --code_optimization 0 \
-  --distributed no \
-  2>&1 | tee logs/piloto0/l2p_seq-cifar100-224_seed0_e1.run.log
+#!/usr/bin/env bash
+set -u
+set -o pipefail
 
-test -s data/results_piloto0/class-il/seq-cifar100-224/l2p/logs.pyd
-tail -n 1 data/results_piloto0/class-il/seq-cifar100-224/l2p/logs.pyd
+cd "$HOME/mammothV2"
+EXPECTED_COMMIT="cda7f23681f7bffacee460d99e990bc803bccf04"
+ACTUAL_COMMIT="$(git rev-parse HEAD)"
+test "$ACTUAL_COMMIT" = "$EXPECTED_COMMIT" || {
+  echo "ERROR: HEAD=$ACTUAL_COMMIT; esperado=$EXPECTED_COMMIT" >&2
+  exit 2
+}
+
+PYTHON_BIN="/opt/environment/bin/python"
+export PYTHONPATH="$HOME/.local/mammoth-pydeps${PYTHONPATH:+:$PYTHONPATH}"
+export MAMMOTH_TEST=1
+export PYTHONUNBUFFERED=1
+unset WANDB_ENTITY WANDB_PROJECT
+
+mkdir -p logs/piloto0_v2
+prefix="logs/piloto0_v2/dualprompt_seq-cifar100-224_seed0_b64_e1"
+result_file="data/results_piloto0_v2/class-il/seq-cifar100-224/dualprompt/logs.pyd"
+before_lines=0
+test ! -f "$result_file" || before_lines="$(wc -l < "$result_file")"
+nvidia-smi --query-compute-apps=pid,process_name,used_memory \
+  --format=csv,noheader > "${prefix}.gpu_before.txt"
+
+/usr/bin/time -v -o "${prefix}.time.txt" \
+  "$PYTHON_BIN" -u main.py \
+    --model dualprompt \
+    --dataset seq-cifar100-224 \
+    --model_config best \
+    --batch_size 64 \
+    --fitting_mode epochs \
+    --n_epochs 1 \
+    --stop_after 10 \
+    --seed 0 \
+    --permute_classes 0 \
+    --base_path ./data/ \
+    --results_path results_piloto0_v2/ \
+    --notes piloto0_v2_cifar100_dualprompt_seed0_b64_e1 \
+    --non_verbose 1 \
+    --code_optimization 0 \
+    --distributed no \
+    2>&1 | tee "${prefix}.run.log"
+
+status=${PIPESTATUS[0]}
+printf '%s\n' "$status" > "${prefix}.exit_code.txt"
+test "$status" -eq 0 || exit "$status"
+test -s "$result_file" || exit 81
+after_lines="$(wc -l < "$result_file")"
+test "$after_lines" -gt "$before_lines" || exit 82
+tail -n 1 "$result_file"
 ```
 
-## DualPrompt
+## Lanzador independiente: CODA-Prompt, E=2
 
 ```bash
-/usr/bin/time -v -o logs/piloto0/dualprompt_seq-cifar100-224_seed0_e1.time.txt \
-python main.py \
-  --model dualprompt \
-  --dataset seq-cifar100-224 \
-  --model_config best \
-  --fitting_mode epochs \
-  --n_epochs 1 \
-  --stop_after 10 \
-  --seed 0 \
-  --permute_classes 0 \
-  --base_path ./data/ \
-  --results_path results_piloto0/ \
-  --notes piloto0_cifar100_dualprompt_seed0_e1 \
-  --non_verbose 1 \
-  --code_optimization 0 \
-  --distributed no \
-  2>&1 | tee logs/piloto0/dualprompt_seq-cifar100-224_seed0_e1.run.log
+#!/usr/bin/env bash
+set -u
+set -o pipefail
 
-test -s data/results_piloto0/class-il/seq-cifar100-224/dualprompt/logs.pyd
-tail -n 1 data/results_piloto0/class-il/seq-cifar100-224/dualprompt/logs.pyd
+cd "$HOME/mammothV2"
+EXPECTED_COMMIT="cda7f23681f7bffacee460d99e990bc803bccf04"
+ACTUAL_COMMIT="$(git rev-parse HEAD)"
+test "$ACTUAL_COMMIT" = "$EXPECTED_COMMIT" || {
+  echo "ERROR: HEAD=$ACTUAL_COMMIT; esperado=$EXPECTED_COMMIT" >&2
+  exit 2
+}
+
+PYTHON_BIN="/opt/environment/bin/python"
+export PYTHONPATH="$HOME/.local/mammoth-pydeps${PYTHONPATH:+:$PYTHONPATH}"
+export MAMMOTH_TEST=1
+export PYTHONUNBUFFERED=1
+unset WANDB_ENTITY WANDB_PROJECT
+
+mkdir -p logs/piloto0_v2
+prefix="logs/piloto0_v2/coda-prompt_seq-cifar100-224_seed0_b64_e2"
+result_file="data/results_piloto0_v2/class-il/seq-cifar100-224/coda_prompt/logs.pyd"
+before_lines=0
+test ! -f "$result_file" || before_lines="$(wc -l < "$result_file")"
+nvidia-smi --query-compute-apps=pid,process_name,used_memory \
+  --format=csv,noheader > "${prefix}.gpu_before.txt"
+
+/usr/bin/time -v -o "${prefix}.time.txt" \
+  "$PYTHON_BIN" -u main.py \
+    --model coda-prompt \
+    --dataset seq-cifar100-224 \
+    --model_config best \
+    --batch_size 64 \
+    --fitting_mode epochs \
+    --n_epochs 2 \
+    --stop_after 10 \
+    --seed 0 \
+    --permute_classes 0 \
+    --base_path ./data/ \
+    --results_path results_piloto0_v2/ \
+    --notes piloto0_v2_cifar100_coda-prompt_seed0_b64_e2 \
+    --non_verbose 1 \
+    --code_optimization 0 \
+    --distributed no \
+    2>&1 | tee "${prefix}.run.log"
+
+status=${PIPESTATUS[0]}
+printf '%s\n' "$status" > "${prefix}.exit_code.txt"
+test "$status" -eq 0 || exit "$status"
+test -s "$result_file" || exit 81
+after_lines="$(wc -l < "$result_file")"
+test "$after_lines" -gt "$before_lines" || exit 82
+tail -n 1 "$result_file"
 ```
 
-## CODA-Prompt: bloqueo de la corrida solicitada
+### Motivo exacto de E=2 para CODA
 
-El comando análogo sería el siguiente, pero **no completa** la primera tarea y no genera el fichero final de métricas:
+1. `CodaPrompt.begin_task` construye `CosineSchedule(self.opt, K=self.args.n_epochs)` (`models/coda_prompt.py:65-73`).
+2. `CosineSchedule.__init__` impone `assert K > 1` (`utils/schedulers.py:38-46`).
+3. `meta_begin_task` se ejecuta antes del entrenamiento de cada tarea (`utils/training.py:197-216,232`).
+4. El dump E=1 registra `K=1/runtime_valid=false`, pero termina antes de construir el modelo (`auditoria/reconciliacion_fase_b.md:73-82`).
+
+E=2 es el mínimo ejecutable sin cambiar código. No resuelve la decisión entre una escalera `{2,5,20}` y un parche del scheduler; esa cuestión permanece en `auditoria/cola_revision.md`.
+
+## Reintento diagnóstico L2P/batch128: registrado y retirado
+
+Tras el OOM v1 se propuso repetir L2P con GPU limpia y el ajuste sugerido por PyTorch. D31 rev. y la regla D34 retiraron ese reintento como test de batch: 128 ya está cerrado y la limpieza GPU pasa a ser higiene para tiempos. Para conservar trazabilidad, este era el comando mínimo propuesto; queda **ARCHIVADO — NO EJECUTAR para reabrir D31**:
 
 ```bash
-# NO EJECUTAR esperando una corrida completa: reproduce el bloqueo documentado.
-/usr/bin/time -v -o logs/piloto0/coda-prompt_seq-cifar100-224_seed0_e1.time.txt \
-python main.py \
-  --model coda-prompt \
-  --dataset seq-cifar100-224 \
-  --model_config best \
-  --fitting_mode epochs \
-  --n_epochs 1 \
-  --stop_after 10 \
-  --seed 0 \
-  --permute_classes 0 \
-  --base_path ./data/ \
-  --results_path results_piloto0/ \
-  --notes piloto0_cifar100_coda-prompt_seed0_e1 \
-  --non_verbose 1 \
-  --code_optimization 0 \
-  --distributed no \
-  2>&1 | tee logs/piloto0/coda-prompt_seq-cifar100-224_seed0_e1.run.log
+# ARCHIVADO — NO forma parte del Piloto-0 v2.
+cd "$HOME/mammothV2"
+export PYTHONPATH="$HOME/.local/mammoth-pydeps${PYTHONPATH:+:$PYTHONPATH}"
+export MAMMOTH_TEST=1
+export PYTHONUNBUFFERED=1
+unset WANDB_ENTITY WANDB_PROJECT
+
+# La salida debía mostrar cero procesos de cómputo ajenos antes de lanzar.
+nvidia-smi --query-compute-apps=pid,process_name,used_memory --format=csv,noheader
+
+env PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
+  /usr/bin/time -v -o logs/piloto0/l2p_b128_e1_gpu_limpia.time.txt \
+  /opt/environment/bin/python -u main.py \
+    --model l2p \
+    --dataset seq-cifar100-224 \
+    --model_config best \
+    --batch_size 128 \
+    --fitting_mode epochs \
+    --n_epochs 1 \
+    --stop_after 10 \
+    --seed 0 \
+    --permute_classes 0 \
+    --base_path ./data/ \
+    --results_path results_piloto0_diagnostico/ \
+    --notes diagnostico_retirado_l2p_b128_e1 \
+    --non_verbose 1 \
+    --code_optimization 0 \
+    --distributed no
 ```
 
-Cadena de evidencia del bloqueo:
+No hay resultado de este reintento en el paquete y no se le atribuye ninguno.
 
-1. `CodaPrompt.begin_task` construye siempre `CosineSchedule(self.opt, K=self.args.n_epochs)` (`models/coda_prompt.py:65-73`).
-2. `CosineSchedule.__init__` impone `assert K > 1` (`utils/schedulers.py:38-45`).
-3. `meta_begin_task` se ejecuta antes del bloque de entrenamiento de la tarea (`utils/training.py:197-216,232`).
-4. El test del propio repo usa dos épocas para CODA-Prompt (`tests/test_codaprompt.py:16-19`).
-5. CODA-Prompt exige que `lr_scheduler` sea `None`, por lo que la CLI tampoco permite sustituir el scheduler (`models/coda_prompt.py:42`).
+## Resultados, logs y criterio de éxito
 
-Resultado: no existe en este SHA un comando de la CLI, en modo `epochs` y sin modificar código, que complete exactamente una época por tarea para CODA-Prompt. Cambiar a dos épocas o a `fitting_mode=iters` alteraría el EJE y no es el Piloto-0 pedido; requiere una decisión humana registrada.
+Con `--base_path ./data/` y `--results_path results_piloto0_v2/`, los ficheros class-IL esperados son:
 
-### Confirmación de Fase B en `galatzo`
+- L2P: `data/results_piloto0_v2/class-il/seq-cifar100-224/l2p/logs.pyd`;
+- DualPrompt: `data/results_piloto0_v2/class-il/seq-cifar100-224/dualprompt/logs.pyd`;
+- CODA-Prompt: `data/results_piloto0_v2/class-il/seq-cifar100-224/coda_prompt/logs.pyd`.
 
-Los volcados E=1 y E=20 del commit `cda7f23681f7bffacee460d99e990bc803bccf04` confirman que la CLI resuelve limpiamente `n_epochs` y que CODA deriva `custom_scheduler.K` del mismo valor. E=1 registra `K=1`, `runtime_valid=false` y `AssertionError at begin_task before the first training epoch`; E=20 registra `K=20`, `runtime_valid=true` y consecuencia nula. Evidencia e integridad: `auditoria/reconciliacion_fase_b.md`.
+Mammoth también escribe la evaluación task-IL bajo `data/results_piloto0_v2/task-il/seq-cifar100-224/<modelo>/logs.pyd` (`utils/loggers.py:247-264`). `logs.pyd` es append-only; por eso cada lanzador exige que aumente su número de líneas, no solo que el fichero exista. Los logs de consola, tiempo, código de salida y GPU previa quedan bajo `logs/piloto0_v2/`.
 
-Ambos scripts de volcado terminan con código 0 porque su frontera declarada es `main.check_args`: no construyen el modelo y no llaman a `begin_task`. Ese éxito no es una corrida CODA E=1 ni contradice el bloqueo anterior. La confirmación combina el valor efectivo del parser, la derivación registrada por el dump y la ruta ejecutable `meta_begin_task → CodaPrompt.begin_task → CosineSchedule.__init__`; no se afirma que el tar contenga un traceback de entrenamiento, porque no lo contiene.
-
-## Resultados y tiempos
-
-Con `--base_path ./data/` y `--results_path results_piloto0/`, Mammoth compone las rutas (`utils/args.py:363-368`, `utils/loggers.py:236-245`) y añade una línea de texto con `str(dict)` a:
-
-- L2P class-IL: `data/results_piloto0/class-il/seq-cifar100-224/l2p/logs.pyd`.
-- DualPrompt class-IL: `data/results_piloto0/class-il/seq-cifar100-224/dualprompt/logs.pyd`.
-- CODA-Prompt, solo si se resolviera el bloqueo: `data/results_piloto0/class-il/seq-cifar100-224/coda_prompt/logs.pyd`.
-- La evaluación con máscara de tarea se duplica bajo `data/results_piloto0/task-il/seq-cifar100-224/<modelo>/logs.pyd` (`utils/loggers.py:247-264`).
-
-El fichero `logs.pyd` se escribe al terminar la corrida (`utils/training.py:365-368`) y es append-only: una repetición con la misma ruta añade otra línea. Los logs completos de consola quedan en `logs/piloto0/*.run.log`; `/usr/bin/time -v` guarda duración y uso de recursos en `logs/piloto0/*.time.txt`. Mammoth no persiste por sí solo un resumen equivalente del tiempo total.
+Una corrida cuenta como Piloto-0 completado solo con código 0, las diez tareas y una nueva línea final de métricas. Un arranque, un dump o un fallo con log no cumplen ese criterio.
 
 ## Descarga de datos
 
-- CIFAR-100: el loader de 224 píxeles llama a torchvision con `download=True` (`datasets/seq_cifar100_224.py:80-83`); si falta o no supera la comprobación de integridad, torchvision intenta descargarlo bajo `./data/CIFAR100`.
-- Split ImageNet-R: `datasets/seq_imagenet_r.py:43-69,134-141` intenta descargar y extraer el tar si no existe `./data/imagenet-r/`. Requiere `requests`, el ejecutable `tar` y acceso a `https://people.eecs.berkeley.edu/~hendrycks/imagenet-r.tar`. Si la carpeta existe pero está vacía o incompleta, la comprobación estática muestra que el código no fuerza una nueva descarga.
+CIFAR-100 usa torchvision con `download=True` (`datasets/seq_cifar100_224.py:80-83`); si falta o no supera su comprobación de integridad, intenta descargarlo bajo `./data/CIFAR100`.
 
 ## Opcional: Split ImageNet-R
 
-`seq-imagenet-r` existe y declara 10 tareas de 20 clases (`datasets/seq_imagenet_r.py:112-120`). Hay smoke tests para L2P y CODA-Prompt (`tests/test_l2p.py:8-28`, `tests/test_codaprompt.py:8-31`), pero no para DualPrompt.
+`seq-imagenet-r` existe y declara 10 tareas de 20 clases (`datasets/seq_imagenet_r.py:112-120`), pero `models/config/l2p.yaml`, `models/config/dualprompt.yaml` y `models/config/coda_prompt.yaml` no tienen una entrada `seq-imagenet-r`. Por ello `--model_config best` falla para los tres y los defaults parciales de clase no forman una receta comparable.
 
-Los YAML `models/config/l2p.yaml`, `models/config/dualprompt.yaml` y `models/config/coda_prompt.yaml` no contienen una entrada `seq-imagenet-r`. En consecuencia, `--model_config best` falla y la CLI exige elegir manualmente, como mínimo, un learning rate. Los valores `lr=1e-4` y `batch_size=2` de los tests son solo de smoke/debug y no constituyen una receta experimental. Además, CODA-Prompt conserva el bloqueo `n_epochs=1`.
-
-Por estas evidencias, los comandos completos equivalentes de ImageNet-R quedan marcados `NO_DETERMINABLE_ESTATICO`: escribirlos ahora exigiría inventar o trasladar silenciosamente valores no resueltos por Mammoth. Propuesta mínima de comprobación posterior: una vez que la auditoría humana fije la receta ImageNet-R por método, ejecutar primero `scripts_tfg/dump_config.py` adaptado a ese dataset o un script homólogo de parseo, y solo entonces materializar los comandos del piloto opcional.
+Los comandos completos equivalentes siguen `NO_DETERMINABLE_ESTATICO`: escribirlos exigiría elegir LR, transforms y otros valores aún pendientes. Una vez aprobada una receta humana, debe volcarse primero la configuración efectiva y solo después materializar el piloto opcional. No se promueven los valores de smoke tests a receta experimental.
