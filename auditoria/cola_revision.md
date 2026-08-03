@@ -203,7 +203,7 @@ DualPrompt G-HEAD no se marca mixto: sus propuestas son solo-repo o coincidentes
 | FD-01 | L2P A04/A11/E02 | No existe receta L2P ImageNet-R; excluir o autorizar una receta manual. |
 | FD-02 | Dual filas IMR / S-15 | Dataset/defaults parciales, pero falta preset `best` y LR completo. |
 | FD-03 | CODA A03/E01 / OBS-09 | Ruta default parcial, sin preset `best` de reproducción. |
-| FD-04 | Entorno, veredicto CODA | `n_epochs=1` no es ejecutable: `CosineSchedule` exige K>1. |
+| FD-04 | Entorno, veredicto CODA | `n_epochs=1` no es ejecutable en una corrida: `CosineSchedule` exige K>1. Fase B confirma parser E=1, derivación estática `K=1/runtime_valid=false` y frontera pre-modelo del dump; `reconciliacion_fase_b.md`. |
 
 ## Embudo global
 

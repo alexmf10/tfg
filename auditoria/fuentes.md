@@ -92,7 +92,31 @@ Intérprete: `C:\Users\alex\miniconda3\python.exe`.
 
 Estas son versiones del entorno local accesible, no una afirmación sobre el entorno del servidor.
 
-### 3.4 Efecto lateral observado y retirado
+### 3.4 Entorno del servidor `galatzo` usado en la Fase B
+
+El archivo externo `auditoria_dumps_e1_e20.tar.gz`, recibido el 2026-08-03 y conservado fuera del repo, tiene SHA-256 `7254a9033d174398b8e9ef2a35ba1951e3ece32fa0e0a48a51bb49d358fa19c8`. Sus registros sitúan la ejecución en `galatzo`, sobre la rama `tfg-auditoria` y el commit `cda7f23681f7bffacee460d99e990bc803bccf04`.
+
+Antes de instalar las dos dependencias que faltaban en el overlay privado, `logs/piloto0/environment_before_openclip.txt` (SHA-256 `fe58357f761eda22393ee9cb3481617aa641a2053725203d7b1e7b4b77f2b6c0`) registró:
+
+| componente | versión efectiva observada en `galatzo` |
+|---|---|
+| sistema | Ubuntu 22.04.5 LTS; kernel 6.8.0-124-generic |
+| Python | `3.10.12`; ejecutable `/opt/environment/bin/python` |
+| torch | `2.2.1+cu121` |
+| torchvision | `0.17.1+cu121` |
+| timm | `0.9.8` (overlay privado) |
+| kornia | `0.7.1` (overlay privado) |
+| numpy | `1.26.4` |
+| Pillow | `10.2.0` |
+| PyYAML | `6.0.1` |
+| CUDA / cuDNN / GPU | CUDA de Torch 12.1; cuDNN 8902; NVIDIA GeForce RTX 3060 |
+| `open-clip-torch` / `ftfy` | `NO_DISPONIBLE` antes de la instalación |
+
+El registro posterior `logs/piloto0/environment_after_openclip.txt` (SHA-256 `85005cded823431421a3b844d19819f66c9922e5fdc8cb782b2bdf6ceb7524ac`) confirma `open-clip-torch==2.32.0` y `ftfy==6.3.1` en `/home/amf380/.local/mammoth-pydeps`, manteniendo torch 2.2.1, torchvision 0.17.1, timm 0.9.8, kornia 0.7.1 y numpy 1.26.4. `pip check` terminó sin dependencias rotas antes y después. Los volcados E=1/E=20 se generaron después de este registro posterior.
+
+Estas versiones son evidencia del servidor para esta ejecución, no un nuevo pin del proyecto. En particular, permiten resolver la representación efectiva de los transforms que el YAML deja a defaults de torchvision 0.17.1; no autorizan generalizarla a otro entorno con dependencias distintas.
+
+### 3.5 Efecto lateral observado y retirado
 
 La carga de los registries durante la prueba del parser importa todos los datasets (`datasets/__init__.py:173-176`). En este SHA, `datasets/seq_8vision.py:47-48` crea un OpenCLIP ViT-B/16 en ámbito de clase; por ello un parseo sin entrenamiento puede descargar pesos. Durante la validación se generaron bajo rutas ignoradas un cache `checkpoints/ViT-B-16/` de 598.517.020 bytes y 29 directorios `__pycache__/`. Como eran artefactos creados por esta comprobación y no entregables, se retiraron después de verificar rutas, contenido y fechas. La comprobación final dio 0 `__pycache__`, ausencia de `checkpoints/ViT-B-16/` y working tree limpio.
 
@@ -187,14 +211,29 @@ diff -u \
 
 Prueba local realizada: ambos JSON fueron válidos y contuvieron `l2p`, `dualprompt` y `coda-prompt`; en `stable_effective_args_for_diff` solo cambió `n_epochs` (`1` frente a `20`). La derivación de CODA-Prompt marcó `custom_scheduler.K=1` como inválida y `K=20` como válida. Los JSON de prueba se retiraron.
 
-Advertencia reproducible: aunque no entrena, el import eager del parser puede poblar `checkpoints/ViT-B-16/` con unos 599 MB de OpenCLIP. No es una descarga de CIFAR-100 ni una construcción intencionada del método seleccionado; es el efecto lateral descrito en §3.4. El stderr separado conserva warnings de import sin contaminar el JSON.
+### 6.1 Réplica de Fase B en `galatzo`
+
+Los dos volcados aportados por el usuario son JSON válidos, declaran `schema_version=1` y el commit esperado. Integridad:
+
+| artefacto dentro del tar | bytes | SHA-256 |
+|---|---:|---|
+| `auditoria_dumps/cifar100_n_epochs_1.json` | 33.809 | `0156a129b0ce25f2fa8e2f20587904196b14d984cf574d2f0bbed8951f199955` |
+| `auditoria_dumps/cifar100_n_epochs_20.json` | 33.764 | `258277b6aa90f79a95172693889eccae4208e07e4cd1fd0ec85652ca130013a9` |
+| `auditoria_dumps/cifar100_n_epochs_1.stderr.log` | 284 | `9d7bec0c8276ac90a8a722a3ab59bd8aadc87605a6a72059b89149a87a1c6079` |
+| `auditoria_dumps/cifar100_n_epochs_20.stderr.log` | 284 | `9d7bec0c8276ac90a8a722a3ab59bd8aadc87605a6a72059b89149a87a1c6079` |
+
+El diff recursivo exhaustivo encontró 34 hojas distintas. Fuera de `conf_jobnum` y `conf_timestamp`, que son metadatos volátiles, solo cambia `n_epochs` en el scope, comando, parser y configuración efectiva de cada método. CODA-Prompt añade las tres consecuencias derivadas esperadas: `custom_scheduler.K: 1→20`, `runtime_valid: false→true` y `consequence_if_invalid: "AssertionError at begin_task before the first training epoch"→null`. Normalizando exclusivamente esos campos, ambos documentos tienen el mismo SHA-256 canónico: `bd1e8e55d15bce26d1feac5d71fa0183acc7c69468761128c78ad8a646c93fba`.
+
+La frontera del script es esencial: el último paso ejecutado fue `main.check_args(args, dataset)`; no se construyeron backbone/modelo/loaders ni se entrenó. Por eso el código de salida 0 del volcado E=1 confirma que el parser acepta el valor, pero no contradice el bloqueo posterior de CODA en `begin_task`. Las notas de LR y K están marcadas `NOT_APPLIED_BY_THIS_SCRIPT` y son derivaciones estáticas localizadas.
+
+Advertencia reproducible: aunque no entrena, el import eager del parser puede poblar `checkpoints/ViT-B-16/` con unos 599 MB de OpenCLIP. No es una descarga de CIFAR-100 ni una construcción intencionada del método seleccionado; es el efecto lateral descrito en §3.5. Los dos stderr son idénticos y contienen solo el aviso de OpenCLIP de que esos pesos se entrenaron con QuickGELU pero la configuración importada no lo activa. Por la frontera del script, el aviso se registra como efecto lateral del import y no se atribuye a L2P, DualPrompt o CODA-Prompt.
 
 ## 7. Bloqueos y pendientes declarados
 
 1. **CODA-Prompt / Piloto-0 con una época:** `CodaPrompt.begin_task` deriva `CosineSchedule.K=n_epochs`, pero `CosineSchedule` exige `K>1`. No existe un comando CLI que complete exactamente una época por tarea sin modificar código. Evidencia y comando diagnóstico en `auditoria/piloto0.md`.
 2. **ImageNet-R opcional:** el dataset existe, pero los tres YAML de modelo carecen de preset `best` para `seq-imagenet-r`; una receta completa requeriría elegir manualmente valores todavía no auditados. Marcado `NO_DETERMINABLE_ESTATICO` en `auditoria/piloto0.md`.
 3. **Estado archivado:** pendiente de comprobación humana en github.com para los repos oficiales.
-4. **Historia del repo TFG:** `origin` está añadido, pero no se integró la historia remota ni se hizo push, conforme a la instrucción de dejar esa decisión al usuario.
+4. **Historia del repo TFG:** la descripción de §2 conserva el estado inicial. En fases posteriores se enlazó y actualizó `origin/master`; los entregables de auditoría se publican por petición expresa del usuario.
 
 ## 8. Árbol final del workspace (2 niveles)
 

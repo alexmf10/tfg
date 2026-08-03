@@ -74,8 +74,8 @@ Claves: `R-L2P/DP@dd8836e6`, `R-CODA@6417d4f`, `M@e75a491` y rama auditada Mammo
 
 ## CB-09 · `n_epochs`, scheduler y modo temporal
 
-- **L2P/DualPrompt.** `n_epochs` es un entero limpio y el YAML resuelve5; en modo epochs controla el corte y updates. Cosine genérico usaría `T_max=n_epochs`, inactivo en la receta constante. `fitting_mode=time` aparece en choices sin presupuesto ni condición de salida (`utils/args.py:290-307`; `utils/training.py:232-299`; `utils/schedulers.py:19-35`).
-- **CODA-Prompt.** Paper/repo usan coseno por tarea. Mammoth crea `CosineSchedule(K=n_epochs)` pero el dispatcher busca `model.scheduler`, no `custom_scheduler`, y recibe `None`; LR queda constante (`models/coda_prompt.py:42,65-73`; `utils/training.py:239-263`; `utils/schedulers.py:13-54`). El constructor conserva el assert K>1, de modo que una época aborta. `time` tampoco termina.
+- **L2P/DualPrompt.** `n_epochs` es un entero limpio y el YAML resuelve5; en modo epochs controla el corte y updates. Cosine genérico usaría `T_max=n_epochs`, inactivo en la receta constante. La Fase B confirma que E=1→20 no cambia ningún otro argumento estable ni nota runtime de estos dos métodos. `fitting_mode=time` aparece en choices sin presupuesto ni condición de salida (`utils/args.py:290-307`; `utils/training.py:232-299`; `utils/schedulers.py:19-35`; `reconciliacion_fase_b.md`).
+- **CODA-Prompt.** Paper/repo usan coseno por tarea. Mammoth crea `CosineSchedule(K=n_epochs)` pero el dispatcher busca `model.scheduler`, no `custom_scheduler`, y recibe `None`; LR queda constante (`models/coda_prompt.py:42,65-73`; `utils/training.py:239-263`; `utils/schedulers.py:13-54`). La Fase B registra E=1 como `K=1/runtime_valid=false` y E=20 como `K=20/runtime_valid=true`. El dump E=1 sale con código 0 porque termina antes de construir el modelo; la corrida real aborta al ejecutar el assert K>1 en `begin_task`. `time` tampoco termina (`reconciliacion_fase_b.md`).
 - **Configurable.** `n_epochs`, iters y early stopping sí. El cableado CODA, K independiente y criterio temporal: **no**.
 - **Sensibilidad.** ALTA; es el bloqueo duro del eje 1→20.
 
@@ -97,8 +97,8 @@ Claves: `R-L2P/DP@dd8836e6`, `R-CODA@6417d4f`, `M@e75a491` y rama auditada Mammo
 
 ## CB-12 · Tuberías de imagen y precedencia de config
 
-- **L2P/DualPrompt CIFAR.** Paper solo fija224/[0,1]. Repo añade resize256, JPEG, RRC escala0,05–1 y flip; Mammoth YAML l2p omite JPEG y deja defaults torchvision (`R libml/input_pipeline.py:239-321,426-500`; `libml/preprocess.py:74-104`; M YAML l2p `:5-26`).
-- **CODA CIFAR.** Repo/Mammoth usan RRC224+flip en train y Resize224 en test. En Mammoth solo `model_config=best` fuerza `dataset_config=coda_prompt` y normalización identidad; el YAML default usaría stats ImageNet (`models/config/coda_prompt.yaml:1-8`; YAML coda/default; `main.py:169-186,308-351`).
+- **L2P/DualPrompt CIFAR.** Paper solo fija224/[0,1]. Repo añade resize256, JPEG, RRC escala0,05–1 y flip. Mammoth YAML l2p omite JPEG y delega defaults a torchvision; la Fase B los resuelve en `galatzo` como escala 0,08–1, ratio 0,75–1,3333, bilineal/antialias en train y bicúbica/antialias en test (`R libml/input_pipeline.py:239-321,426-500`; `libml/preprocess.py:74-104`; M YAML l2p `:5-26`; `reconciliacion_fase_b.md`).
+- **CODA CIFAR.** Repo/Mammoth usan RRC224+flip en train y Resize224 en test. En Mammoth solo `model_config=best` fuerza `dataset_config=coda_prompt` y normalización identidad; la Fase B resuelve train/test como bilineales y antialias en `galatzo`, con escala 0,08–1 y ratio 0,75–1,3333 en train. El YAML default usaría stats ImageNet (`models/config/coda_prompt.yaml:1-8`; YAML coda/default; `main.py:169-186,308-351`; `reconciliacion_fase_b.md`).
 - **ImageNet-R.** DualPrompt/CODA repos preservan aspecto con `Resize(256)` en test; Mammoth fuerza `(256,256)` bicúbico antes de crop224 (`R libml/input_pipeline.py:431-500`; CODA `dataloaders/utils.py:42-62`; M `datasets/seq_imagenet_r.py:112-132`). No existe preset `best` para ninguno de los tres métodos.
 - **Configurable.** Requiere seleccionar otro dataset config/YAML; no es un flag de método. CODA `best` fuerza el YAML.
 - **Sensibilidad.** ALTA/MEDIA.

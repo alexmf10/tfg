@@ -116,7 +116,7 @@ Este fichero aplica la sección I de `auditoria/plantilla.md`: documenta conduct
 
 - **Descripción.** Coinciden en 224 y rango [0,1], pero el paper no localiza augmentación; el repo y Mammoth aplican tuberías distintas en detalles que pueden modificar resultados.
 - **Evidencia paper/repo.** Paper: resize 224 y [0,1] (`L2P_arxiv.tex:562-563`). Repo train: resize 256, recodificación JPEG, random-resized-crop 224 con área 0,05–1, flip; eval: resize 256/center crop 224 (R:dd8836e6, `configs/cifar100_l2p.py:56-58,77-78`; `libml/input_pipeline.py:426-500`; `libml/preprocess.py:74-104,181-197`).
-- **Evidencia Mammoth.** Train YAML: Resize256, `RandomResizedCrop(224)`, flip, tensor, Normalize(0,1); eval: Resize256 con `interpolation=3`, center crop, tensor, Normalize(0,1) (M:cda7f236, `datasets/configs/seq-cifar100-224/l2p.yaml:5-26`). La escala/ratio del crop quedan en defaults de torchvision del entorno.
+- **Evidencia Mammoth.** El YAML declara Resize256, `RandomResizedCrop(224)`, flip y Normalize(0,1); eval declara Resize256 con `interpolation=3` y center crop (M:cda7f236, `datasets/configs/seq-cifar100-224/l2p.yaml:5-26`). La Fase B resuelve en `galatzo`/torchvision 0.17.1: train bilineal y antialias, crop con escala `(0.08,1.0)` y ratio `(0.75,1.3333)`; eval bicúbica y antialias. Evidencia idéntica E=1/E=20 en `methods[0].dataset_effective`, hashes en `reconciliacion_fase_b.md`.
 - **Configurable en Mammoth.** No mediante argumentos L2P; requiere otro dataset config/YAML.
 - **Flag S.** `S-11 MEDIA`. Filas `L2P-A07` y `L2P-A08`.
 

@@ -112,6 +112,12 @@ Cadena de evidencia del bloqueo:
 
 Resultado: no existe en este SHA un comando de la CLI, en modo `epochs` y sin modificar código, que complete exactamente una época por tarea para CODA-Prompt. Cambiar a dos épocas o a `fitting_mode=iters` alteraría el EJE y no es el Piloto-0 pedido; requiere una decisión humana registrada.
 
+### Confirmación de Fase B en `galatzo`
+
+Los volcados E=1 y E=20 del commit `cda7f23681f7bffacee460d99e990bc803bccf04` confirman que la CLI resuelve limpiamente `n_epochs` y que CODA deriva `custom_scheduler.K` del mismo valor. E=1 registra `K=1`, `runtime_valid=false` y `AssertionError at begin_task before the first training epoch`; E=20 registra `K=20`, `runtime_valid=true` y consecuencia nula. Evidencia e integridad: `auditoria/reconciliacion_fase_b.md`.
+
+Ambos scripts de volcado terminan con código 0 porque su frontera declarada es `main.check_args`: no construyen el modelo y no llaman a `begin_task`. Ese éxito no es una corrida CODA E=1 ni contradice el bloqueo anterior. La confirmación combina el valor efectivo del parser, la derivación registrada por el dump y la ruta ejecutable `meta_begin_task → CodaPrompt.begin_task → CosineSchedule.__init__`; no se afirma que el tar contenga un traceback de entrenamiento, porque no lo contiene.
+
 ## Resultados y tiempos
 
 Con `--base_path ./data/` y `--results_path results_piloto0/`, Mammoth compone las rutas (`utils/args.py:363-368`, `utils/loggers.py:236-245`) y añade una línea de texto con `str(dict)` a:

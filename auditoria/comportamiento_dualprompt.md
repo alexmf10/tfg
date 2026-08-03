@@ -125,7 +125,7 @@ Se compara el paper `2204.04799v2`, el repo oficial `google-research/l2p` en `dd
 - **E-Prompt y cabeza entre tareas.** Pool/key y cabeza persisten. Solo se copia el E-Prompt previo al slot nuevo; las keys no se copian. La cabeza no se expande físicamente ni se reinicia.
 - **ImageNet-R Mammoth.** La clase de dataset existe, pero no hay entrada `best` DualPrompt; una ejecución completa exige fijar manualmente al menos LR/receta. El preset completo queda `NO_ENCONTRADO`, no como valor dinámico descubrible, y se marca **S-15 MEDIA**.
 - **Orden y semilla.** Repo CIFAR usa orden natural y seed JAX 42; Mammoth usa orden natural y seed no fijada. Ambos son configurables, pero la receta no es reproducible sin decidir y registrar el seed (**S-10 ALTA**).
-- **Preprocesado.** Paper solo fija resize224/[0,1]; repo añade resize256, JPEG, RRC con escala mínima 0.05 y flip; Mammoth usa el pipeline `l2p` sin JPEG ni escala 0.05 declarada. Con backbone congelado, la diferencia permanece en **S-08 ALTA**.
+- **Preprocesado.** Paper solo fija resize224/[0,1]; repo añade resize256, JPEG, RRC con escala mínima 0.05 y flip. Mammoth usa el pipeline `l2p` sin JPEG; la Fase B lo resuelve en `galatzo` con escala mínima 0,08, ratio 0,75–1,3333, bilineal/antialias en train y bicúbica/antialias en test (`methods[1].dataset_effective`, hashes en `reconciliacion_fase_b.md`). Con backbone congelado, la diferencia permanece en **S-08 ALTA**.
 
 ## Ausencias comprobadas
 
