@@ -1,0 +1,254 @@
+# Plan maestro del TFG
+## Protocolo de comparación justa y plan operativo — v2.3
+
+**Última actualización:** 2 de agosto de 2026 20:02h · **Fase actual:** Fase A lista para lanzar — checklist de arranque en la sección 15.
+
+**Cómo usar este documento.** Es la fuente de verdad del proyecto: recoge todo lo decidido y cómo se procede en cada momento. Los chats (Claude, Codex u otros) son trabajadores desechables; cuando un chat se degrade o se abra uno nuevo, se le pasa este documento (o la sección relevante) y se continúa. Cuando se tome una decisión nueva, se añade al registro de la sección 13 y se actualiza la línea de estado. Nada de lo que diga un chat vale más que lo que está escrito aquí.
+
+---
+
+## 1. El norte: qué estamos haciendo
+
+El TFG compara tres métodos de aprendizaje continuo basados en prompts —L2P, DualPrompt y CODA-Prompt— en el escenario class-incremental (sin identidad de tarea en test), ejecutados sobre el framework Mammoth, midiendo a la vez precisión y coste computacional. El resultado buscado no es un ganador absoluto, sino una **frontera de compromiso**: qué método conviene bajo qué presupuesto. La pregunta estrella que la frontera debe poder responder: ¿alcanza L2P (o DualPrompt) a CODA-Prompt cuando recibe el mismo cómputo? Parte del trabajo es, además, documentar las discrepancias entre lo que describe cada paper, lo que implementa su repositorio oficial y lo que ejecuta Mammoth. Eso no es un obstáculo: es uno de los entregables.
+
+Principio rector de todas las decisiones de alcance: **el objetivo es acabar el TFG**. Ante la duda entre "más completo" y "cerrado y defendible", gana lo segundo.
+
+## 2. Qué entendemos por comparación justa
+
+Al final de la memoria habrá frases del tipo "CODA obtiene X y DualPrompt obtiene Y". Esa frase solo vale si la diferencia es atribuible al método y a nada más. De ahí las tres condiciones:
+
+**Controlada:** todo lo que no forma parte de la idea de ningún método es idéntico para los tres. **Fiel:** todo lo que sí forma parte de la idea de un método se respeta tal como su autor lo diseñó; unificar recetas crearía variantes que nadie publicó. **Documentada:** cada valor con su procedencia, de modo que otra persona pueda repetir el experimento.
+
+Tres ideas de fondo:
+
+- **No existe un "valor verdadero" que descubrir.** Cuando las fuentes chocan, el estándar no es adivinar, sino aplicar un procedimiento explícito, decidido antes de mirar los casos, igual para los tres métodos, y por escrito. Cualquier arbitrariedad residual de una convención declarada golpea a los tres por igual: lo que contamina no es la convención, es la inconsistencia silenciosa.
+- **El rigor está en la procedencia, no en dominar la teoría de cada parámetro.** "Valor según la receta original del autor, ver tabla" es una defensa cerrada. La mayoría de las decisiones las tomaron los autores; nosotros las documentamos.
+- **Comparación justa ≠ reproducción.** No necesitamos replicar las condiciones exactas de los papers; necesitamos condiciones comunes, con criterio y documentadas. Una desviación uniforme para los tres, registrada (ej. el batch por hardware), no contamina la comparación; solo cambia la distancia a las recetas y cómo se reporta.
+
+## 3. Los tres cubos
+
+**Cubo A — Entorno compartido.** Idéntico para los tres, decidido una sola vez (en la Fase D, no por cascada): backbone y checkpoint exacto —nombrado con su identificador, porque "ViT-B/16 ImageNet-21k" designa al menos dos ficheros distintos (21k puro vs 21k afinado en 1k) y esa diferencia mueve resultados—, dataset principal Split CIFAR-100 (10 tareas × 10 clases), orden de clases fijado por semilla y 5 semillas, augmentación y preprocesado, tamaño de batch (pendiente: sección 10), protocolo de evaluación (sin task-id, una sola cabeza sobre todas las clases vistas), buffer de memoria = 0 (declarado), hardware y forma de medir el coste. El dataset secundario Split ImageNet-R (10 tareas × 20 clases) pasa a **condicional, con default fuera** (sección 9).
+
+**Cubo B — Receta del método.** Lo que cada autor eligió como parte de su propuesta: longitud del prompt, pool, top-k, capas de inserción, optimizador, learning rate... No se unifica. Cada fila de decisión es (parámetro, método y, si difiere, dataset), y se resuelve con la cascada de la sección 5.
+
+**EJE — Presupuesto de entrenamiento.** El número de épocas por tarea deja de ser un valor heredado y se convierte en la palanca experimental: una escalera común de presupuestos, idéntica para los tres (sección 9). Los schedulers y todo lo ligado a la duración se auditan como filas obligatorias porque se mueven con la palanca.
+
+**El test para clasificar cualquier parámetro:** ¿algún autor lo eligió deliberadamente como parte de su propuesta? → cubo B. ¿Es escenario que los tres asumen y ninguno reclama como suyo? → cubo A. ¿Es duración o presupuesto de entrenamiento? → EJE. ¿Nadie lo menciona en ninguna fuente? → se trata como entorno, con su etiqueta de procedencia.
+
+## 4. En qué se apoya esto (y qué es convención nuestra)
+
+La literatura documenta **dos escuelas** de comparación justa:
+
+- **Escuela 1 — Framework común (la nuestra).** Ejecutar todos los métodos en un mismo codebase bajo un protocolo idéntico. Fundamento empírico: el mismo algoritmo produce resultados distintos según el codebase (Henderson et al., AAAI 2018). Práctica establecida: Masana et al. (TPAMI 2023) con FACIL; las librerías Avalanche, PyCIL/PILOT y el propio Mammoth existen para esto.
+- **Escuela 2 — Re-optimización con presupuesto igualado (descartada).** Re-tunear cada método con la misma búsqueda bajo protocolo común (Musgrave et al., ECCV 2020; Ferrari Dacrema et al., RecSys 2019; Lucic et al., NeurIPS 2018; Melis et al., ICLR 2018; Dodge et al., 2019; Bouthillier et al., 2021). Estándar de oro con cómputo abundante; inviable aquí. Se declara como decisión de alcance, igual que Ferrari Dacrema et al. dejaron la re-optimización "outside the scope".
+- **Normas de replicación (transversales).** Fijar versiones exactas, documentar toda desviación, consultar fuentes de los autores cuando el conflicto es material: checklist de NeurIPS (Pineau et al., JMLR 2021), ReScience C / ML Reproducibility Challenge, insignias ACM.
+- **Precedente del subcampo.** HiDe-Prompt (NeurIPS 2023) reproduce baselines desde implementaciones oficiales y estandariza el checkpoint (Sup-21K). CODA-Prompt (CVPR 2023) reimplementó L2P con prefix-tuning ("L2P++", "Deep L2P++") "for fair comparison", con rendimiento claramente superior al L2P original. Aviso: "L2P" no es una sola cosa; hay que verificar cuál implementa Mammoth.
+- **Entrenamiento con presupuesto.** Li et al., "Budgeted Training" (ICLR 2020): el schedule del learning rate debe adaptarse al presupuesto real de entrenamiento; truncarlo deja el LR alto y rinde peor. Es la referencia fuerte del default de scheduler (sección 9). Loshchilov & Hutter (SGDR) se cita solo como origen del cosine annealing — al verificarla, comprobar que se afirma exactamente lo que la fuente dice (es la variante con warm restarts). Prabhu et al. (CVPR 2023) respalda entrenar dentro del presupuesto fijado.
+
+**Honestidad sobre la base** (irá en la memoria): la regla "en conflicto sin explicación gana el paper" es **convención nuestra declarada**; el flag de sensibilidad es **extrapolación razonable** (Dodge; Bouthillier); registrar discrepancias en tabla tiene **precedente directo** (HiDe-Prompt). El dossier de investigación contiene las fuentes con pasajes localizados y un párrafo modelo; su numeración de casos es anterior a la canónica (sección 5) y hay que ajustarla al usarlo.
+
+## 5. La cascada de decisión (cubo B)
+
+Se aplica por fila (parámetro × método). Los casos van siempre con nombre además de número:
+
+1. **COINCIDEN** — paper y repo oficial especifican y coinciden → ese valor.
+2. **EXPLICADO** — especifican y discrepan, con explicación de los autores (tag de la época, changelog, issue, errata) → decide la explicación, citada. Si la versión de la época del paper coincide con el paper, la discrepancia del repo actual queda explicada como deriva posterior → este caso.
+3. **CONFLICTO→PAPER** — especifican y discrepan, sin explicación → valor del paper, por convención declarada; la fila se marca REVISAR y la discrepancia queda registrada. Justificación: objeto congelado y revisado por pares; el repo actual puede ser posterior a los números; "evaluamos cada método tal como fue publicado". (Repos de L2P/DualPrompt archivados = fuente congelada; verificar en Tarea 0.)
+4. **FUENTE_ÚNICA** — solo una fuente especifica → esa fuente, etiquetada SOLO_PAPER o SOLO_REPO. Será el caso más frecuente.
+5. **SIN_FUENTE** — ninguna especifica → default efectivo de Mammoth, etiquetado DEFAULT_MAMMOTH.
+
+Nota de historia: existió un "caso 5" antiguo (sensibilidad) que se convirtió en el flag S; su hueco lo ocupa SIN_FUENTE. Por eso los casos llevan nombre.
+
+**Flag S (sensibilidad; transversal, no es un caso).** Se adjunta a cualquier fila o hallazgo cuando hay sospecha de alto impacto, valores en conflicto muy alejados, o valor elegido no configurable en Mammoth. **Sin tope de propuestas:** Codex registra TODAS las que cumplan los criterios — un tope en el registro taparía problemas —, cada una con justificación, evidencia y severidad (ALTA/MEDIA/BAJA), presentadas ordenadas por severidad. El presupuesto vive en la ejecución, no en el registro: en la reunión de Fase B se prioriza la lista y se decide cuáles pasan a Fase C; las ratificadas que no quepan en el presupuesto de cómputo no se descartan en silencio — se reportan en la memoria como sensibilidades no testadas (limitación declarada). Lo que sigue prohibido es investigar el impacto de todos los parámetros por sistema: eso sería la escuela 2 por la ventana.
+
+**Grupos acoplados (columna "grupo", separada del flag S).** Parámetros que los autores buscaron juntos o que dependen entre sí: p. ej. G-OPT (learning rate, scheduler, batch, duración) o G-PROMPT (longitud, pool, top-k, capas). Reglas: (a) si una fila de un grupo cae en CONFLICTO→PAPER, todos los miembros del grupo también en conflicto se resuelven desde el paper **en bloque**; (b) los huecos del grupo los rellena FUENTE_ÚNICA desde el código — inevitable: no se puede sacar del paper lo que el paper no tiene —, pero todo grupo cuyo valor propuesto acabe mezclando fuentes recibe **automáticamente** la marca GRUPO_MIXTO y entra en la cola de revisión, donde se decide grupo a grupo: aceptar documentado o comprobación A/B en Fase C; lo aceptado sin comprobar se reporta como limitación; (c) si el paper no reporta ningún miembro, el grupo entero sale del código; (d) los acoplamientos también existen dentro de Mammoth y se anotan igual.
+
+**Filas obligatorias pre-marcadas** (entran en la auditoría con candidatura a S y/o grupo desde el arranque, no como filas normales): el scheduler de CODA y su dimensionado T; la propagación de n_epochs (qué arrastra el cambio de duración: warmup, criterios de parada, cálculos derivados); el checkpoint; el tipo de prompting del L2P de Mammoth; el enmascarado de logits; el batch y el soporte de acumulación de gradiente.
+
+## 6. Discrepancias de comportamiento
+
+Dos clases de diferencia entre fuentes. La de **valor** (0.005 vs 0.001) cabe en una celda. La de **comportamiento** no: los números coinciden pero la maquinaria hace otra cosa — tipo de prompting (prefix vs prompt-tuning), cálculo de la query, enmascarado de logits en entrenamiento, manejo de la cabeza entre tareas, inicializaciones, trucos. Van a fichero aparte (`auditoria/comportamiento.md`): descripción, evidencia en ambos lados, ¿configurable en Mammoth?, propuesta de S si procede. Casi todo se detecta **leyendo**; lo que no, se etiqueta NO_DETERMINABLE_ESTATICO con propuesta de script mínimo. Durante la auditoría no se corrige nada: solo se documenta.
+
+## 7. Cómo trabajamos: Codex, chats y verificación
+
+**Dos modos con Codex.** Modo L (lectura): papers + repos oficiales + Mammoth; entregables como ficheros en `auditoria/`, nunca solo texto de chat. Modo E (ejecución): Codex commitea un script mínimo → pull en el servidor → ejecutar → devolver logs → Codex analiza.
+
+**Reglas de oro para Codex (van en todos los prompts).** Prohibido inventar o rellenar con conocimiento general. Toda celda con evidencia localizable: paper → sección/tabla/apéndice; repos → SHA + fichero + línea; Mammoth → SHA + fichero + línea + cadena de resolución completa (default global → config del modelo → config del dataset → CLI), indicando qué nivel fija el valor efectivo. Etiquetas de ausencia: NO_ENCONTRADO / NO_APLICA / NO_DISPONIBLE / NO_CONFIGURABLE. Valores derivados: DERIVADO + fórmula. Las ambigüedades se registran, no se resuelven en silencio. Reimplementaciones no oficiales (p. ej. JH-LEE-KR) solo como evidencia auxiliar en observaciones. En Fase A, solo lectura, con la única excepción de los scripts entregables de la Tarea 0.
+
+**Qué merece fila (criterio y embudo).** Un parámetro tiene fila si y solo si: (1) aparece en el setup experimental o apéndices del paper, **o** es configuración del experimento en el repo oficial, **o** es configurable en Mammoth y aplica a estos tres modelos, sus datasets o el bucle de entrenamiento/evaluación; **y además** (2) puede afectar plausiblemente a los resultados o al coste. Lo que solo afecta a infraestructura (logging, rutas, num_workers, device, guardado) va a una lista agrupada al final, sin fila ni evidencia línea a línea. En caso de duda: fila, marcada LOW. **Sin objetivos numéricos de filas**; en su lugar, informe de embudo: Codex reporta cuántos parámetros examinó, cuántos pasaron el filtro y cuántos fueron agrupados, con motivos de exclusión por categoría. Un reparto raro se detecta a ojo sin haber anclado cifras.
+
+**Codex no decide.** Extrae, localiza, clasifica y propone. Decisiones humanas, finitas y enumeradas: las convenciones de este documento, la cola de revisión, el cubo A, el eje, la lista final de flags.
+
+**Chats.** Desechables; la memoria del proyecto son los ficheros. Fase A en chats paralelos (uno por modelo) tras una Tarea 0 que fija lo común. Reutilizar un chat para trabajo de su mismo modelo está bien mientras responda con calidad; cuando desvaríe, se mata y se abre otro alimentado con los ficheros.
+
+**Gobernanza de la información (D30).** (1) `bitacora.md` en la raíz, append-only: una entrada por incidente, hallazgo o acción — fecha, resumen de 2–4 líneas, ruta a la evidencia, estado (RESUELTO / PENDIENTE→reunión / DECIDIDO→Dxx). (2) Todo bloque de trabajo termina con un **parte de novedades** (≤1 página, con punteros a ficheros), escrito por el chat que hizo el trabajo: es lo único que viaja al chat maestro. (3) El maestro pide **extractos dirigidos** (fichero + sección, o lee lo justo de un paquete de evidencias), nunca carpetas enteras. (4) **Kit de traspaso** para abrir un chat maestro nuevo: PLAN_MAESTRO + bitacora + último parte (+ cola_revision y embudos si toca reunión). (5) Ningún documento valioso vive solo en un chat: se committea a TFG (p. ej. `infra/servidor.md`). No existe un "modelo que lo analice todo": Codex destila a tablas, colas, embudos y partes; el maestro decide sobre destilados; el humano verifica por muestreo.
+
+**El ciclo (cómo fluye la información, siempre igual):** (1) el maestro decide → Dxx en este plan → y emite prompts; (2) el usuario ejecuta (prompts a Codex, comandos en el servidor); (3) Codex escribe SIEMPRE en los ficheros del mapa — nada se queda solo en un chat — y cierra cada tarea con bitácora + parte; (4) al maestro solo vuelve el parte y los extractos dirigidos que pida; (5) el maestro convierte lo acordado en Dxx y en el siguiente prompt. Las reuniones no crean documentos nuevos: producen Dxx, un prompt para que Codex escriba la columna "valor final" (con notas OBS), y una entrada de bitácora.
+
+**Mapa de documentos (CERRADO — D34: crear un tipo nuevo exige una Dxx que modifique este mapa):**
+
+| Documento | Quién escribe | Quién lee | Cuándo se actualiza |
+|---|---|---|---|
+| `PLAN_MAESTRO.md` | El chat maestro (entrega el fichero; el usuario lo sincroniza y commitea) | Todos los chats (kit) | Nueva Dxx, cambio de fase o de estado |
+| `bitacora.md` | Quien hace el trabajo: Codex al cerrar cada tarea; el usuario (o Codex por dictado suyo) tras acciones de servidor | Maestro (kit) | Cada incidencia/hallazgo/acción; append-only |
+| `prompts_fase_X.md` | Maestro | Usuario → Codex | Al abrir cada fase |
+| `infra/servidor.md` | Codex / chat de infraestructura | Cualquier chat que opere el servidor | Cambios de entorno o procedimiento |
+| `auditoria/fuentes.md`, `plantilla.md` | Codex (Tarea 0) | Todos los chats de auditoría | Solo con Dxx que cambie fuentes o formato |
+| `auditoria/valores_*.md` (+ Notas OBS), `comportamiento.md`, `entorno.md` | Codex | Maestro por extractos; usuario por muestreo | Fase A; la columna "valor final" la escribe Codex por prompt del maestro tras cada reunión |
+| `auditoria/cola_revision.md` | Codex | Maestro (reunión) | Nuevos ítems; se cierran con referencia a su Dxx |
+| `auditoria/piloto0.md` | Codex | Usuario (servidor) | Cambios en lanzadores o resultados del piloto |
+| `configuracion_final.md` | Codex (desde la columna valor final, Fase D) | Usuario (matriz) y memoria | Al congelar la Fase D |
+| `results/` + `runs.csv` | Scripts en el servidor (lanzados por el usuario) | Script de agregación | Cada corrida |
+| `mammothV2/scripts_tfg/` | Codex (rama tfg-auditoria) | Servidor | Cuando una fase requiera un script |
+| `.bib` | Codex / usuario | Memoria | Al añadir referencias |
+
+**Cláusula estándar de cierre (se pega al final de TODO prompt de Codex a partir de ahora):** "CIERRE OBLIGATORIO: (1) todo hallazgo, incidencia o cambio va a su fichero del Mapa de documentos — nada se queda solo en el chat; (2) entrada(s) en bitacora.md; (3) PARTE DE NOVEDADES ≤1 página con punteros a ficheros; (4) commit."
+
+**Verificación (la condición del tribunal).** Todo valor trazable a paper+sección o repo+SHA+fichero:línea. Muestreo personal: 8–10 celdas al azar comprobadas con mis ojos; una sola falla invalida la confianza y la auditoría se repite con más dureza. Regla absoluta: **todo lo que se cite textualmente en la memoria lo verifico yo en persona.** La frase de la defensa: no delegué las decisiones; delegué la extracción, con reglas fijadas por mí, y verifiqué por muestreo y en todo lo citado.
+
+## 8. Las fases
+
+### Fase A — Auditoría leyendo (5 prompts de Codex) · con Piloto-0 en paralelo
+
+1. **Tarea 0** (chat propio, abierto en la raíz `Documentos/TFG/`): verificar y completar el workspace (git init de TFG con .gitignore; verificación de procedencia de `mammothV2/` contra aimagelab/mammoth y creación de la rama `tfg-auditoria`; `l2p/` y `codaprompt/` clonados o verificados y fijados en su versión de referencia; retirada de la carpeta `dualprompt/` sobrante; descarga de los papers como fuente LaTeX + PDF a `papers/`), fijar SHAs y versiones del entorno, crear `auditoria/plantilla.md` — la autoridad de formato que los demás prompts referencian: cascada, flags, grupos, criterio de fila, formato de evidencia y las **12 columnas** de toda tabla: parámetro | ámbito | cubo (A/B/EJE) | paper (valor+evidencia) | repo oficial (valor+evidencia) | Mammoth (valor+evidencia+cadena) | caso | grupo | valor propuesto | **valor final** (vacío hasta la revisión humana de las Fases B–D; Codex nunca lo escribe) | flags | observaciones (nota corta o código OBS-nn que remite a la sección Notas al final del fichero), `mammothV2/scripts_tfg/dump_config.py` — committeado en la rama de trabajo para que viaje al servidor con un pull — (volcado de configuración efectiva, diseñado para ejecutarse **dos veces, con E=1 y E=20**, y comparar el diff: todo lo que se derive de las épocas aflora ahí sin entrenar) y `auditoria/piloto0.md` (los comandos exactos del Piloto-0).
+2–4. **Prompts L2P, DualPrompt y CODA** (tres chats paralelos, plantilla idéntica): tabla del método (cubo B con cascada), discrepancias de comportamiento del método, evidencia del método para filas comunes (cubo A y EJE) sin proponer valor, filas obligatorias pre-marcadas, informe de embudo.
+5. **Consolidación**: tabla de entorno (`entorno.md`) juntando la evidencia común y señalando dónde los originales no coinciden entre sí; fusión de comportamiento y colas; veredicto explícito de la **dependencia dura** (¿n_epochs es parámetro limpio de CLI/config en los tres y a qué se propaga? — todo el eje descansa en esto); embudo global.
+
+Entregables: `auditoria/fuentes.md`, `plantilla.md`, `valores_l2p.md`, `valores_dualprompt.md`, `valores_coda.md`, `entorno.md`, `comportamiento.md`, `cola_revision.md`, `piloto0.md` y, en la rama `tfg-auditoria` de mammothV2, `scripts_tfg/dump_config.py`.
+
+**Piloto-0 (en paralelo, no espera a la auditoría).** Con la CLI existente de Mammoth, sin tocar código: **una época por tarea, las 10 tareas, hasta generar el fichero de métricas finales**, por método, en CIFAR-100 (y, si el dataset está disponible, una pasada equivalente en ImageNet-R para estimar su coste). Responde: ¿arranca?, ¿revienta algo?, ¿cuánto cuesta una época-tarea y cuánto la evaluación por tarea?, ¿cuánta VRAM?, ¿se confirman los órdenes de magnitud provisionales (sección 9)? Sus tiempos alimentan el dimensionado de la matriz. Tras congelar en la Fase D, **re-piloto barato** si cambió checkpoint o batch/acumulación: los tiempos del Piloto-0 valen para la configuración con la que corrió.
+
+### Fase B — Comprobar que la tabla dice la verdad (3 comprobaciones)
+
+1. **Doble volcado.** Ejecutar `dump_config.py` con E=1 y con E=20; Codex (chat de consolidación) reconcilia la columna Mammoth contra lo impreso y usa el diff para confirmar la propagación de n_epochs. Corrige toda celda que no cuadre, anotando la corrección.
+2. **Muestreo personal** de 8–10 celdas (regla de la sección 7).
+3. **Reunión** (con Claude): resolver leyendo lo decidible — CONFLICTO→PAPER en bloque por grupos, cubos dudosos —, revisar uno a uno los GRUPO_MIXTO, y priorizar la lista completa de flags S por severidad decidiendo cuáles pasan a Fase C; lo ratificado que exceda el presupuesto se registra como sensibilidad no testada para la memoria.
+
+### Fase C — Resolver los flags ejecutando (Modo E, presupuestada)
+
+Solo lo priorizado en la reunión. Por flag: dos corridas cortas idénticas salvo en lo dudoso (si es grupo, grupo entero versión-paper vs versión-código), 1 semilla, presupuesto pequeño. Tope duro **de ejecución**: 2–4 experimentos (ampliable solo en la reunión, con el calendario delante); todo flag o grupo mixto ratificado y no ejecutado queda documentado como limitación, nunca descartado en silencio. **Cola pre-registrada:** en cabeza va lo que la auditoría destape sin convención ni evidencia (favoritos a priori: checkpoint, tipo de prompting del L2P de Mammoth); el A/B de scheduler truncado-vs-recalculado queda pre-registrado **al final** de la cola — confirma una convención ya argumentada y los huecos son escasos.
+
+### Fase D — Congelar y diseñar
+
+Con la tabla cerrada: decidir el cubo A con evidencia delante (checkpoint el primero), fijar la escalera definitiva y la matriz (sección 9), resolver el batch (sección 10), fijar métricas (sección 11), producir `configuracion_final.md` por método y dataset — se genera volcando la columna valor final de las tablas — (≈ capítulo de configuración experimental de la memoria) y el **script de agregación de resultados** (sección 12), que es criterio de salida de esta fase. Re-piloto si procede.
+
+### Después
+
+Ejecución de la matriz mientras se redactan en paralelo los capítulos que no dependen de resultados; luego resultados, frontera y discusión de discrepancias. El NMC (sección 11) se lanza cuando la matriz ya esté corriendo.
+
+**Regla de los tests.** Todo test cuelga de una pregunta y una fase: doble volcado → "¿la tabla dice la verdad sobre Mammoth y qué arrastra n_epochs?" (B); A/B cortos → "¿qué valor en este flag?" (C); Piloto-0 → "¿funciona, cuánto cuesta, cabe la matriz?" (paralelo a A); re-piloto → "¿siguen valiendo los tiempos con la config congelada?" (tras D). No hay tests sin pregunta asignada.
+
+## 9. El eje de presupuesto y la matriz
+
+**Por qué no basta la receta de cada uno:** con un punto por método no se distingue "CODA es mejor método" de "CODA recibió 4× más cómputo"; las curvas no se solapan en el eje X y la pregunta del TFG queda sin datos.
+
+**Escalera común de épocas por tarea, idéntica para los tres: {1, 5, 20}.** No fracciones de la receta propia (no producen presupuestos coincidentes entre métodos, que es justo lo que se busca). Ventaja clave: la receta original ya es un peldaño (5 para L2P/DualPrompt, 20 para CODA) — ese punto se etiqueta **"receta original"** y los demás como **variantes de presupuesto, nunca como "el método"**. E=10 no se planifica; solo entra si el Piloto-0 demuestra holgura sobrante. Matiz por escrito: misma época no significa mismo coste — da igual, porque el eje X del gráfico final es **coste medido**, las épocas son solo la palanca (aunque la evidencia provisional dice que el coste por época-tarea es casi idéntico entre los tres: ~2 min; reconfirmar en Piloto-0).
+
+**Scheduler (default condicional).** CODA usa cosine decay dimensionado para una duración total T. Correr a 5 épocas con T=20 deja el LR a ~85% de su valor inicial al terminar: se mide un artefacto del corte, no el método a ese presupuesto, y el sesgo penaliza sistemáticamente a CODA en los peldaños bajos. Default: **recalcular T a la duración real del peldaño** — mide "el método configurado para el presupuesto B", que es la pregunta del TFG y lo que haría cualquier practicante (Li et al., ICLR 2020; práctica estándar del cosine annealing). Condicional a que la auditoría confirme cómo se dimensiona T en Mammoth (¿derivado de n_epochs o fijado aparte?, ¿por-tarea o global?, ¿warmup ligado?); si el código contradice los supuestos, la decisión vuelve a la mesa con la evidencia. Criterio uniforme para los tres; la asimetría (L2P/DualPrompt usan LR constante) se documenta explícitamente. A/B truncado-vs-recalculado: pre-registrado al final de la cola de Fase C.
+
+**Extremos de la escalera, interpretación anticipada.** E=1: pueden aparecer comportamientos degenerados (warmups incompletos, claves de prompt apenas entrenadas) — no es un fallo, es el dato del régimen de bajo presupuesto, pero hay que saber qué ocurre para interpretar el punto. E=20 en L2P/DualPrompt: anticipar sobreajuste o saturación; se reporta como variante de presupuesto.
+
+**Dependencia dura (obligatoria en la auditoría):** todo el eje descansa en que n_epochs sea un parámetro limpio de CLI/config en Mammoth para los tres métodos. La auditoría responde por método: ¿es limpio?, ¿a qué se propaga (T, warmup, cálculos derivados)?, ¿algo más codifica duración? Comprobación empírica gratis: el diff del doble volcado E=1 vs E=20.
+
+**Matriz principal (estimación PROVISIONAL, no congelar):** CIFAR-100 × {1,5,20} × 3 métodos × 5 semillas = 45 corridas. Con los datos del intento anterior (solo orden de magnitud; D23): ~27 h por semilla → **~134 h ≈ 5,6 días**; por peldaño (×5 semillas): E=1 ≈ 5 h · E=5 ≈ 26 h · E=20 ≈ 103 h. E=10 sumaría ~52 h. La estimación es lineal en épocas pero la evaluación por tarea es coste fijo, así que E=1 costará algo más de lo estimado. Los números definitivos salen del Piloto-0 y del re-piloto.
+
+**Semillas: 5, firme** (decisión del usuario; respaldo: es lo que usa CODA-Prompt en sus tablas principales).
+
+**Orden de recorte, pre-registrado para no deliberar en mitad de la ejecución:** 1.º ImageNet-R; 2.º peldaños de la escalera; 3.º semillas (último recurso). **Prohibido recortar el peldaño E=20 de L2P/DualPrompt** aunque sea el más caro (~67 h de las 134): es la única celda que responde la pregunta estrella — el gasto más informativo de toda la matriz.
+
+**ImageNet-R: fuera por defecto, condicional al Piloto-0, criterio restrictivo.** Solo entra si los números demuestran que cabe con holgura sin comprometer la matriz de CIFAR-100. No se mantiene "abierto por si acaso": un dataset a medias no aporta nada y quema la GPU de la matriz principal. Redacción de la limitación para la memoria (precisa, es lo que preguntaría un tribunal): lo que se pierde **no es capacidad de discriminar** — CIFAR-100 en E=1 y E=5 separará bien a los tres, porque el régimen de bajo presupuesto es donde se abren las diferencias — sino **generalidad**: con un solo dataset no puede afirmarse que el orden de la frontera se mantenga en otro dominio. Se declara junto al caveat, ya documentado en el dossier, del solapamiento de CIFAR/ImageNet con el preentrenamiento del ViT (los números absolutos se leen con cautela).
+
+## 10. El batch: 128 cerrado; acumulación vs 64 real pendiente de Q1
+
+Hecho duro: en la RTX 3060 (12 GB), batch 128 da out-of-memory; 64 cabe (comprobado). Batch 128: **descartado y CERRADO** (D31 rev. 3-ago) — OOM con doble evidencia (corridas antiguas registradas aquí como hecho duro, y piloto v1 en la rama nueva) y, decisivo, CODA-Prompt es el método de mayor consumo de memoria: un batch que como mucho cabría al límite para L2P no puede ser el batch único de los tres (D12). No se rediscute. Evidencia preliminar del dossier: los tres papers reportarían 128 — lo confirma la fila de la tabla de entorno con su evidencia. Las dos opciones restantes, a decidir en la reunión con la respuesta a la consulta Q1 (soporte de acumulación) delante:
+
+- **(a) Acumulación de gradiente:** micro-batch 64 × 2 = batch efectivo 128. Preserva las recetas (el LR está acoplado al batch — G-OPT — y no se toca); con LayerNorm (sin BatchNorm) es en la práctica equivalente. Pregunta obligatoria de la auditoría: ¿soporta Mammoth acumulación para estos tres métodos y es configurable?
+- **(b) Batch 64 real, uniforme:** desviación uniforme documentada como limitación de hardware, con flag S por el acoplamiento con el LR.
+
+En ambos escenarios el trato es idéntico para los tres; lo que cambia es la distancia a las recetas y cómo se reporta.
+
+## 11. Métricas de precisión y coste
+
+**Precisión:** accuracy final media (A_N), accuracy incremental media (AIA) y medida de olvido; media ± desviación estándar sobre las 5 semillas/órdenes.
+
+**Coste — batería garantizada (siempre se mide):** tiempo de reloj por corrida separando entrenamiento y evaluación; parámetros entrenables; VRAM pico. Con el hardware declarado, esto ya sostiene la frontera.
+
+**Eje X principal de la frontera: FLOPs de entrenamiento analíticos**, derivados de los FLOPs de inferencia por imagen (que se calculan una vez por método con una librería de conteo, incluyendo el forward extra de la query en L2P/DualPrompt y la composición atencional de CODA). Derivación declarada: FLOPs de un paso ≈ F_query + 2·F_forward_principal — el backward computa gradientes de activación a través de (casi) toda la red pero no gradientes de pesos del backbone congelado. **Factor uniforme para los tres, sin descuentos por método:** los tres insertan prompts en capas superficiales (L2P en la entrada misma), así que el gradiente recorre la red entera en todos; una fórmula con descuentos por profundidad favorecería artificialmente a alguien. **Criterio de aceptación (en el piloto):** la razón FLOPs-derivados / tiempo-medido debe ser similar entre los tres métodos; si uno se desvía mucho, hay un error en la derivación y se cae al plan B. **Plan B declarado:** eje X = tiempo de reloj con hardware declarado (defendible; el dossier ya recoge que el wall-clock se reporta con cautela). Épocas/iteraciones se reportan como **descriptor del presupuesto, no como métrica de coste** (con batch común, las iteraciones son función determinista de las épocas: la palanca renombrada).
+
+**Baseline-suelo NMC** (clasificador de prototipos sobre el ViT congelado, sin entrenamiento): se intenta cuando la matriz ya esté corriendo; contextualiza toda la frontera y tiene respaldo fuerte en el dossier. **Si al implementarlo se complica, cae sin discusión:** es contexto, no resultado principal.
+
+## 12. Infraestructura de resultados y bibliografía
+
+- **Workspace único** `Documentos/TFG/` (repo git propio; remoto en GitHub recomendado): en la raíz, `PLAN_MAESTRO.md`, `prompts_fase_A.md`, `bitacora.md` (registro append-only de incidencias y hallazgos, D30), `auditoria/` (entregables de la auditoría) y `papers/` (fuente LaTeX + PDF de cada paper, con versión de arXiv registrada); dentro, los TRES repos ignorados por el git de TFG: `mammothV2/` (repo independiente en github.com/alexmf10/mammothV2, con base verificada contra un commit oficial de aimagelab/mammoth y rama de trabajo `tfg-auditoria`), `l2p/` (google-research/l2p — un solo repo que cubre L2P **y** DualPrompt) y `codaprompt/` (GT-RIPL/CODA-Prompt), fijados a su versión de referencia. La carpeta `dualprompt/` no es fuente y se retira. El repo antiguo (`Documents/Mammuth`, github.com/alexmf10/mammoth) queda en **cuarentena** fuera del workspace: jamás es fuente (D14). **Regla de tránsito:** lo que se ejecuta viaja por la rama de mammothV2 (scripts en `mammothV2/scripts_tfg/`, push → pull en el servidor); lo que se lee vive en TFG (auditoría, plan, papers).
+- Nomenclatura de resultados crudos: `results/{método}_{dataset}_e{épocas}_s{semilla}/` + un `runs.csv` acumulativo (run_id, commit, hash de la config, estado — terminó bien / falló al ejecutar / falló al parsear —, ruta de métricas).
+- **Script de agregación** que produce las tablas y curvas de la memoria desde los ficheros de métricas: entregable obligatorio **antes** de lanzar la matriz (criterio de salida de la Fase D). Con 45 corridas no se copian números a mano.
+- El CSV de estado se **re-prueba en el Piloto-0** sobre la rama nueva: que funcionara en el intento anterior no es evidencia sobre un repositorio distinto.
+- El `.bib` se empieza **hoy**, con las referencias del dossier metodológico ya cargadas (y las nuevas: Li et al. 2020; SGDR con la cautela de D27).
+
+## 13. Registro de decisiones
+
+- **D1.** Escuela 1: framework común, valores heredados, cero re-optimización; declarada como decisión de alcance con las citas del dossier.
+- **D2.** Tres cubos: entorno / receta / presupuesto como eje. (Operacionalización del eje: D15.)
+- **D3.** Cascada de cinco casos con nombres; decisión por fila (parámetro × método) en cubo B; el cubo A se decide una vez, en Fase D.
+- **D4.** En CONFLICTO→PAPER gana el paper, por convención declarada (convención propia fundamentada, no consenso del campo).
+- **D5 (rev. v2.1).** Flag S transversal y **sin tope de propuestas**: Codex registra todas las que cumplan criterios, con severidad (ALTA/MEDIA/BAJA), justificación y evidencia; el tope (2–4) aplica solo a la ejecución en Fase C; lo ratificado no ejecutado se reporta como sensibilidad no testada. *Por qué:* limitar el registro taparía problemas; limitar la ejecución protege el calendario.
+- **D6 (rev. v2.1).** Columna "grupo" separada del flag S; decisión en bloque por grupo en conflicto; huecos vía FUENTE_ÚNICA; **todo grupo con fuentes mezcladas se marca GRUPO_MIXTO automáticamente y pasa por revisión humana** (aceptar documentado o A/B en Fase C); grupo sin paper → entero del código. *Por qué:* la mezcla es inevitable por fuentes incompletas; lo que se garantiza es que ninguna pase inadvertida.
+- **D7.** Discrepancias de comportamiento en fichero propio; solo documentar, nunca corregir en auditoría.
+- **D8.** Codex no decide: extrae, clasifica, propone; evidencia obligatoria; etiquetas de ausencia; reimplementaciones no oficiales solo auxiliares.
+- **D9.** Fase A en 5 prompts: Tarea 0 + tres chats paralelos + consolidación; plantilla común previa.
+- **D10.** Verificación: volcado de configuración; muestreo personal 8–10 celdas (una falla → repetir); todo lo citado en la memoria, verificado en persona.
+- **D11.** Los ficheros son la memoria del proyecto; los chats, desechables; nada vale más que este documento y `auditoria/`.
+- **D12.** Comparación justa ≠ reproducción: desviaciones uniformes documentadas son aceptables.
+- **D13.** Buffer/memoria = 0 (rehearsal-free), declarado.
+- **D14.** Trabajo antiguo descartado como fuente; solo pista a contrastar.
+- **D15.** Eje operacionalizado: escalera común de épocas por tarea {1, 5, 20}, idéntica para los tres; E=10 solo si el piloto demuestra holgura. *Por qué:* peldaños coincidentes (comparabilidad) y las recetas originales son peldaños (fidelidad); refina D2 — con batch común, épocas ≡ iteraciones como palanca; el eje X reportado es coste medido.
+- **D16.** El peldaño de la receta se etiqueta "receta original"; los demás se reportan como variantes de presupuesto, nunca como "el método".
+- **D17.** Scheduler: recalcular T a la duración del peldaño — **default condicional** a que la auditoría confirme la propagación n_epochs→T en Mammoth; criterio uniforme; asimetría con LR constantes documentada; A/B truncado-vs-recalculado pre-registrado al final de la cola de Fase C. *Por qué:* mide el método configurado para el presupuesto (pregunta del TFG); Li et al. 2020; los huecos de Fase C son para lo que no tiene convención ni evidencia.
+- **D18.** Dependencia dura elevada a obligatoria: auditar si n_epochs es CLI/config limpio en los tres y a qué se propaga; comprobación empírica con doble volcado E=1 vs E=20 y diff.
+- **D19.** Semillas = 5, firme. *Por qué:* decisión del usuario; respaldo en las tablas principales de CODA-Prompt.
+- **D20.** Matriz principal CIFAR-100 × {1,5,20} × 3 × 5 (45 corridas; ~134 h provisionales). Orden de recorte pre-registrado: 1.º ImageNet-R, 2.º peldaños, 3.º semillas; prohibido recortar E=20 de L2P/DualPrompt. *Por qué:* esa celda responde la pregunta estrella; el orden evita deliberar en mitad de la ejecución.
+- **D21.** ImageNet-R: fuera por defecto, condicional al Piloto-0 con criterio restrictivo; la limitación se redacta como pérdida de **generalidad** (no de discriminación) + caveat de solapamiento con el preentrenamiento.
+- **D22.** Piloto-0 en paralelo a la Fase A (CLI existente, sin tocar código → compatible con solo-lectura): 1 época/tarea × 10 tareas hasta el fichero de métricas, por método (+ estimación ImageNet-R si está disponible); re-piloto barato tras congelar en D si cambian checkpoint o batch. *Por qué:* si la matriz no cabe, hay que saberlo antes de gastar dos semanas.
+- **D23.** Los tiempos del intento anterior: solo orden de magnitud para dimensionado preliminar y contraste con el Piloto-0; nunca fuente de decisiones ni se congelan en el plan (coherente con D14).
+- **D24.** Criterio de fila: (aparece en setup del paper ∨ config del repo oficial ∨ configurable relevante en Mammoth) ∧ afecta plausiblemente a resultados o coste; infraestructura → lista agrupada; en duda → fila LOW; **sin rango numérico objetivo**; control por informe de embudo (examinados / con fila / agrupados, con motivos). *Por qué:* un rango se lee como objetivo y sesga el triaje; el embudo controla el proceso sin anclar cifras.
+- **D25.** Coste: eje X principal = FLOPs de entrenamiento analíticos derivados de los de inferencia, con factor de paso uniforme y declarado (≈ F_query + 2·F_forward), **sin descuentos de backward por método** (los tres insertan en capas superficiales; el gradiente recorre toda la red también en L2P). Validación: razón FLOPs/tiempo similar entre los tres en el piloto; desviación grande → error de derivación → plan B (wall-clock con hardware declarado). Acompañantes siempre: wall-clock train/eval, parámetros entrenables, VRAM pico. Épocas/iteraciones = descriptor, no métrica.
+- **D26.** NMC baseline-suelo: se intenta con la matriz ya corriendo; si se complica, cae sin discusión (contexto, no resultado).
+- **D27.** Citas del scheduler: Li et al. (Budgeted Training, ICLR 2020) como referencia fuerte; Loshchilov & Hutter (SGDR) solo como origen del cosine annealing, verificando en persona que se afirma lo que la fuente dice (regla D10).
+- **D28.** Infraestructura: nomenclatura `results/...` + `runs.csv`; script de agregación como criterio de salida de Fase D; CSV de estado re-probado en Piloto-0; `.bib` desde hoy con el dossier cargado.
+- **D29 (rev. v2.3).** Workspace único `Documentos/TFG/` como repo git propio; dentro, TRES repos fijados e ignorados por su git (no cuatro: google-research/l2p contiene L2P y DualPrompt): `mammothV2/` (repo independiente alexmf10/mammothV2, base verificada contra un commit oficial de aimagelab/mammoth, rama `tfg-auditoria`), `l2p/` y `codaprompt/`. La carpeta `dualprompt/` se retira como fuente. El repo antiguo (`Documents/Mammuth`, alexmf10/mammoth) queda en cuarentena fuera del workspace: jamás es fuente (D14). Los scripts ejecutables viajan por la rama de mammothV2 (`mammothV2/scripts_tfg/`); los documentos viven en TFG. Papers en `papers/` como fuente LaTeX + PDF, con versión registrada. *Por qué:* un solo lugar para todo (petición del usuario) sin cambiar el flujo local→GitHub→servidor ya rodado; la verificación de procedencia sustituye al fork; la fuente LaTeX hace las citas de sección verificables con exactitud.
+- **D30.** Gobernanza de la información: bitácora append-only + parte de novedades al cierre de cada bloque + extractos dirigidos + kit de traspaso de chat maestro + ningún documento valioso vive solo en un chat. *Por qué:* impide la dispersión entre chats que hundió los intentos 1 y 2; el maestro decide sobre destilados verificables, no sobre carpetas.
+- **D31 (rev. 3-ago).** Batch 128 **descartado y cerrado**: OOM con doble evidencia (corridas antiguas, hecho duro de §10, y piloto v1 en la rama nueva) y argumento decisivo de uniformidad — CODA-Prompt es el método de mayor consumo y el batch es único para los tres (D12). El reintento diagnóstico propuesto el 3-ago queda retirado: reabrió un hecho registrado sin declararlo, contra la regla de reapertura (D34). Árbol restante, a resolver en la reunión con la respuesta a Q1: si Mammoth soporta acumulación configurable para los tres → micro-batch 64×2 (batch efectivo 128) uniforme; si no → 64 real uniforme con flag S en G-OPT. La limpieza de los procesos GPU ajenos sigue siendo recomendable, pero como higiene para medir tiempos limpios, no como test de batch.
+- **D32 (rev. 3-ago).** Piloto-0 v2: lanzadores POR MÉTODO independientes (un fallo no bloquea al resto); **batch 64** (el que cabe; sus tiempos valen para las dos ramas de D31, porque la acumulación 64×2 procesa las mismas imágenes con el mismo micro-batch); L2P y DualPrompt a E=1; CODA a E=2 por la aserción K>1 de su CosineSchedule, derivando el coste por época-tarea; el piloto solo cuenta como cumplido con bucle completo y fichero de métricas por método. El intento v1 queda como evidencia de infraestructura, no como piloto. La matriz final se lanza SIEMPRE con la `configuracion_final` derivada de la columna valor final, nunca con `--model_config best/default` en bloque.
+- **D33.** Hallazgos del volcado doble (con evidencia en el paquete del 3-ago): la propagación de n_epochs es limpia — solo cambian n_epochs y, en CODA, `custom_scheduler.K` (K=n_epochs, construido en begin_task ⇒ schedule POR TAREA) → el recalculado de D17 es automático en Mammoth para CODA. Límite conocido del volcado: no construye el modelo ni llama a begin_task, así que no detecta fallos de esa etapa (para eso está el piloto, como se demostró). El peldaño mínimo de la escalera queda EN REVISIÓN para la reunión: default propuesto {2, 5, 20} (uniforme, cero cambios de código, anclas de receta intactas) frente a parchear el scheduler para K=1.
+- **D34.** (a) **Mapa de documentos cerrado** (tabla de la sección 7): el universo de documentos del proyecto es ese y solo ese; crear un tipo nuevo exige una Dxx que modifique el mapa. (b) **Regla de reapertura:** ninguna decisión Dxx ni hecho registrado se rediscute sin citarlo explícitamente ("propongo reabrir D-X / §Y por la evidencia Z"); si un chat — incluido el maestro — lo rediscute sin citar, se ignora su propuesta y se considera señal de deterioro que motiva el traspaso. (c) **Cláusula estándar de cierre** (sección 7) obligatoria al final de todo prompt de Codex. *Por qué:* elimina la sensación (y el riesgo) de mecanismos improvisados: todo lo que existe está en el mapa, y todo lo cerrado permanece cerrado salvo reapertura declarada.
+
+## 14. Pendientes, con dueño y momento
+
+- **Cubo A completo** (checkpoint el primero; augmentación, batch/acumulación, protocolo): Fase D, con la tabla de entorno delante.
+- **Escalera definitiva y matriz final:** Fase D, con los tiempos del Piloto-0 (y re-piloto si procede).
+- **ImageNet-R dentro/fuera:** con el Piloto-0 y el calendario delante; criterio restrictivo.
+- **Lista definitiva de flags S:** reunión de Fase B (cola de Fase C pre-ordenada según D17).
+- **Reunión de Fase B — orden del día ampliado:** además de cola, GRUPO_MIXTO y flags: (a) batch según el árbol D31 con el resultado del reintento; (b) peldaño mínimo de la escalera (D33: E=1 bloqueado en CODA → default propuesto {2,5,20} vs parche del scheduler); (c) preprocesado común (transforms no idénticos L2P/DualPrompt vs CODA, fila de `entorno.md`); (d) alineación de `model_config` (best/default de Mammoth) con la configuración de la cascada — el `best` observado usa lr=0.03 en DualPrompt frente al 0.005 del paper.
+- **Dependencia dura n_epochs:** veredicto en la consolidación de Fase A + diff del doble volcado.
+- **FLOPs analíticos:** cálculo tras Fase D; validación contra tiempos del piloto; plan B listo.
+- **Script de agregación + runs.csv probados:** antes de lanzar la matriz (criterio de salida de Fase D).
+- **Párrafo modelo del dossier:** ajustar su numeración de casos a la canónica antes de pegarlo en la memoria.
+- **`.bib`:** empezar hoy.
+
+## 15. Estado
+
+**[2 ago 2026]** Protocolo y diseño cerrados (D1–D28; D5 y D6 revisados en v2.1). Los prompts están en `prompts_fase_A.md`.
+
+**Checklist de arranque (en este orden):**
+0. Único preliminar en GitHub (opcional, recomendado): repo privado vacío `tfg`; escribe su URL en el hueco `<URL_REPO_TFG>` del PROMPT 0, o escribe NO. (El fork ya no hace falta: `mammothV2` existe en tu GitHub.)
+1. Guardar `PLAN_MAESTRO.md` y `prompts_fase_A.md` en `Documentos/TFG/`.
+2. Chat nuevo de Codex **abierto en `Documentos/TFG/`** → pegar el PROMPT 0 (con el hueco relleno) → verificará y completará el workspace (procedencia de mammothV2, clones que falten, retirada de `dualprompt/`, papers) y creará plantilla, script de volcado y comandos del piloto → sus commits y push de la rama `tfg-auditoria` de mammothV2.
+3. Vistazo rápido (10 min) a `auditoria/plantilla.md` y `auditoria/fuentes.md`: que existan y respeten lo acordado (12 columnas, cascada con nombres, GRUPO_MIXTO, flag S sin tope, procedencia de mammothV2).
+4. En el servidor: clonar https://github.com/alexmf10/mammothV2 (si no está), `git checkout tfg-auditoria`, y lanzar los comandos de `auditoria/piloto0.md` (Piloto-0). Tarda horas: se deja corriendo.
+5. Mientras corre el piloto: tres chats nuevos de Codex (también abiertos en `Documentos/TFG/`, nunca dentro de una subcarpeta) → PROMPT 1, 2 y 3 (uno por chat, en paralelo).
+6. Cuando los tres acaben: PROMPT 4 (consolidación), en el chat de la Tarea 0 si sigue fino o en uno nuevo.
+7. En el servidor: ejecutar `mammothV2/scripts_tfg/dump_config.py` dos veces (E=1 y E=20) según `fuentes.md`; pasar las dos salidas al chat de consolidación para la reconciliación.
+8. Muestreo personal: 8–10 celdas al azar comprobadas contra paper y código.
+9. Traer a Claude: `cola_revision.md`, los informes de embudo y los tiempos del Piloto-0 → reunión de Fase B.
+
+**[3 ago 2026]** Fase A documental completada (tfg@4b49307, mammothV2 rama `tfg-auditoria`@cda7f23). Piloto-0 v1: L2P con receta `best` a batch 128 → OOM; DualPrompt sin ejecutar; CODA bloqueado a E=1 (aserción K>1). Volcado doble verificado: solo cambian n_epochs y `custom_scheduler.K` de CODA. **Batch 128 CERRADO** (D31 rev.; regla de reapertura D34 aplica). En curso: Piloto-0 v2 a batch 64 (D32) y consultas dirigidas Q1–Q3; higiene de GPU (procesos ajenos) recomendada para tiempos limpios. Añadidos: Mapa de documentos cerrado + cláusula estándar de cierre + ciclo (sección 7, D34). Hallazgo pendiente de Q2/Q3: `model_config=best` ejecuta DualPrompt con lr=0.03 (paper: 0.005). **Próximo hito: reunión de Fase B en un chat maestro NUEVO con el kit de traspaso (D30).**
