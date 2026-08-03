@@ -261,6 +261,27 @@ Los comandos de reproducción Mammoth invocan `best` para CODA, DualPrompt y L2P
 
 Por tanto, `best` es un overlay mantenido por Mammoth y no se equipara globalmente a la receta original. La auditoría demuestra, entre otros ejemplos, voto batchwise y LR aplicado0,015 en L2P (`valores_l2p.md`, `L2P-B15/B29`), LR nominal0,03/efectivo0,015 frente a0,005 en DualPrompt (`valores_dualprompt.md:91-92`) y scheduler CODA construido pero no avanzado (`comportamiento_coda.md:7-12`). Algunos escalares coinciden; la procedencia o equivalencia total no se infiere.
 
+### 6.4 Paquete de cierre del Piloto-0 v2
+
+El 2026-08-04 se recibió `C:\Users\alex\Downloads\piloto0_v2_20260804_004240.tar.gz` y su sidecar. El SHA-256 declarado y el calculado localmente coinciden: `c25a5d8431dd5b863ddfd62271ed829f4922fbfae7c7283f174442e6fb3b83f3`. Antes de extraer fuera del repositorio se comprobaron 52 entradas —37 ficheros— sin rutas absolutas, componentes `..` ni tipos especiales. El contenido no se copió a TFG.
+
+| artefacto dentro del tar | bytes | SHA-256 | uso como evidencia |
+|---|---:|---|---|
+| `logs/piloto0_v2/driver_all.log` | 168.059 | `ca611376fe48219d1e6b0730f3595eda40cd126fb6bc07b8ad2143403ae68859` | host/commit, secuencia de los tres métodos, códigos 0 y final global. `driver_nohup.log` es idéntico y no constituye una segunda ejecución. |
+| `logs/piloto0_v2/l2p_seq-cifar100-224_seed0_b64_e1.run.log` | 14.038 | `aaa174b0a444ffbe36d3ec6374aac1bee829f31fbcbde71d5256f76d17877eec` | diez tareas, resultados finales, avisos y memoria L2P. |
+| `logs/piloto0_v2/dualprompt_seq-cifar100-224_seed0_b64_e1.run.log` | 13.710 | `6f80a7cedbfb9be52d76e2357c05a53a18ed6ba7919669fea743d2097307471e` | diez tareas, resultados finales, avisos y memoria DualPrompt. |
+| `logs/piloto0_v2/coda-prompt_seq-cifar100-224_seed0_b64_e2.run.log` | 12.787 | `fea7856c5602a2ae49c4bccd40893e3f35facf703613228ba99f9efea04cc000` | diez tareas, resultados finales, avisos y memoria CODA-Prompt. |
+| `logs/piloto0_v2/l2p_seq-cifar100-224_seed0_b64_e1.time.txt` | 1.088 | `28d3dba1402243a023e32ae0745c9622333b2a31b2644af373fdefeb43e09223` | comando, wall-clock 30:35,89, RSS CPU y salida 0. |
+| `logs/piloto0_v2/dualprompt_seq-cifar100-224_seed0_b64_e1.time.txt` | 1.101 | `db46af2a7630fd61e41b8efe049ff946434b91a85e7245cc32ff597019f75ea7` | comando, wall-clock 28:20,38, RSS CPU y salida 0. |
+| `logs/piloto0_v2/coda-prompt_seq-cifar100-224_seed0_b64_e2.time.txt` | 1.103 | `9f0ef740dcab5c484d4dbbfb3967a91f351f44c882934b6f40cafcde13b21340` | comando, wall-clock 54:26,92, RSS CPU y salida 0. |
+| `logs/piloto0_v2/gpu_preflight.txt` | 2.555 | `5835e55f0210f7268e31dd0c691bb146a67eb962247bee89fa5fcc267edfaafa` | GPU disponible y procesos ajenos antes de ejecutar. |
+| `logs/piloto0_v2/metricas_resumen.tsv` | 192 | `05816ed46327283c9157a521b904f9c70d048ca9d7621a0485b2d78190c05cae` | resumen auxiliar; `elapsed` está truncado y no se usa como tiempo autoritativo. |
+| `logs/piloto0_v2/resumen_final.txt` | 129 | `e228a74fb2ee05040046fa77fd4abd469b47718d4dfc6d6dfba498a0150b735f` | commit y cuatro códigos de salida 0. |
+
+Los seis resultados tienen una línea cada uno. SHA-256 Class-IL: L2P `4705ba9fa8588d5e0a3f018e23e4df52bb0a26585687e0174243af3d760b8f67`, DualPrompt `a95e5b95dc704e5aba7c6dc6ec6530827e260357f06b8e3887b370e823c82b49`, CODA-Prompt `31fc65ef30a79315dce916774f495f4cba39579fdd2b9198cbd0cbed63d23090`. SHA-256 Task-IL: L2P `416aab5805474329e47bd981d04bbf3949ada6b3c3b0c7b351a850b61520e112`, DualPrompt `9446aa19caa39567d2565473e0f7789d3a2cef8db8fec301227e38333c410fe7`, CODA-Prompt `844a0dd89b5d9aabfe2e5e0fb153b2981967048848e8f27e604156d830aae031`.
+
+El cierre operativo, los localizadores de tarea/resultado y las limitaciones de interpretación se desarrollan en `auditoria/piloto0.md`; el estado de GPU, los tiempos y las incidencias están en `infra/servidor.md`. La evidencia confirma el Piloto-0 v2 solo para `best` diagnóstico, batch64, E1/E1/E2; no modifica D33, el eje ni valores finales.
+
 ## 7. Bloqueos y pendientes declarados
 
 1. **CODA-Prompt / Piloto-0 con una época:** `CodaPrompt.begin_task` deriva `CosineSchedule.K=n_epochs`, pero `CosineSchedule` exige `K>1`. No existe un comando CLI que complete exactamente una época por tarea sin modificar código. Evidencia y comando diagnóstico en `auditoria/piloto0.md`.

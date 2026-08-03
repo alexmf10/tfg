@@ -10,9 +10,60 @@ Los comandos están escritos para Linux, desde la raíz de un clon de `https://g
 | DualPrompt | E=1 por tarea | 64 | CLI limpia; lanzador independiente. |
 | CODA-Prompt | E=2 por tarea | 64 | E=1 aborta en `begin_task` porque `CosineSchedule` exige `K=n_epochs>1`. |
 
-E=2 para CODA es una excepción operativa del Piloto-0 v2 decidida en D32: sirve para comprobar el bucle completo y derivar coste por época-tarea. **No modifica el eje experimental**, cuyo peldaño mínimo sigue pendiente en D33. Batch 64 aplica D31/D32 al piloto; la columna `valor final` de la auditoría sigue vacía.
+E=2 para CODA es una excepción operativa del Piloto-0 v2 decidida en D32: sirve para comprobar el bucle completo y medir su coste total observado. Cualquier derivación de coste por época-tarea deberá separar el coste fijo de evaluación; no se obtiene dividiendo ciegamente el tiempo total entre dos. **No modifica el eje experimental**, cuyo peldaño mínimo sigue pendiente en D33. Batch 64 aplica D31/D32 al piloto; la columna `valor final` de la auditoría sigue vacía.
 
 Los tres lanzadores usan `model_config=best` únicamente como baseline diagnóstico heredado del Piloto-0. La matriz final no debe reutilizar `best/default` en bloque: se construirá desde `configuracion_final` después de la revisión humana (`PLAN_MAESTRO.md:221`).
+
+## Cierre real del Piloto-0 v2 — 2026-08-04
+
+### Integridad y procedencia de la evidencia
+
+Paquete recibido: `C:\Users\alex\Downloads\piloto0_v2_20260804_004240.tar.gz`; sidecar homónimo `.sha256`. El SHA-256 esperado y el calculado localmente coinciden:
+
+```text
+c25a5d8431dd5b863ddfd62271ed829f4922fbfae7c7283f174442e6fb3b83f3
+```
+
+Antes de extraerlo fuera de TFG se revisaron sus 52 entradas: 37 son ficheros, no hay rutas absolutas, componentes `..` ni tipos especiales. No se copió el paquete ni su contenido al repositorio. La ejecución declara `galatzo` y el commit exacto `cda7f23681f7bffacee460d99e990bc803bccf04`; `resumen_final.txt:1-3` fue generado a `2026-08-04T00:39:26+02:00`, mientras el fin real del driver consta a las 00:33:54 en `driver_all.log:2-4,747`.
+
+### Resultado comprobado
+
+| método | configuración realmente ejecutada | tareas | salida | resultado final Class-IL / Task-IL | líneas comprobadas |
+|---|---|---:|---:|---:|---|
+| L2P | `best`, batch 64, E=1, seed 0 | 10/10 | 0 | 81,67% / 96,83% | +1 Class-IL verificada; 1 Task-IL presente |
+| DualPrompt | `best`, batch 64, E=1, seed 0 | 10/10 | 0 | 83,26% / 96,96% | +1 Class-IL verificada; 1 Task-IL presente |
+| CODA-Prompt | `best`, batch 64, E=2, seed 0 | 10/10 | 0 | 83,42% / 97,63% | +1 Class-IL verificada; 1 Task-IL presente |
+
+- Las diez tareas aparecen en `l2p_seq-cifar100-224_seed0_b64_e1.run.log:138,148,158,168,178,188,198,208,218,228`, `dualprompt_seq-cifar100-224_seed0_b64_e1.run.log:138,148,158,168,178,188,198,208,218,228` y `coda-prompt_seq-cifar100-224_seed0_b64_e2.run.log:121,132,143,154,165,176,187,198,209,220`. Las líneas finales de medias y vectores por tarea están, respectivamente, en `:230-233`, `:230-233` y `:223-226`.
+- El driver secuencial registra inicio/fin con código 0 para L2P (`driver_all.log:7,254`), DualPrompt (`:256,503`) y CODA-Prompt (`:505,745`), y termina globalmente con 0 (`:747-748`). Los siete `*.exit_code.txt` —salida propia y salida del driver por método, más la global— contienen `0`; `resumen_final.txt:5-8` los consolida.
+- Cada uno de los seis `data/results_piloto0_v2/{class-il,task-il}/seq-cifar100-224/<modelo>/logs.pyd` contiene exactamente una línea terminada en LF; `<modelo>` es `l2p`, `dualprompt` o `coda_prompt` —con guion bajo—. Los lanzadores cuentan las líneas anteriores y solo devuelven 0 si aumenta el Class-IL (`run_l2p_b64_e1.sh:23-26,50-59`; `run_dualprompt_b64_e1.sh:22-25,49-58`; `run_coda_b64_e2.sh:22-25,49-58`); por tanto se añadió exactamente una línea Class-IL por método. La línea Task-IL no forma parte de esa aserción, pero también está presente y se comprobó directamente.
+- Las líneas finales registran `batch_size=64`, `stop_after=10`, `seed=0` y el commit esperado. Registran además `n_epochs=1` para L2P/DualPrompt y `n_epochs=2` para CODA. No se interpreta ninguna accuracy como resultado comparable del TFG: son pruebas diagnósticas con presupuestos distintos y configuración `best`.
+
+**Veredicto: PILOTO-0 v2 COMPLETADO** para las tres configuraciones diagnósticas anteriores, conforme al criterio de código 0 + diez tareas + nueva línea final de métricas. Esto materializa D32; no decide D33, no demuestra CODA a E=1 y no rellena ningún `valor final`.
+
+### Tiempo y memoria observados
+
+| método | tiempo real `/usr/bin/time -v` | RSS CPU máximo | máximo GPU que imprime Mammoth |
+|---|---:|---:|---:|
+| L2P | 30:35,89 | 2.660.756 kB | 6.099,35 MiB |
+| DualPrompt | 28:20,38 | 2.628.496 kB | 6.398,29 MiB |
+| CODA-Prompt | 54:26,92 | 2.547.640 kB | 8.705,77 MiB |
+
+Fuentes de tiempo, RSS y salida: `l2p_seq-cifar100-224_seed0_b64_e1.time.txt:5,10,23`, `dualprompt_seq-cifar100-224_seed0_b64_e1.time.txt:5,10,23` y `coda-prompt_seq-cifar100-224_seed0_b64_e2.time.txt:5,10,23`. Fuentes de memoria GPU: los dos primeros `*.run.log:241-244` y el de CODA `:234-237`. El RSS de `/usr/bin/time` es memoria residente de CPU, no VRAM. El driver va de 22:40:30 a 00:33:54: **DERIVADO 1:53:24** (`driver_all.log:2,747`), coherente con la suma de los tres tiempos, 1:53:23,19; la diferencia residual ≈0,8 s es compatible con la resolución de un segundo de esos timestamps y la sobrecarga del driver.
+
+La GPU no estaba limpia: el preflight de las 22:17:24 —anterior a la tentativa interrumpida— muestra una RTX 3060 de 12.288 MiB con 715 MiB usados y dos kernels Jupyter ajenos de 304 y 332 MiB (`gpu_preflight.txt:1,12-14,22-29`); la evidencia inmediata es que los tres `*.gpu_before.txt:1-2` vuelven a mostrar ambos kernels justo antes de cada método válido. Además, `pynvml` falló en las tres corridas (`run.log` de L2P `:116`, DualPrompt `:121`, CODA `:104`), por lo que Mammoth cayó a `torch.cuda.max_memory_allocated` (`utils/conf.py:53-91`) y dividió bytes entre 1024² (`utils/stats.py:31-36`). Los máximos de la tabla son, por tanto, picos acumulados de memoria *allocated* del proceso PyTorch —no VRAM total de la tarjeta, memoria reservada ni consumo de procesos ajenos—. Como la fuente es un máximo acumulado, los campos impresos «Average» y «Final» tampoco son un promedio temporal ni una lectura instantánea. No hubo muestreo de `nvidia-smi` durante la corrida: el pico total de VRAM queda `NO_DISPONIBLE` en el paquete.
+
+El fichero `metricas_resumen.tsv:2-4` conserva correctamente batch, épocas, LR, accuracy y máximo GPU, pero su columna `elapsed` contiene solo el componente de segundos (`35.89`, `20.38`, `26.92`). Para duración, los `*.time.txt:5` anteriores son la fuente autoritativa. Los cambios de contexto involuntarios de `/usr/bin/time` fueron 162.248 para L2P, 10.619 para DualPrompt y 16.356 para CODA (`*.time.txt:15`); la causa del valor atípico de L2P no es determinable con el paquete, de modo que estos tiempos se conservan como observaciones de infraestructura, no como benchmark limpio.
+
+### Incidencias aisladas y efecto sobre cuestiones abiertas
+
+- Antes del driver válido hubo una tentativa L2P aislada en `logs/piloto0_v2/interrumpidos/l2p_20260803_223543/`: recibió `SIGINT`, guardó el checkpoint tras la tarea 5 y se detuvo al entrar en la 7 (`l2p_seq-cifar100-224_seed0_b64_e1.run.log:190-211`); su `.time.txt` está vacío. El directorio `l2p_20260803_224019/` está vacío. Ninguno cuenta como resultado; la corrida final reinició en tarea 1 y completó las diez.
+- `driver_all.log` y `driver_nohup.log` son copias byte a byte, ambas SHA-256 `ca611376fe48219d1e6b0730f3595eda40cd126fb6bc07b8ad2143403ae68859`; no se cuentan como dos ejecuciones.
+- Los lanzadores fijan `MAMMOTH_TEST=1`. En este SHA ese entorno hace que Mammoth ignore `.env` (`main.py:58-62`) y desactive W&B (`utils/training.py:48-49`); no reduce las tareas, como prueban los diez marcadores y `stop_after=10`.
+- Los tres logs finales contienen avisos no bloqueantes de QuickGELU, importaciones opcionales y `pynvml`, pero ninguna aparición de `Traceback` ni `OutOfMemoryError`; los códigos 0 y resultados anteriores son la evidencia de terminación.
+- Con batch 64, la configuración impresa conserva LR nominal 0,03 para L2P (`l2p_seq-cifar100-224_seed0_b64_e1.run.log:88`) y DualPrompt (`dualprompt_seq-cifar100-224_seed0_b64_e1.run.log:93`), mientras la línea final de cada `logs.pyd` registra 0,0075; CODA registra 0,001. El escalado observado coincide con `0,03 × 64 / 256 = 0,0075` (`models/l2p.py:66`; `models/dualprompt.py:71`). Esto amplía la evidencia de PD-04 sobre `best`; no valida el overlay como receta final.
+- Batch real 64 completó una secuencia íntegra con los tres métodos, incluso con los procesos ajenos descritos. Es evidencia operativa nueva para PD-01 y respalda la premisa de que CODA tuvo el mayor pico *allocated* observado, pero no convierte batch 64 en `valor final`.
+- CODA completó el bucle a E=2. Es evidencia operativa nueva para PD-02/HB-09/FD-04, no una prueba de E=1 ni una decisión sobre `{2,5,20}` frente a parche.
 
 ## Resultado del Piloto-0 v1: evidencia de infraestructura
 
