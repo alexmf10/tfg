@@ -1,0 +1,34 @@
+\section{Preliminaries}
+\label{sec:prelim}
+
+\subsection{Continual Learning}
+In our continual learning setting, a model is sequentially shown $N$ tasks corresponding to non-overlapping subsets of semantic object classes. Each class appears in only a single task, and the goal is to incrementally learn to classify new object classes as they are introduced while retaining performance on previously learned classes. To describe our models, we denote $\theta$ as a pre-trained vision encoder and $\phi_{n}$ as our classifier head with logits corresponding to task $n$ classes. In this paper, we deal with the \textit{class-incremental continual learning setting} rather than the \textit{task-incremental continual learning} setting. Class-incremental continual learning is challenging because the learner must support classification across all classes seen up to task $n$~\cite{hsu2018re} (i.e., \textit{no task labels are provided to the learner during inference}). Task-incremental continual learning is a simpler \textit{multi-task} setting where the task labels are given during both training and inference.
+
+\looseness=-1
+We also include experiments that contain both \textit{class-incremental \textbf{and} domain-incremental continual learning} \textit{at the same time}. The difference between this setting and the former is that we also inject \emph{covariate distribution shifts} (e.g., task 1 might include real images and clip-art, whereas task 2 might include corrupted photos and artistic paintings). The motivation is to make  continual learning more practical - as in the real world we might encounter these dual types of domain shifts as well.
+
+\subsection{Prompting with Prefix-Tuning}
+\label{sec:prelim_b}
+
+In our work, we do not change the technical foundations of \emph{prompting} from the prior state-of-the-art DualPrompt~\cite{wang2022dualprompt}. We instead focus on the \emph{selection and formation} of the prompt (including enabling an end-to-end optimization of all prompting components), and the resulting prompt is used by the vision transformer encoder in an identical fashion to DualPrompt. This allows us to make a fair comparison with respect to our novel contributions.
+
+As done in DualPrompt, we pass prompts to \emph{several} multi-head self-attention (MSA) layers in a pre-trained ViT transformer~\cite{dosovitskiy2020image,vaswani2017attention} and use \emph{prefix-tuning over prompt-tuning}\footnote{We refer the reader to sections 4.2 and 5.4 of the the DualPrompt~\cite{wang2022dualprompt} paper for a discussion on this design choice.}, which prepends prompts to the keys and values of an MSA layer rather than prepending prompts to the input tokens. The layers in which prompting occurs is set as a hyperparameter, and the prompting parameters are unique between layers. We define a prompt parameter as $\bm{p} \in \mathbb{R}^{L_{p} \times D}$ where $L_{p}$ is the prompt length (chosen as a hyperparameter) and $D$ is the embedding dimension ($768$). Consider an MSA layer with input $\bm{h} \in \mathbb{R}^{L \times D}$, and query, key, and values given as $\bm{h}_Q,  \bm{h}_K, \bm{h}_V$, respectively. In the ViT model, $\bm{h}_Q = \bm{h}_K = \bm{h}_V = \bm{h}$. The output of this layer is given as:
+\begin{equation}
+\begin{aligned}
+&\operatorname{ MSA }(\bm{h}_Q, \bm{h}_K, \bm{h}_V) =\operatorname { Concat }\left(\operatorname { h }_{1}, \ldots, \operatorname { h }_{\mathrm{m}}\right) W^{O} \\
+&\text { where} \operatorname{h}_{\mathrm{i}} =\operatorname{Attention}\left(\bm{h}_Q W_{i}^{Q}, \bm{h}_K W_{i}^{K}, \bm{h}_V W_{i}^{V}\right)
+\label{eq:msa}
+\end{aligned}
+\end{equation}
+where $W^{O}$, $W_{i}^{Q}$, $W_{i}^{K}$, and $W_{i}^{V}$ are projection matrices and $m$ is the number of heads. 
+We split our prompt $\bm{p}$ into $\{\bm{p}_K,\bm{p}_V\} \in \mathbb{R}^{\frac{L_{p}}{2} \times D}$ and prepend them to $\bm{h}_K$ and $\bm{h}_V$ with prefix-tuning (P-T) as:
+\begin{equation}
+f_{P-T}(\bm{p},\bm{h}) = \operatorname{ MSA }(\bm{h}_Q, \left[ \bm{p}_K ;\bm{h}_K \right],\left[\bm{p}_V ;  \bm{h}_V \right]) 
+\label{eq:msa_prefix}
+\end{equation}
+The result is that we now only train a small number of parameter (the prompts) while leaving the rest of the transformer encoder unmodified. The critical question that now remains is \emph{how to select and update prompts in a continuous fashion?} The next subsection will discuss how prior works select and update prompts.
+
+
+\subsection{L2P and DualPrompt}
+L2P~\cite{wang2022learning} and DualPrompt~\cite{wang2022dualprompt} select prompts from a pool using an image-wise prompt query. Specifically, these methods use a key-value pair based query strategy\footnote{We note that the difference between L2P and DualPrompt w.r.t. prompt querying is that the size of the prompt pool in L2P is chosen as a hyperparameter, but in DualPrompt it is equal to the number of tasks and, during training, DualPrompt selects the prompt using task-id (and selects the closest key-query match during inference).} to dynamically select instance-specific prompts from a pool of candidate prompts. Each prompt $\bm{p}_m$ is selected from a pool of learnable keys $ \bm{k}_m \in \mathbb{R}^{D} $ where $M$ is the size of the prompt pool, based on cosine similarity to an input-conditioned query.
+Queries are produced as: $q(\bm{x}) \in \mathbb{R}^{D} = \theta(\bm{x})$ where $\theta$ is the pretrained ViT encoder and $x$ is the input image\footnote{The output is read from the class token.}. A query $q(\bm{x})$ is matched to a key $\bm{k}_m$ by selecting the key with the \emph{highest cosine similarity}, denoted as: $\gamma(q(\bm{x}),\bm{k}_m)$. The keys are learned with a separate optimization from the task classification loss by simply maximizing the cosine similarity between each matched $q(\bm{x})$ and $\bm{k}_m$, acting as a \emph{clustering-like} approach. However, this approach does not directly update the key with gradients from the task loss, which is critical in our experiments.

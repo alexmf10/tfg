@@ -1,0 +1,453 @@
+\begin{thebibliography}{10}\itemsep=-1pt
+
+\bibitem{Ahn2021ssil}
+Hongjoon Ahn, Jihwan Kwak, Subin Lim, Hyeonsu Bang, Hyojun Kim, and Taesup
+  Moon.
+\newblock Ss-il: Separated softmax for incremental learning.
+\newblock In {\em Proceedings of the IEEE/CVF International Conference on
+  Computer Vision (ICCV)}, pages 844--853, October 2021.
+
+\bibitem{aljundi2017memory}
+Rahaf Aljundi, Francesca Babiloni, Mohamed Elhoseiny, Marcus Rohrbach, and
+  Tinne Tuytelaars.
+\newblock Memory aware synapses: Learning what (not) to forget.
+\newblock In {\em ECCV}, 2018.
+
+\bibitem{aljundi2019online}
+Rahaf Aljundi, Eugene Belilovsky, Tinne Tuytelaars, Laurent Charlin, Massimo
+  Caccia, Min Lin, and Lucas Page-Caccia.
+\newblock Online continual learning with maximal interfered retrieval.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  11849--11860, 2019.
+
+\bibitem{aljundi2019gradient}
+Rahaf Aljundi, Min Lin, Baptiste Goujaud, and Yoshua Bengio.
+\newblock Gradient based sample selection for online continual learning.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  11816--11825, 2019.
+
+\bibitem{bang2021rainbow}
+Jihwan Bang, Heesu Kim, YoungJoon Yoo, Jung-Woo Ha, and Jonghyun Choi.
+\newblock Rainbow memory: Continual learning with a memory of diverse samples.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and
+  Pattern Recognition}, pages 8218--8227, 2021.
+
+\bibitem{brown2020language}
+Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared~D Kaplan, Prafulla
+  Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell,
+  et~al.
+\newblock Language models are few-shot learners.
+\newblock {\em Advances in neural information processing systems},
+  33:1877--1901, 2020.
+
+\bibitem{buzzega2020dark}
+Pietro Buzzega, Matteo Boschini, Angelo Porrello, Davide Abati, and Simone
+  Calderara.
+\newblock Dark experience for general continual learning: a strong, simple
+  baseline.
+\newblock {\em Advances in neural information processing systems},
+  33:15920--15930, 2020.
+
+\bibitem{castro2018end}
+Francisco~M Castro, Manuel~J Mar{\'\i}n-Jim{\'e}nez, Nicol{\'a}s Guil, Cordelia
+  Schmid, and Karteek Alahari.
+\newblock End-to-end incremental learning.
+\newblock In {\em Proceedings of the European Conference on Computer Vision
+  (ECCV)}, pages 233--248, 2018.
+
+\bibitem{chaudhry2018efficient}
+Arslan Chaudhry, Marc’Aurelio Ranzato, Marcus Rohrbach, and Mohamed
+  Elhoseiny.
+\newblock Efficient lifelong learning with a-{GEM}.
+\newblock In {\em International Conference on Learning Representations}, 2019.
+
+\bibitem{chaudhry2019episodic}
+Arslan Chaudhry, Marcus Rohrbach, Mohamed Elhoseiny, Thalaiyasingam Ajanthan,
+  Puneet~K Dokania, Philip~HS Torr, and Marc'Aurelio Ranzato.
+\newblock Continual learning with tiny episodic memories.
+\newblock {\em arXiv preprint arXiv:1902.10486}, 2019.
+
+\bibitem{chaudhry2019tiny}
+Arslan Chaudhry, Marcus Rohrbach, Mohamed Elhoseiny, Thalaiyasingam Ajanthan,
+  Puneet~K Dokania, Philip~HS Torr, and Marc'Aurelio Ranzato.
+\newblock On tiny episodic memories in continual learning.
+\newblock {\em arXiv preprint arXiv:1902.10486}, 2019.
+
+\bibitem{choi2021dual}
+Yoojin Choi, Mostafa El-Khamy, and Jungwon Lee.
+\newblock Dual-teacher class-incremental learning with data-free generative
+  replay.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and
+  Pattern Recognition}, pages 3543--3552, 2021.
+
+\bibitem{dosovitskiy2020image}
+Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn,
+  Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg
+  Heigold, Sylvain Gelly, et~al.
+\newblock An image is worth 16x16 words: Transformers for image recognition at
+  scale.
+\newblock {\em arXiv preprint arXiv:2010.11929}, 2020.
+
+\bibitem{douillard2022dytox}
+Arthur Douillard, Alexandre Ram{\'e}, Guillaume Couairon, and Matthieu Cord.
+\newblock Dytox: Transformers for continual learning with dynamic token
+  expansion.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and
+  Pattern Recognition}, pages 9285--9295, 2022.
+
+\bibitem{ebrahimi2019uncertainty}
+Sayna Ebrahimi, Mohamed Elhoseiny, Trevor Darrell, and Marcus Rohrbach.
+\newblock Uncertainty-guided continual learning with bayesian neural networks.
+\newblock {\em arXiv preprint arXiv:1906.02425}, 2019.
+
+\bibitem{ebrahimi2020adversarial}
+Sayna Ebrahimi, Franziska Meier, Roberto Calandra, Trevor Darrell, and Marcus
+  Rohrbach.
+\newblock Adversarial continual learning.
+\newblock {\em arXiv preprint arXiv:2003.09553}, 2020.
+
+\bibitem{gao2022r}
+Qiankun Gao, Chen Zhao, Bernard Ghanem, and Jian Zhang.
+\newblock R-dfcil: Relation-guided representation learning for data-free class
+  incremental learning.
+\newblock {\em arXiv preprint arXiv:2203.13104}, 2022.
+
+\bibitem{Gepperth:2017}
+Alexander Gepperth and Cem Karaoguz.
+\newblock Incremental learning with self-organizing maps.
+\newblock {\em 2017 12th International Workshop on Self-Organizing Maps and
+  Learning Vector Quantization, Clustering and Data Visualization (WSOM)},
+  pages 1--8, 2017.
+
+\bibitem{hayes2018memory}
+Tyler~L Hayes, Nathan~D Cahill, and Christopher Kanan.
+\newblock Memory efficient experience replay for streaming learning.
+\newblock In {\em 2019 International Conference on Robotics and Automation
+  (ICRA)}, pages 9769--9776. IEEE, 2019.
+
+\bibitem{hayes:2019}
+Tyler~L Hayes and Christopher Kanan.
+\newblock Lifelong machine learning with deep streaming linear discriminant
+  analysis.
+\newblock {\em arXiv preprint arXiv:1909.01520}, 2019.
+
+\bibitem{hendrycks2021many}
+Dan Hendrycks, Steven Basart, Norman Mu, Saurav Kadavath, Frank Wang, Evan
+  Dorundo, Rahul Desai, Tyler Zhu, Samyak Parajuli, Mike Guo, Dawn Song, Jacob
+  Steinhardt, and Justin Gilmer.
+\newblock The many faces of robustness: A critical analysis of
+  out-of-distribution generalization.
+\newblock {\em ICCV}, 2021.
+
+\bibitem{hinton2015distilling}
+Geoffrey Hinton, Oriol Vinyals, and Jeff Dean.
+\newblock Distilling the knowledge in a neural network.
+\newblock {\em arXiv preprint arXiv:1503.02531}, 2015.
+
+\bibitem{hou2018lifelong}
+Saihui Hou, Xinyu Pan, Chen Change~Loy, Zilei Wang, and Dahua Lin.
+\newblock Lifelong learning via progressive distillation and retrospection.
+\newblock In {\em Proceedings of the European Conference on Computer Vision
+  (ECCV)}, pages 437--452, 2018.
+
+\bibitem{hou2019learning}
+Saihui Hou, Xinyu Pan, Chen~Change Loy, Zilei Wang, and Dahua Lin.
+\newblock Learning a unified classifier incrementally via rebalancing.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and
+  Pattern Recognition}, pages 831--839, 2019.
+
+\bibitem{hsu2018re}
+Yen-Chang Hsu, Yen-Cheng Liu, Anita Ramasamy, and Zsolt Kira.
+\newblock Re-evaluating continual learning scenarios: A categorization and case
+  for strong baselines.
+\newblock {\em arXiv preprint arXiv:1810.12488}, 2018.
+
+\bibitem{justus2018predicting}
+Daniel Justus, John Brennan, Stephen Bonner, and Andrew~Stephen McGough.
+\newblock Predicting the computational cost of deep learning models.
+\newblock In {\em 2018 IEEE international conference on big data (Big Data)},
+  pages 3873--3882. IEEE, 2018.
+
+\bibitem{kamra2017deep}
+Nitin Kamra, Umang Gupta, and Yan Liu.
+\newblock Deep generative dual memory network for continual learning.
+\newblock {\em arXiv preprint arXiv:1710.10368}, 2017.
+
+\bibitem{kemker2018fear}
+Ronald Kemker and Christopher Kanan.
+\newblock Fearnet: Brain-inspired model for incremental learning.
+\newblock {\em International Conference on Learning Representations (ICLR)},
+  2018.
+
+\bibitem{Kemker:2017}
+Ronald Kemker, Marc McClure, Angelina Abitino, Tyler Hayes, and Christopher
+  Kanan.
+\newblock Measuring catastrophic forgetting in neural networks.
+\newblock {\em AAAI Conference on Artificial Intelligence}, 2018.
+
+\bibitem{kingma2014adam}
+Diederik~P Kingma and Jimmy Ba.
+\newblock Adam: A method for stochastic optimization.
+\newblock {\em arXiv preprint arXiv:1412.6980}, 2014.
+
+\bibitem{kirkpatrick2017overcoming}
+James Kirkpatrick, Razvan Pascanu, Neil Rabinowitz, Joel Veness, Guillaume
+  Desjardins, Andrei~A Rusu, Kieran Milan, John Quan, Tiago Ramalho, Agnieszka
+  Grabska-Barwinska, et~al.
+\newblock Overcoming catastrophic forgetting in neural networks.
+\newblock {\em Proceedings of the national academy of sciences}, 2017.
+
+\bibitem{koppen2000curse}
+Mario K{\"o}ppen.
+\newblock The curse of dimensionality.
+\newblock In {\em 5th online world conference on soft computing in industrial
+  applications (WSC5)}, volume~1, pages 4--8, 2000.
+
+\bibitem{krizhevsky2009learning}
+Alex Krizhevsky, Geoffrey Hinton, et~al.
+\newblock Learning multiple layers of features from tiny images.
+\newblock {\em Tech Report}, 2009.
+
+\bibitem{lacoste2019quantifying}
+Alexandre Lacoste, Alexandra Luccioni, Victor Schmidt, and Thomas Dandres.
+\newblock Quantifying the carbon emissions of machine learning.
+\newblock {\em arXiv preprint arXiv:1910.09700}, 2019.
+
+\bibitem{lee2019overcoming}
+Kibok Lee, Kimin Lee, Jinwoo Shin, and Honglak Lee.
+\newblock Overcoming catastrophic forgetting with unlabeled data in the wild.
+\newblock In {\em Proceedings of the IEEE International Conference on Computer
+  Vision}, pages 312--321, 2019.
+
+\bibitem{lee2020neural}
+Soochan Lee, Junsoo Ha, Dongsu Zhang, and Gunhee Kim.
+\newblock A neural dirichlet process mixture model for task-free continual
+  learning.
+\newblock {\em arXiv preprint arXiv:2001.00689}, 2020.
+
+\bibitem{lesort2019generative}
+Timoth{\'e}e Lesort, Hugo Caselles-Dupr{\'e}, Michael Garcia-Ortiz, Andrei
+  Stoian, and David Filliat.
+\newblock Generative models from the perspective of continual learning.
+\newblock In {\em 2019 International Joint Conference on Neural Networks
+  (IJCNN)}, pages 1--8. IEEE, 2019.
+
+\bibitem{li2022technical}
+Duo Li, Guimei Cao, Yunlu Xu, Zhanzhan Cheng, and Yi Niu.
+\newblock Technical report for iccv 2021 challenge sslad-track3b: Transformers
+  are better continual learners.
+\newblock {\em arXiv preprint arXiv:2201.04924}, 2022.
+
+\bibitem{li2016learning}
+Zhizhong Li and Derek Hoiem.
+\newblock Learning without forgetting.
+\newblock {\em IEEE transactions on pattern analysis and machine intelligence},
+  40(12):2935--2947, 2017.
+
+\bibitem{lomonaco2017core50}
+Vincenzo Lomonaco and Davide Maltoni.
+\newblock Core50: a new dataset and benchmark for continuous object
+  recognition.
+\newblock {\em arXiv preprint arXiv:1705.03550}, 2017.
+
+\bibitem{lomonaco2020rehearsal}
+Vincenzo Lomonaco, Davide Maltoni, and Lorenzo Pellegrini.
+\newblock Rehearsal-free continual learning over small non-iid batches.
+\newblock In {\em CVPR Workshops}, pages 989--998, 2020.
+
+\bibitem{Lopez-Paz:2017}
+David Lopez-Paz and Marc'Aurelio Ranzato.
+\newblock Gradient episodic memory for continual learning.
+\newblock In {\em Proceedings of the 31st International Conference on Neural
+  Information Processing Systems}, NIPS'17, pages 6470--6479, USA, 2017. Curran
+  Associates Inc.
+
+\bibitem{mai2022online}
+Zheda Mai, Ruiwen Li, Jihwan Jeong, David Quispe, Hyunwoo Kim, and Scott
+  Sanner.
+\newblock Online continual learning in image classification: An empirical
+  survey.
+\newblock {\em Neurocomputing}, 469:28--51, 2022.
+
+\bibitem{maltoni2019continuous}
+Davide Maltoni and Vincenzo Lomonaco.
+\newblock Continuous learning in single-incremental-task scenarios.
+\newblock {\em Neural Networks}, 116:56--73, 2019.
+
+\bibitem{mirzadeh2022architecture}
+Seyed~Iman Mirzadeh, Arslan Chaudhry, Dong Yin, Timothy Nguyen, Razvan Pascanu,
+  Dilan Gorur, and Mehrdad Farajtabar.
+\newblock Architecture matters in continual learning.
+\newblock {\em arXiv preprint arXiv:2202.00275}, 2022.
+
+\bibitem{nagarajan2018theoretical}
+Vaishnavh Nagarajan, Colin Raffel, and Ian~J Goodfellow.
+\newblock Theoretical insights into memorization in gans.
+\newblock In {\em Neural Information Processing Systems Workshop}, 2018.
+
+\bibitem{nguyen2019toward}
+Cuong~V Nguyen, Alessandro Achille, Michael Lam, Tal Hassner, Vijay Mahadevan,
+  and Stefano Soatto.
+\newblock Toward understanding catastrophic forgetting in continual learning.
+\newblock {\em arXiv preprint arXiv:1908.01091}, 2019.
+
+\bibitem{ostapenko2019learning}
+Oleksiy Ostapenko, Mihai Puscas, Tassilo Klein, Patrick Jahnichen, and Moin
+  Nabi.
+\newblock Learning to remember: A synaptic plasticity driven framework for
+  continual learning.
+\newblock In {\em Proceedings of the IEEE Conference on Computer Vision and
+  Pattern Recognition}, pages 11321--11329, 2019.
+
+\bibitem{paszke2019pytorch}
+Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory
+  Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca Antiga, et~al.
+\newblock Pytorch: An imperative style, high-performance deep learning library.
+\newblock {\em Advances in neural information processing systems}, 32, 2019.
+
+\bibitem{peng2019moment}
+Xingchao Peng, Qinxun Bai, Xide Xia, Zijun Huang, Kate Saenko, and Bo Wang.
+\newblock Moment matching for multi-source domain adaptation.
+\newblock In {\em Proceedings of the IEEE/CVF international conference on
+  computer vision}, pages 1406--1415, 2019.
+
+\bibitem{Rebuffi:2016}
+Sylvestre{-}Alvise Rebuffi, Alexander Kolesnikov, Georg Sperl, and Christoph~H.
+  Lampert.
+\newblock icarl: Incremental classifier and representation learning.
+\newblock In {\em 2017 {IEEE} Conference on Computer Vision and Pattern
+  Recognition}, CVPR'17, pages 5533--5542, 2017.
+
+\bibitem{robins1995catastrophic}
+Anthony Robins.
+\newblock Catastrophic forgetting, rehearsal and pseudorehearsal.
+\newblock {\em Connection Science}, 7(2):123--146, 1995.
+
+\bibitem{rolnick2019experience}
+David Rolnick, Arun Ahuja, Jonathan Schwarz, Timothy Lillicrap, and Gregory
+  Wayne.
+\newblock Experience replay for continual learning.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  348--358, 2019.
+
+\bibitem{russakovsky2015imagenet}
+Olga Russakovsky, Jia Deng, Hao Su, Jonathan Krause, Sanjeev Satheesh, Sean Ma,
+  Zhiheng Huang, Andrej Karpathy, Aditya Khosla, Michael Bernstein, et~al.
+\newblock Imagenet large scale visual recognition challenge.
+\newblock {\em International journal of computer vision}, 115(3):211--252,
+  2015.
+
+\bibitem{Rusu:2016}
+Andrei~A Rusu, Neil~C Rabinowitz, Guillaume Desjardins, Hubert Soyer, James
+  Kirkpatrick, Koray Kavukcuoglu, Razvan Pascanu, and Raia Hadsell.
+\newblock Progressive neural networks.
+\newblock {\em arXiv preprint arXiv:1606.04671}, 2016.
+
+\bibitem{Shin:2017}
+Hanul Shin, Jung~Kwon Lee, Jaehong Kim, and Jiwon Kim.
+\newblock Continual learning with deep generative replay.
+\newblock In I. Guyon, U.~V. Luxburg, S. Bengio, H. Wallach, R. Fergus, S.
+  Vishwanathan, and R. Garnett, editors, {\em Advances in Neural Information
+  Processing Systems 30}, pages 2990--2999. Curran Associates, Inc., 2017.
+
+\bibitem{smith2021abd}
+James Smith, Yen-Chang Hsu, Jonathan Balloch, Yilin Shen, Hongxia Jin, and
+  Zsolt Kira.
+\newblock Always be dreaming: A new approach for data-free class-incremental
+  learning.
+\newblock In {\em Proceedings of the IEEE/CVF International Conference on
+  Computer Vision (ICCV)}, pages 9374--9384, October 2021.
+
+\bibitem{smith2022closer}
+James~Seale Smith, Junjiao Tian, Yen-Chang Hsu, and Zsolt Kira.
+\newblock A closer look at rehearsal-free continual learning.
+\newblock {\em arXiv preprint arXiv:2203.17269}, 2022.
+
+\bibitem{titsias2019functional}
+Michalis~K Titsias, Jonathan Schwarz, Alexander G de~G Matthews, Razvan
+  Pascanu, and Yee~Whye Teh.
+\newblock Functional regularisation for continual learning with gaussian
+  processes.
+\newblock In {\em International Conference on Learning Representations}, 2019.
+
+\bibitem{van2020brain}
+Gido~M van~de Ven, Hava~T Siegelmann, and Andreas~S Tolias.
+\newblock Brain-inspired replay for continual learning with artificial neural
+  networks.
+\newblock {\em Nature communications}, 11(1):1--14, 2020.
+
+\bibitem{van2018generative}
+Gido~M van~de Ven and Andreas~S Tolias.
+\newblock Generative replay with feedback connections as a general strategy for
+  continual learning.
+\newblock {\em arXiv preprint arXiv:1809.10635}, 2018.
+
+\bibitem{van2019three}
+Gido~M Van~de Ven and Andreas~S Tolias.
+\newblock Three scenarios for continual learning.
+\newblock {\em arXiv preprint arXiv:1904.07734}, 2019.
+
+\bibitem{vaswani2017attention}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+  Aidan~N Gomez, {\L}ukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need.
+\newblock {\em Advances in neural information processing systems}, 30, 2017.
+
+\bibitem{von2019continual}
+Johannes von Oswald, Christian Henning, Jo{\~a}o Sacramento, and Benjamin~F
+  Grewe.
+\newblock Continual learning with hypernetworks.
+\newblock {\em arXiv preprint arXiv:1906.00695}, 2019.
+
+\bibitem{wang2022sprompt}
+Yabin Wang, Zhiwu Huang, and Xiaopeng Hong.
+\newblock S-prompts learning with pre-trained transformers: An occam's razor
+  for domain incremental learning.
+\newblock In {\em Conference on Neural Information Processing Systems
+  (NeurIPS)}, 2022.
+
+\bibitem{wang2022dualprompt}
+Zifeng Wang, Zizhao Zhang, Sayna Ebrahimi, Ruoxi Sun, Han Zhang, Chen-Yu Lee,
+  Xiaoqi Ren, Guolong Su, Vincent Perot, Jennifer Dy, et~al.
+\newblock Dualprompt: Complementary prompting for rehearsal-free continual
+  learning.
+\newblock {\em arXiv preprint arXiv:2204.04799}, 2022.
+
+\bibitem{wang2022learning}
+Zifeng Wang, Zizhao Zhang, Chen-Yu Lee, Han Zhang, Ruoxi Sun, Xiaoqi Ren,
+  Guolong Su, Vincent Perot, Jennifer Dy, and Tomas Pfister.
+\newblock Learning to prompt for continual learning.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and
+  Pattern Recognition}, pages 139--149, 2022.
+
+\bibitem{wu2019large}
+Yue Wu, Yinpeng Chen, Lijuan Wang, Yuancheng Ye, Zicheng Liu, Yandong Guo, and
+  Yun Fu.
+\newblock Large scale incremental learning.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and
+  Pattern Recognition}, pages 374--382, 2019.
+
+\bibitem{yin2020dreaming}
+Hongxu Yin, Pavlo Molchanov, Jose~M Alvarez, Zhizhong Li, Arun Mallya, Derek
+  Hoiem, Niraj~K Jha, and Jan Kautz.
+\newblock Dreaming to distill: Data-free knowledge transfer via deepinversion.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and
+  Pattern Recognition}, pages 8715--8724, 2020.
+
+\bibitem{yin2019benchmarking}
+Wenpeng Yin, Jamaal Hay, and Dan Roth.
+\newblock Benchmarking zero-shot text classification: Datasets, evaluation and
+  entailment approach.
+\newblock {\em arXiv preprint arXiv:1909.00161}, 2019.
+
+\bibitem{yu2021improving}
+Pei Yu, Yinpeng Chen, Ying Jin, and Zicheng Liu.
+\newblock Improving vision transformers for incremental learning.
+\newblock {\em arXiv preprint arXiv:2112.06103}, 2021.
+
+\bibitem{zenke2017continual}
+Friedemann Zenke, Ben Poole, and Surya Ganguli.
+\newblock Continual learning through synaptic intelligence.
+\newblock In {\em International Conference on Machine Learning}, 2017.
+
+\end{thebibliography}

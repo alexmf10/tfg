@@ -1,0 +1,62 @@
+\begin{table*}[t]
+\caption{\textbf{Results (\%) on ImageNet-R}. Results are included for 5 tasks (40 classes per task), 10 tasks (20 classes per task), and 20 tasks (10 classes per task). $A_N$ gives the accuracy averaged over tasks and $F_N$ gives the average forgetting. We report results over 5 trials. %
+}
+\label{tab:imnet-r_main}
+\centering
+
+\begin{tabular}{c||c c||c c||c c} 
+\hline 
+Tasks & \multicolumn{2}{c||}{5} & \multicolumn{2}{c||}{10} & \multicolumn{2}{c}{20} \\
+\hline
+\rule{0pt}{10pt} Method & $A_N$ ($\uparrow$) & $F_N$ ($\downarrow$) & $A_N$ ($\uparrow$) & $F_N$ ($\downarrow$) & $A_N$ ($\uparrow$) & $F_N$ ($\downarrow$) \\
+\hline
+UB  
+& $77.13$ & - 
+& $77.13$ & - 
+& $77.13$ & -   \\ 
+\hline
+ER (5000)        
+& $71.72 \pm 0.71$ & $13.70 \pm 0.26$ 
+& $64.43 \pm 1.16$ & $10.30 \pm 0.05$
+& $52.43 \pm 0.87$ & $7.70 \pm 0.13$  \\  
+FT          
+& $18.74 \pm 0.44$ & $41.49 \pm 0.52$
+& $10.12 \pm 0.51$ & $25.69 \pm 0.23$
+& $4.75 \pm 0.40$ & $16.34 \pm 0.19$  \\
+FT++          
+& $60.42 \pm 0.87$ & $14.66 \pm 0.24$
+& $48.93 \pm 1.15$ & $9.81 \pm 0.31$
+& $35.98 \pm 1.38$ & $6.63 \pm 0.11$  \\
+LwF.MC       
+& $74.56 \pm 0.59$ & $4.98 \pm 0.37$ 
+& $66.73 \pm 1.25$ & $3.52 \pm 0.39$
+& $54.05 \pm 2.66$ & $2.86 \pm 0.26$  \\
+L2P++        
+& $70.83 \pm 0.58$ & $3.36 \pm 0.18$
+& $69.29 \pm 0.73$ & $2.03 \pm 0.19$ 
+& $65.89 \pm 1.30$ & $1.24 \pm 0.14$   \\
+Deep L2P++  
+& $73.93 \pm 0.37$ & $2.69 \pm 0.10$
+& $71.66 \pm 0.64$ & $1.78 \pm 0.16$ 
+& $68.42 \pm 1.20$ & $1.12 \pm 0.13$  \\
+DualPrompt 
+& $73.05 \pm 0.50$ & $\bm{2.64 \pm 0.17}$
+& $71.32 \pm 0.62$ & $1.71 \pm 0.24$ 
+& $67.87 \pm 1.39$ & $1.07 \pm 0.14$   \\
+\hdashline
+\textbf{CODA-P-S} 
+& $75.19 \pm 0.47$ & $2.65 \pm 0.15$
+& $73.93 \pm 0.49$ & $1.60 \pm 0.20$
+& $70.53 \pm 1.24$ & $1.00 \pm 0.15$  \\
+\textbf{CODA-P}   
+& $\bm{76.51 \pm 0.38}$ & $2.99 \pm 0.19$
+& $\bm{75.45 \pm 0.56}$ & $\bm{1.64 \pm 0.10}$
+& $\bm{72.37 \pm 1.19}$ & $\bm{0.96 \pm 0.15}$  \\ 
+
+\hline
+\end{tabular}
+\end{table*}
+
+
+
+

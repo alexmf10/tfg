@@ -1,0 +1,96 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage[pagenumbers]{cvpr} %
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{array,makecell}
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{wrapfig,lipsum}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{arydshln}
+\usepackage[accsupp]{axessibility}
+
+\usepackage[pagebackref,breaklinks,colorlinks]{hyperref}
+
+\usepackage[capitalize]{cleveref}
+\crefname{section}{Sec.}{Secs.}
+\Crefname{section}{Section}{Sections}
+\Crefname{table}{Table}{Tables}
+\crefname{table}{Tab.}{Tabs.}
+
+\newcommand{\CodeA}{}
+\newcommand{\SMa}{Appendix~\ref{appendix-metrics-and-results}}
+\newcommand{\SMb}{Appendix~\ref{appendix-details}~and~\ref{appendix-metrics-and-results}}
+\newcommand{\SMc}{Appendix~\ref{appendix-metrics-and-results}}
+\newcommand{\SMd}{Appendix~\ref{appendix-details}}
+\newcommand{\SMe}{Appendix~\ref{appendix-benchmark}}
+\newcommand{\SMf}{Appendix~\ref{appendix-metrics-and-results}}
+\newcommand{\AppA}{Section~\ref{section:exp_ablations_analysis} of our main text}
+
+\begin{document}
+
+
+
+\title{CODA-Prompt: COntinual Decomposed Attention-based Prompting for Rehearsal-Free Continual Learning}
+
+
+
+\author{
+\textbf{
+James Seale Smith\thanks{Work done partially during internship at MIT-IBM Watson AI Lab.}\,\,\textsuperscript{1,2}
+\quad Leonid Karlinsky\textsuperscript{2,4}
+\quad Vyshnavi Gutta\textsuperscript{1}
+\quad Paola Cascante-Bonilla\textsuperscript{2,3}
+}
+\\
+\textbf{
+Donghyun Kim\textsuperscript{2,4}
+\quad Assaf Arbelle\textsuperscript{4}
+\quad Rameswar Panda\textsuperscript{2,4}
+\quad Rogerio Feris\textsuperscript{2,4}
+\quad Zsolt Kira\textsuperscript{1}
+}
+\\
+\normalsize
+\textsuperscript{1}Georgia Institute of Technology
+\quad  \textsuperscript{2}MIT-IBM Watson AI Lab 
+\normalsize
+\quad \textsuperscript{3}Rice University
+\quad \textsuperscript{4}IBM Research
+}
+
+\maketitle
+
+\input{sections/0_abstract}
+
+
+\input{sections/1_intro.tex}
+\input{sections/2_related.tex}
+\input{sections/3_prelim.tex}
+\input{sections/4_method.tex}
+\input{sections/5_experiments.tex}
+\input{sections/6_conclusions.tex}
+
+{\small
+\bibliographystyle{ieee_fullname}
+\bibliography{references}
+}
+
+\clearpage
+\appendix
+\section*{Appendix}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+\renewcommand{\thetable}{\Alph{table}}
+\renewcommand{\thefigure}{\Alph{figure}}
+\renewcommand\thesection{\Alph{section}}
+\input{sections/7_appendix}
+
+\end{document}

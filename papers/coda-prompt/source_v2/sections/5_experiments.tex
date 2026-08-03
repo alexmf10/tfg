@@ -1,0 +1,54 @@
+\section{Experiments}
+\label{sec:exp}
+
+\input{tables/imagenet-r.tex}
+
+
+
+We benchmark our approach with several image datasets in the class-incremental continual learning setting. We implemented baselines which do not store training data for rehearsal: Learning without Forgetting (LwF)~\cite{li2016learning}, Learning to Prompt (L2P)~\cite{wang2022learning}, and DualPrompt~\cite{wang2022dualprompt}. Additionally, we report the upper bound performance (i.e., trained offline) and performance for a neural network trained only on classification loss using the new task training data (we refer to this as FT), and include an improved version of FT which uses the same classifier implementation\footnote{See \SMa{} for additional details} as L2P/DualPrompt (referred to as FT++). We also compare to Experience Replay~\cite{chaudhry2019tiny} to provide additional context to our results. We implement our method and all baselines in PyTorch\cite{paszke2019pytorch} using the ViT-B/16 backbone~\cite{dosovitskiy2020image} pre-trained on ImageNet-1K~\cite{russakovsky2015imagenet}. Our contribution includes faithful PyTorch implementations of the popular prompting baselines L2P and DualPrompt, which were released in JAX\cite{wang2022dualprompt,wang2022learning}. Our implementations of the competing methods actually achieve slight boosts in the performance of DualPrompt in most benchmarks, as well as significant performance boosts in L2P due to the improved prompting type\footnote{As discussed in Section~\ref{sec:prelim_b}, we use pre-fix tuning over prompt-tuning for all implementations as is shown to work best for continual learning~\cite{wang2022dualprompt}.} (which we refer to as L2P++). 
+
+
+DualPrompt uses length 5 prompts in layers 1-2 (referred to as \emph{general} prompts) and length 20 prompts in layers 3-5 (referred to as \emph{task-expert}) prompts.  We insert prompts into the same layers as DualPrompt (layers 1-5) for CODA-P 
+and use a prompt length of 8 and 100 prompt components, which were chosen with a hyperparameter sweep on validation data to have the best trade-off between performance and parameter efficiency. Because our approach introduces more learnable parameters compared to DualPrompt, we include a variant of out method \textbf{CODA-P-S} which uses a smaller number of parameters equal to DualPrompt for additional comparison. We show that our method outperforms other methods even under this condition, while still retaining the capability to scale if desired.
+
+We report results on the test dataset, but emphasize that all hyperparameters and design decisions (including for the baselines) were made using validation data (20\% of the training data). Unlike DualPrompt, we run our benchmarks for several different shuffles of the task class order and report the mean and standard deviation of these runs. We do this with a consistent seed (different for each trial) so that results can be directly compared. This is crucial because the results with different shuffling order can be different due to differences in task difficulty and their appearance order. \emph{We include additional implementation details and results in \SMb{}}.
+
+
+\noindent
+\textbf{Evaluation Metrics:} We evaluate methods using (1)
+average final accuracy $A_{N}$, or the final accuracy with respect to all past classes averaged over $N$ tasks, and (2) average forgetting~\cite{chaudhry2018efficient,Lopez-Paz:2017,mai2022online} $F_{N}$, or the drop in task performance averaged over $N$ tasks. The reader is referred to \SMc{} for additional details about these metrics. We emphasize that $A_{N}$ is the more important metric and encompasses both method plasticity \emph{and} forgetting, whereas $F_{N}$ simply provides additional context.
+
+
+\input{tables/cifar100_domainnet.tex}
+\subsection{CODA-P sets the SOTA on existing benchmarks}
+We first evaluate our method and state of art on several well-established benchmarks. Table~\ref{tab:imnet-r_main} provides results for ImageNet-R~\cite{hendrycks2021many,wang2022dualprompt} which is composed of 200 object classes with a wide collection of image styles, including cartoon, graffiti, and hard examples from the original ImageNet dataset~\cite{russakovsky2015imagenet}. This benchmark is attractive because the distribution of training data has significant distance to the pre-training data (ImageNet), thus providing a fair and challenging problem setting. In addition to the original 10-task benchmark, we also provide results with a smaller number of large tasks (5-task) and a larger number of small tasks (20 task). We first notice that our reported performance for DualPrompt is a few percentage points higher compared to the original DualPrompt~\cite{wang2022dualprompt} paper. We re-implemented the method from scratch in a different framework (PyTorch~\cite{paszke2019pytorch}) and suspect the difference has to do with our averaging over different class-order shuffling. 
+We note that our implementation of L2P (L2P++) performs significantly better than originally reported because we use the same form of prompting as DualPrompt (for fair comparison). Furthermore, our ``Deep L2P ++", which prompts at the same 5 layers as DualPrompt (rather than only at layer 1), actually performs similarly to DualPrompt.
+
+\looseness=-1
+Importantly, we see that our method has strong gains in average accuracy across all three task lengths, with as much as \textbf{4.5\% improvement in average accuracy over DualPrompt}. We remind the reader that CODA-P is our proposed method with tuned prompt length and component set size, whereas CODA-P-S is downsized (see \SMd{} for exact details) to exactly match the number of learnable parameters as DualPrompt. We notice that our method often has slightly higher average forgetting compared to DualPrompt. Given that average accuracy is the crucial metric that captures practical performance, we are not worried by the slight uptick in forgetting. In fact, we argue it is very reasonable and reflects the strength of our approach: our method has a larger capacity to learn new tasks, and thus we can sacrifice marginally higher forgetting. Crucially, we see that as the task sequence length grows, the forgetting metric of our method versus DualPrompt begin to converge to a similar value. 
+
+We provide results for experience replay to provide additional context of our results. While the gap between rehearsal with a substantial coreset size (i.e., the buffer size of replay data) and our approach is small for the short task sequence, we see that our method strongly outperforms rehearsal in the longer task sequence.
+
+\looseness=-1 Tables~\ref{tab:cifar}~and~\ref{tab:domainnet} provide results on additional\footnote{Note that the hyperparameters for both DualPrompt and CODA-P were tuned on ImageNet-R, which was intentionally done to evaluate robustness of all methods.} benchmarks ten-task CIFAR-100~\cite{krizhevsky2009learning} and five-task DomainNet~\cite{peng2019moment}. While neither dataset is as impactful as ImageNet-R in terms of challenge and distance from the pre-trained distribution, these tables provide additional context to our method's performance. 
+These tables illustrate a similar story to the ImageNet-R benchmarks, with improvements of +3.2\% and +2.5\%, respectively. We do note that, surprisingly, LwF~\cite{li2016learning} slightly outperforms prompting on this benchmark.
+
+\subsection{CODA-P sets the SOTA for a new dual-shift benchmark}
+
+We also evaluate on a challenging \emph{dual-shift} benchmark using the ImageNet-R dataset. Our motivation is to show robustness to two different types of continual distribution shifts: semantic \emph{and} covariate. We accomplish this by randomly selecting image types from the ImageNet-R dataset to include in each task's training data (while keeping the evaluation data unmodified). The reader is refereed to \SMe{} for more details. Results for this benchmark are provided in Table~\ref{tab:imnet-r_domainshift}. Compared to 5-task ImageNet-R where our method improves SOTA by 4.5\% average accuracy, we see a 4.4\% improvement on this 5-task benchmark with similar forgetting margins. Our results indicate that CODA-P better generalizes to real-world type shifts.%
+
+
+
+\subsection{Ablations and Additional Analysis}
+
+\label{section:exp_ablations_analysis}
+
+We take a closer look at our method with ablation studies and additional analysis. In Table~\ref{tab:ablations} we show the effect of removing a few key components of our method: attention keys, freezing of past task components, and our orthogonality regularization. We show that removing attention slightly reduces forgetting degrades performance on average accuracy (the more important metric). This makes sense because removing the attention keys makes our query processing more aligned with the L2P/DualPrompt methods which boast low forgetting but lack sufficient learning capacity. We see larger drops when removing freezing and orthogonality. This indicates that these aspects are crucial to our approach. Our intuition is is that, without these, our prompt formation is similar to a shallow MLP module which, unregularized, should suffer from high forgetting.
+\input{tables/domainshift.tex}
+\input{tables/ablations.tex}
+\input{figures/capacity_sweep.tex}
+\looseness=-1
+We also look at our ability to grow in model capacity along our newly introduced prompt component dimension using the 5-task ImageNet-R benchmark (with validation data). We show in Figure~\ref{fig:capacity} that, with a number of prompt components equal to the number of prompts learned in DualPrompt, we achieve higher performance. Importantly, when we increase the number of components, we are able to leverage the scaled parameters for significantly higher performance, finding that our method is closer to upper bound performance than it is to DualPrompt in average accuracy. Because the prompt pool in L2P can be increased to arbitrary size as well, we include results in this analysis as well. However, we show that the L2P method peaks with a pool size equal to twice the task sequence length, and then drops in performance. This reflects that our \emph{prompt components} benefit from scale, whereas the existing \emph{prompt pool} actually suffer. 
+
+\looseness=-1
+Finally, we show average accuracy versus prompt \emph{length} in Figure~\ref{fig:len} using the same setting as above. The purpose of this experiment is to emphasize that \emph{accuracy saturates with prompt length}, thus motivating the need to expand in our introduced \emph{component} dimension.
+\emph{Additional analysis and hyperparameter sweeps is available in \SMf{}.}

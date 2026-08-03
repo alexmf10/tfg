@@ -1,0 +1,19 @@
+\begin{table}[t]
+\caption{\textbf{Ablation Results (\%) on 10-task ImageNet-R}. $A_N$ gives the accuracy averaged over tasks and $F_N$ gives the average forgetting. We report results over 5 trials.}
+
+\centering
+\label{tab:ablations}
+
+\begin{tabular}{c||c|c} 
+\hline
+\rule{0pt}{10pt} Method & $A_N$ ($\uparrow$) & $F_N$ ($\downarrow$) \\
+\hline
+CODA-P               & $75.45 \pm 0.56$ & $1.64 \pm 0.10$   \\ 
+\hline
+Ablate Attention     & $74.52 \pm 0.65$ & $1.67 \pm 0.13$   \\  
+Ablate Freezing      & $74.60 \pm 0.64$ & $2.29 \pm 0.10$   \\ 
+Ablate Orthogonality & $70.66 \pm 0.60$ & $1.74 \pm 0.25$   \\ 
+
+\hline
+\end{tabular}
+\end{table}

@@ -1,0 +1,29 @@
+\begin{table}[t]
+\caption{\textbf{Results (\%) on ImageNet-R \emph{with covariate domain shifts}}. Results are included for 5 tasks (40 classes per task). We simulate domain shifts by randomly removing 50\% of the dataset's domains (e.g., clipart, paintings, and cartoon) for the training data of each task (see SM for more details). $A_N$ gives the accuracy averaged over tasks and $F_N$ gives the average forgetting. We report results over 5 trials.}
+
+\centering
+\label{tab:imnet-r_domainshift}
+\begin{tabular}{c||c c} 
+\hline
+\rule{0pt}{10pt} Method & $A_N$ ($\uparrow$) & $F_N$ ($\downarrow$) \\
+\hline
+Upper-Bound   & $77.13$ & $2.66$   \\ 
+\hline
+ER (5000)    & $67.39 \pm 0.37$ & $11.94 \pm 0.17$  \\
+FT           & $17.93 \pm 0.27$ & $37.49 \pm 0.28$ \\
+FT++         & $54.51 \pm 0.68$ & $14.41 \pm 0.33$ \\
+LwF.MC       & $64.02 \pm 1.55$ & $7.05 \pm 0.27$  \\
+L2P++        & $65.08 \pm 0.29$ & $2.79 \pm 0.32$  \\
+Deep L2P++   & $65.74 \pm 0.12$ & $2.48 \pm 0.30$   \\ 
+DualPrompt   & $66.98 \pm 0.08$ & $\bm{2.21 \pm 0.28}$   \\
+\hdashline
+\textbf{CODA-P-S}   & $69.73 \pm 0.18$ & $2.35 \pm 0.19$  \\
+\textbf{CODA-P}     & $\bm{71.35 \pm 0.08}$ & $2.56 \pm 0.26$  \\
+
+\hline
+\end{tabular}
+\end{table}
+
+
+
+
