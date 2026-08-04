@@ -55,9 +55,10 @@ Todas las operaciones de red requeridas (`fetch`, clones, descargas arXiv y push
 - `git branch -r --contains e75a491...` devolvió `upstream/master` y `upstream/HEAD`; además `upstream/master` apuntaba exactamente a ese SHA.
 - Resultado: **BASE OFICIAL VERIFICADA: `e75a491c69fd729edeb01431afb753d9157d9a81`**.
 - Rama `tfg-auditoria` creada desde ese SHA; SHA del punto de creación: `e75a491c69fd729edeb01431afb753d9157d9a81`.
-- Único commit añadido: `cda7f23681f7bffacee460d99e990bc803bccf04` (`Add TFG effective config dump`).
-- HEAD final de `tfg-auditoria`: `cda7f23681f7bffacee460d99e990bc803bccf04`.
-- Push: `git push -u origin tfg-auditoria` terminó correctamente; `origin/tfg-auditoria` apunta al mismo SHA.
+- Commits añadidos: `cda7f23681f7bffacee460d99e990bc803bccf04` (`Add TFG effective config dump`) y `5f102e5fd34d60636b19c11fab99ab44781a7d64` (`Implement CODA scheduler D39`).
+- HEAD final de `tfg-auditoria`: `5f102e5fd34d60636b19c11fab99ab44781a7d64`.
+- Contenido propio de la rama: `scripts_tfg/dump_config.py`; parche D39 confinado a `models/coda_prompt.py:73-93` (K≥1, scheduler por tarea, hook de época y traza); lanzador `scripts_tfg/valida_d39.sh:155-213` (E=5 y E=1) y verificador `scripts_tfg/valida_d39_trace.py:59-96,142-205` (secuencia esperada y veredictos). No se modificó `utils/schedulers.py` ni código de L2P/DualPrompt.
+- Push: `git push origin tfg-auditoria` terminó correctamente; `origin/tfg-auditoria` apunta al mismo SHA.
 - Estado final: working tree limpio.
 
 ### 3.2 Versiones declaradas
@@ -286,7 +287,7 @@ El cierre operativo, los localizadores de tarea/resultado y las limitaciones de 
 
 ## 7. Bloqueos y pendientes declarados
 
-1. **CODA-Prompt / Piloto-0 con una época:** `CodaPrompt.begin_task` deriva `CosineSchedule.K=n_epochs`, pero `CosineSchedule` exige `K>1`. No existe un comando CLI que complete exactamente una época por tarea sin modificar código. Evidencia y comando diagnóstico en `auditoria/piloto0.md`.
+1. **CODA-Prompt / validación D39:** el defecto anterior (`CosineSchedule.K=1` rechazado y scheduler sin conectar) está parcheado en `mammothV2@5f102e5fd34d60636b19c11fab99ab44781a7d64`. La validación E=5/E=1 queda **PENDIENTE de ejecución por el usuario en el servidor (Modo E)** mediante `scripts_tfg/valida_d39.sh`; Codex no ejecutó `main.py`.
 2. **ImageNet-R opcional:** el dataset existe, pero los tres YAML de modelo carecen de preset `best` para `seq-imagenet-r`; una receta completa requeriría elegir manualmente valores todavía no auditados. Marcado `NO_DETERMINABLE_ESTATICO` en `auditoria/piloto0.md`.
 3. **Estado archivado (4-ago):** `google-research/l2p`: **SÍ, ESTÁ ARCHIVADO Y VERIFICADO POR MÍ (USUARIO) EN github.com**; `GT-RIPL/CODA-Prompt`: **NO ARCHIVADO**; `aimagelab/mammoth`: **NO ARCHIVADO**.
 4. **Historia del repo TFG:** la descripción de §2 conserva el estado inicial. En fases posteriores se enlazó y actualizó `origin/master`; los entregables de auditoría se publican por petición expresa del usuario.

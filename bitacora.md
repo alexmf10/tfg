@@ -160,3 +160,33 @@ Estado: **RESUELTO**.
 - El árbol de `auditoria/`, `infra/`, `referencias/`, `papers/` y `prompts_fase_A.md` refleja el inventario real; L2P consta archivado y CODA-Prompt/Mammoth no archivados a 4-ago.
 - Los dosieres canónicos son las copias auditadas de mayor contenido. La nota de §5 se aplicó; cuatro sustituciones se rechazaron por premisa literal errónea. Hashes finales registrados en la entrada anterior.
 - Próximas acciones: ejecutar y validar D39, realizar el muestreo D10 y celebrar la reunión de Fase B con PD-01…PD-04.
+
+## 2026-08-04 · Limpieza de restos históricos D33/peldaño en el plan
+
+Se aplicaron las seis sustituciones elevadas en el informe de aplicación: §9, D20, D33, D38 y §14(b) ya remiten a la validación de D39 y a la escalera resuelta. D30 incorpora además el reparto permanente de capacidades de maestro, Codex y usuario.
+
+Evidencia: `PLAN_MAESTRO.md` §9, §13 (D20, D30, D33 y D38) y §14(b).
+
+Estado: **RESUELTO**.
+
+## 2026-08-04 · Erratas de dossier_protocolo corregidas en commit de compleción
+
+El primer intento no aplicó por desajuste de literales; con los literales exactos se corrigieron las cuatro erratas. SHA-256 definitivo de `referencias/dossier_protocolo_cil.md`: `92d3db585ac9c438482e796c9a1523d3ba77333a3fc06c218af4d120bd97cd97`. La congelación D35 es efectiva desde este commit. `dossier_metodologia_conflictos.md` queda sin cambios (`9b1edf2ebfedcc30af181e74a3988e696f0424ce10d74e76485a07b83c5aae47`).
+
+Estado: **RESUELTO**.
+
+## 2026-08-04 · D39 implementado
+
+D39 quedó implementado en `mammothV2` commit `5f102e5fd34d60636b19c11fab99ab44781a7d64`: parche confinado a CODA-Prompt, traza de LR y validador E=5/E=1. La validación está **PENDIENTE de ejecución en servidor por el usuario (Modo E)**; Codex no ejecutó `main.py` ni entrenamiento.
+
+Evidencia: `mammothV2/models/coda_prompt.py:73-93`, `mammothV2/scripts_tfg/valida_d39.sh:155-213`, `mammothV2/scripts_tfg/valida_d39_trace.py:59-96,142-205` y `auditoria/fuentes.md` §3.1/§7.
+
+Estado: **PENDIENTE→ejecución del usuario en servidor**.
+
+## Parte de novedades para el chat maestro — compleción de sanación + implementación D39 — 2026-08-04
+
+- `PLAN_MAESTRO.md` queda limpio de los seis restos históricos pedidos: peldaño {1,5,20} resuelto, condicionado solo a validar D39; D30 fija que el runtime corresponde exclusivamente al usuario.
+- El dosier de protocolo incorpora las cuatro correcciones exactas y queda congelado con SHA-256 `92d3db58…bd97cd97`; el dosier metodológico no cambia (`9b1edf2e…`).
+- `mammothV2/tfg-auditoria@5f102e5` conecta el CosineSchedule por tarea solo en CODA: E=1 conserva LR base; E>1 hace step al inicio salvo época 0 y reproduce los puntos oficiales 0…K−2.
+- `scripts_tfg/valida_d39.sh` lanza E=5 y E=1 (CODA-Prompt, `best`, batch 64); el verificador imprime `D39_TRACE`/`D39_E1` antes de interrumpir cada proceso. No se ejecutó runtime local.
+- Pendiente único de este bloque: el usuario ejecuta el validador en galatzo (Modo E). Fuentes y localizadores: `auditoria/fuentes.md` §3.1 y §7.
