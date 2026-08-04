@@ -206,3 +206,19 @@ Estado: **PENDIENTE→nuevo lanzamiento por el usuario en servidor**.
 - Los dos `FAIL` con trazas `NA` fueron anteriores a `begin_epoch`: dependencias incompletas primero y `logger` no inicializado después; no son un fallo técnico de D39.
 - El entorno correcto queda confirmado con `/opt/environment/bin/python`, `PYTHONPATH=$HOME/.local/mammoth-pydeps…` y `timm 0.9.8`.
 - `mammothV2/tfg-auditoria@4353bc1` elimina solo `--disable_log 1`; quedan pendientes el nuevo lanzamiento E=5/E=1 y sus veredictos `D39_TRACE`/`D39_E1`.
+
+## 2026-08-04 · Validación técnica D39 completada en galatzo
+
+El usuario ejecutó `mammothV2@4353bc18897e71362a481ff24e59f025069c1817` con CODA-Prompt, `seq-cifar100-224`, `model_config=best` y batch 64. Para E=5, las cinco observaciones coincidieron exactamente con la secuencia esperada: `[0.001, 0.001, 0.00092537519929086212, 0.00071263851892520535, 0.00039354082365465138]`; resultado `D39_TRACE: PASS`. Para E=1, arrancó sin aserción y conservó LR base `0.001`; resultado `D39_E1: PASS`. Veredicto global: `D39_OVERALL_VERDICT verdict=PASS`.
+
+El lanzador interrumpió cada proceso únicamente después del veredicto y ambos devolvieron código 0. La condición técnica de D15/D39 queda satisfecha: se mantiene la escalera firme `{1,5,20}` y no se activa el fallback `{2,5,20}`.
+
+Evidencia: servidor `scripts_tfg/d39_validation_20260804T203937Z/` y `~/d39_validacion.log`; consolidación en `auditoria/fuentes.md` §7.
+
+Estado: **RESUELTO**.
+
+## Parte de novedades para el chat maestro — validación D39 superada — 2026-08-04
+
+- D39 queda técnicamente validado en galatzo sobre `mammothV2@4353bc1`: E=5 reproduce exactamente los cinco LR esperados y E=1 arranca con LR base constante; ambos casos y el veredicto global son `PASS`.
+- Los fallos anteriores quedaron confirmados como incidencias de arranque sin trazas y no afectan al resultado; el parche de modelo permaneció inalterado.
+- Se satisface la condición de D15/D39: escalera `{1,5,20}` firme; fallback `{2,5,20}` no activado. Queda pendiente que el maestro emita, si procede, el literal autorizado para limpiar del plan las menciones históricas a «pendiente de validación».

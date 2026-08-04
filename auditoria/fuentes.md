@@ -287,7 +287,7 @@ El cierre operativo, los localizadores de tarea/resultado y las limitaciones de 
 
 ## 7. Bloqueos y pendientes declarados
 
-1. **CODA-Prompt / validación D39:** el defecto anterior (`CosineSchedule.K=1` rechazado y scheduler sin conectar) está parcheado desde `mammothV2@5f102e5fd34d60636b19c11fab99ab44781a7d64`; el lanzador está corregido en `4353bc18897e71362a481ff24e59f025069c1817`. La validación E=5/E=1 queda **PENDIENTE de ejecución por el usuario en el servidor (Modo E)** mediante `scripts_tfg/valida_d39.sh`; Codex no ejecutó `main.py`.
+1. **CODA-Prompt / validación D39 — RESUELTA (4-ago):** el usuario ejecutó en galatzo `mammothV2@4353bc18897e71362a481ff24e59f025069c1817`. E=5 produjo `D39_TRACE: PASS`, con esperado=observado=`[0.001, 0.001, 0.00092537519929086212, 0.00071263851892520535, 0.00039354082365465138]`; E=1 produjo `D39_E1: PASS` con LR base `0.001`; veredicto global `PASS`. Evidencia de servidor: `scripts_tfg/d39_validation_20260804T203937Z/`. La condición técnica de D15/D39 queda satisfecha y no se activa el fallback `{2,5,20}`.
 2. **ImageNet-R opcional:** el dataset existe, pero los tres YAML de modelo carecen de preset `best` para `seq-imagenet-r`; una receta completa requeriría elegir manualmente valores todavía no auditados. Marcado `NO_DETERMINABLE_ESTATICO` en `auditoria/piloto0.md`.
 3. **Estado archivado (4-ago):** `google-research/l2p`: **SÍ, ESTÁ ARCHIVADO Y VERIFICADO POR MÍ (USUARIO) EN github.com**; `GT-RIPL/CODA-Prompt`: **NO ARCHIVADO**; `aimagelab/mammoth`: **NO ARCHIVADO**.
 4. **Historia del repo TFG:** la descripción de §2 conserva el estado inicial. En fases posteriores se enlazó y actualizó `origin/master`; los entregables de auditoría se publican por petición expresa del usuario.
