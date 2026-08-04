@@ -190,3 +190,19 @@ Estado: **PENDIENTE→ejecución del usuario en servidor**.
 - `mammothV2/tfg-auditoria@5f102e5` conecta el CosineSchedule por tarea solo en CODA: E=1 conserva LR base; E>1 hace step al inicio salvo época 0 y reproduce los puntos oficiales 0…K−2.
 - `scripts_tfg/valida_d39.sh` lanza E=5 y E=1 (CODA-Prompt, `best`, batch 64); el verificador imprime `D39_TRACE`/`D39_E1` antes de interrumpir cada proceso. No se ejecutó runtime local.
 - Pendiente único de este bloque: el usuario ejecuta el validador en galatzo (Modo E). Fuentes y localizadores: `auditoria/fuentes.md` §3.1 y §7.
+
+## 2026-08-04 · Incidencias de arranque de la validación D39 en galatzo
+
+El primer lanzamiento no encontró el ejecutable `python`. Con `/opt/environment/bin/python`, el siguiente no encontró `timm.layers`; el usuario restauró el entorno del Piloto-0 mediante `PYTHONPATH=$HOME/.local/mammoth-pydeps…` y verificó `timm 0.9.8`. El tercer lanzamiento llegó a construir CODA-Prompt, pero terminó antes de `begin_epoch`: `--disable_log 1` impidió crear `logger` en `utils/training.py:153-154` y el mismo fichero lo usó en `:159`, produciendo `UnboundLocalError`.
+
+Ninguno de esos intentos emitió `D39_LR`; sus `FAIL observado=[NA…]` son fallos de arranque y no validan ni refutan el scheduler ni activan el fallback D15. Se retiró únicamente `--disable_log 1` del lanzador en `mammothV2@4353bc18897e71362a481ff24e59f025069c1817`; el parche de modelo D39 no cambió.
+
+Evidencia: logs de servidor `d39_validation_20260804T190248Z` y `d39_validation_20260804T190357Z`; `mammothV2/utils/training.py:153-159`; `mammothV2/scripts_tfg/valida_d39.sh:155-212`; `auditoria/fuentes.md` §3.1/§7.
+
+Estado: **PENDIENTE→nuevo lanzamiento por el usuario en servidor**.
+
+## Parte de novedades para el chat maestro — corrección de arranque del validador D39 — 2026-08-04
+
+- Los dos `FAIL` con trazas `NA` fueron anteriores a `begin_epoch`: dependencias incompletas primero y `logger` no inicializado después; no son un fallo técnico de D39.
+- El entorno correcto queda confirmado con `/opt/environment/bin/python`, `PYTHONPATH=$HOME/.local/mammoth-pydeps…` y `timm 0.9.8`.
+- `mammothV2/tfg-auditoria@4353bc1` elimina solo `--disable_log 1`; quedan pendientes el nuevo lanzamiento E=5/E=1 y sus veredictos `D39_TRACE`/`D39_E1`.
