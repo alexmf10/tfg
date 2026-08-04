@@ -222,3 +222,16 @@ Estado: **RESUELTO**.
 - D39 queda técnicamente validado en galatzo sobre `mammothV2@4353bc1`: E=5 reproduce exactamente los cinco LR esperados y E=1 arranca con LR base constante; ambos casos y el veredicto global son `PASS`.
 - Los fallos anteriores quedaron confirmados como incidencias de arranque sin trazas y no afectan al resultado; el parche de modelo permaneció inalterado.
 - Se satisface la condición de D15/D39: escalera `{1,5,20}` firme; fallback `{2,5,20}` no activado. Queda pendiente que el maestro emita, si procede, el literal autorizado para limpiar del plan las menciones históricas a «pendiente de validación».
+
+## 2026-08-04 · Limpieza de las menciones condicionales de D39 en el plan tras la validación
+
+Se aplicaron los literales autorizados por el maestro en §9, D15, D20, D38, §14(b) y §15. El plan registra D39 validado, la escalera `{1,5,20}` firme y el fallback `{2,5,20}` no activado; la acción viva de ejecutar/validar D39 fue retirada y la lista quedó renumerada.
+
+Evidencia: `PLAN_MAESTRO.md` §9, §13 (D15, D20 y D38), §14(b) y §15.
+
+Estado: **RESUELTO**.
+
+## Parte de novedades para el chat maestro — limpieza final de D39 — 2026-08-04
+
+- Las siete ediciones autorizadas quedaron aplicadas en `PLAN_MAESTRO.md`: desaparecen las condiciones pendientes de D39 y §15 incorpora el cierre validado.
+- La escalera `{1,5,20}` queda firme; el fallback `{2,5,20}` consta como no activado. La acción viva de validar D39 fue eliminada y la lista se renumeró.
