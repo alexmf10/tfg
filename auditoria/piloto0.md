@@ -12,7 +12,7 @@ Los comandos están escritos para Linux, desde la raíz de un clon de `https://g
 
 E=2 para CODA es una excepción operativa del Piloto-0 v2 decidida en D32: sirve para comprobar el bucle completo y medir su coste total observado. Cualquier derivación de coste por época-tarea deberá separar el coste fijo de evaluación; no se obtiene dividiendo ciegamente el tiempo total entre dos. **No modifica el eje experimental**, cuyo peldaño mínimo sigue pendiente en D33. Batch 64 aplica D31/D32 al piloto; la columna `valor final` de la auditoría sigue vacía.
 
-Los tres lanzadores usan `model_config=best` únicamente como baseline diagnóstico heredado del Piloto-0. La matriz final no debe reutilizar `best/default` en bloque: se construirá desde `configuracion_final` después de la revisión humana (`PLAN_MAESTRO.md:221`).
+Los tres lanzadores usan `model_config=best` únicamente como baseline diagnóstico heredado del Piloto-0. La matriz final no debe reutilizar `best/default` en bloque: se construirá desde `configuracion_final` después de la revisión humana (`PLAN_MAESTRO.md §13 (D32) / §8 Fase D`).
 
 ## Cierre real del Piloto-0 v2 — 2026-08-04
 
@@ -74,7 +74,7 @@ Paquete: `C:\Users\alex\Downloads\faseA_servidor_piloto0_oom_20260803_154958.tar
 - El lanzador v1 salía en el primer error; DualPrompt no llegó a ejecutarse y CODA-Prompt no estaba incluido; `run_piloto0.sh:43-49,60-61`.
 - Había dos kernels ajenos consumiendo 304 y 332 MiB. Esto limita la atribución fina del margen de VRAM, pero no convierte el intento en un piloto completado; `diagnostico_oom_20260803_154949.txt:31-45,263`.
 
-Por D31, batch 128 permanece cerrado. El v1 se conserva como evidencia de infraestructura y no como Piloto-0 satisfactorio. El paquete no contiene una corrida a batch 64; el hecho previo de que 64 cabe está registrado en `PLAN_MAESTRO.md:163`.
+Por D31, batch 128 permanece cerrado. El v1 se conserva como evidencia de infraestructura y no como Piloto-0 satisfactorio. El paquete no contiene una corrida a batch 64; el hecho previo de que 64 cabe está registrado en `PLAN_MAESTRO.md §10 (hecho duro)`.
 
 ## Precondiciones comunes
 

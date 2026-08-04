@@ -1,6 +1,6 @@
 # Registro de fuentes y montaje del workspace
 
-Fecha de comprobación: 2026-08-02. Zona horaria del workspace: Europe/Madrid.
+Fecha de última actualización: 2026-08-04. Zona horaria del workspace: Europe/Madrid.
 
 ## 1. Verificación de ruta e inventario inicial
 
@@ -116,6 +116,8 @@ El registro posterior `logs/piloto0/environment_after_openclip.txt` (SHA-256 `85
 
 Estas versiones son evidencia del servidor para esta ejecución, no un nuevo pin del proyecto. En particular, permiten resolver la representación efectiva de los transforms que el YAML deja a defaults de torchvision 0.17.1; no autorizan generalizarla a otro entorno con dependencias distintas.
 
+Discrepancia declarativa torchvision: `pyproject.toml:42` exige `>=0.21.0`; `galatzo` usó `0.17.1+cu121`; sin lockfile; ya registrada en `infra/servidor.md`; sin acción de código.
+
 ### 3.5 Efecto lateral observado y retirado
 
 La carga de los registries durante la prueba del parser importa todos los datasets (`datasets/__init__.py:173-176`). En este SHA, `datasets/seq_8vision.py:47-48` crea un OpenCLIP ViT-B/16 en ámbito de clase; por ello un parseo sin entrenamiento puede descargar pesos. Durante la validación se generaron bajo rutas ignoradas un cache `checkpoints/ViT-B-16/` de 598.517.020 bytes y 29 directorios `__pycache__/`. Como eran artefactos creados por esta comprobación y no entregables, se retiraron después de verificar rutas, contenido y fechas. La comprobación final dio 0 `__pycache__`, ausencia de `checkpoints/ViT-B-16/` y working tree limpio.
@@ -136,7 +138,7 @@ La carga de los registries durante la prueba del parser importa todos los datase
 - DualPrompt fue incorporado explícitamente en `3e102b00b834c92fd0d3f71001a0fa2378302d94` (`2022-07-20T04:21:49-07:00`, `codebase update, including more benchmarks and DualPrompt`).
 - Versión de referencia elegida para L2P y DualPrompt: **`main` @ `dd8836e6e372df29f03d83bf3dc3a806114e9d8e`**, por la regla «sin tag/release → rama principal».
 - Esta elección no demuestra equivalencia exacta entre ese commit y cada versión del paper; solo aplica el fallback prescrito.
-- Estado «¿archivado?»: **PENDIENTE DE VERIFICACIÓN POR EL USUARIO EN github.com**, como exige la tarea; no se deduce del clon.
+- Estado «¿archivado?»: **SÍ, ESTÁ ARCHIVADO Y VERIFICADO POR MÍ (USUARIO) EN github.com, 4-ago**.
 
 ### 4.2 CODA-Prompt
 
@@ -151,7 +153,7 @@ La carga de los registries durante la prueba del parser importa todos los datase
 - Versión de referencia elegida: **`main` @ `6417d4f68754be68b697c7ca2323ee61e791e1a3`**, por la regla «sin tag/release → rama principal».
 - La elección no demuestra equivalencia exacta con el paper; aplica el fallback prescrito.
 - Ambigüedad registrada: `README.md:36` indica `experiments/cifar100.sh`, pero el fichero existente es `experiments/cifar-100.sh`. No se corrigió ni se resolvió en silencio.
-- Estado «¿archivado?»: **PENDIENTE DE VERIFICACIÓN POR EL USUARIO EN github.com**.
+- Estado «¿archivado?»: **NO ARCHIVADO (4-ago)**.
 
 ### 4.3 Reimplementaciones auxiliares
 
@@ -241,7 +243,7 @@ El 2026-08-03 se recibió `C:\Users\alex\Downloads\faseA_servidor_piloto0_oom_20
 
 El intento resolvió `model_config=best`, batch 128, LR nominal 0,03 y E=1. L2P falló al intentar reservar 334 MiB: el log registra 11,62 GiB de capacidad, 135,88 MiB libres y 10,79 GiB usados por el proceso. Había además dos kernels ajenos con 304 y 332 MiB. El paquete no permite determinar si liberar esos procesos o activar `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` habría evitado este OOM concreto.
 
-El lanzador v1 solo contenía L2P y DualPrompt y salía ante el fallo del primero; por tanto DualPrompt no se ejecutó y CODA-Prompt no formó parte del intento. No se generó `logs.pyd`. El paquete tampoco contiene una corrida a batch 64: el hecho previo de que 64 cabe está registrado en `PLAN_MAESTRO.md:163`, no demostrado por este tar. La incidencia y el procedimiento posterior se desarrollan en `infra/servidor.md` y `auditoria/piloto0.md`.
+El lanzador v1 solo contenía L2P y DualPrompt y salía ante el fallo del primero; por tanto DualPrompt no se ejecutó y CODA-Prompt no formó parte del intento. No se generó `logs.pyd`. El paquete tampoco contiene una corrida a batch 64: el hecho previo de que 64 cabe está registrado en `PLAN_MAESTRO.md §10 (hecho duro)`, no demostrado por este tar. La incidencia y el procedimiento posterior se desarrollan en `infra/servidor.md` y `auditoria/piloto0.md`.
 
 La discrepancia de dependencias queda precisada con la misma evidencia del servidor: `requirements.txt:9` declara `ftfy` sin versión y omite `open-clip-torch`, mientras `pyproject.toml:27,33` exige `ftfy>=6.3.1` y `open-clip-torch>=2.32.0`. Antes faltaban ambos imports (`environment_before_openclip.txt:55-58`) y después el overlay aportó exactamente esas versiones (`environment_after_openclip.txt:5-6`). No se modificaron los manifiestos.
 
@@ -286,100 +288,118 @@ El cierre operativo, los localizadores de tarea/resultado y las limitaciones de 
 
 1. **CODA-Prompt / Piloto-0 con una época:** `CodaPrompt.begin_task` deriva `CosineSchedule.K=n_epochs`, pero `CosineSchedule` exige `K>1`. No existe un comando CLI que complete exactamente una época por tarea sin modificar código. Evidencia y comando diagnóstico en `auditoria/piloto0.md`.
 2. **ImageNet-R opcional:** el dataset existe, pero los tres YAML de modelo carecen de preset `best` para `seq-imagenet-r`; una receta completa requeriría elegir manualmente valores todavía no auditados. Marcado `NO_DETERMINABLE_ESTATICO` en `auditoria/piloto0.md`.
-3. **Estado archivado:** pendiente de comprobación humana en github.com para los repos oficiales.
+3. **Estado archivado (4-ago):** `google-research/l2p`: **SÍ, ESTÁ ARCHIVADO Y VERIFICADO POR MÍ (USUARIO) EN github.com**; `GT-RIPL/CODA-Prompt`: **NO ARCHIVADO**; `aimagelab/mammoth`: **NO ARCHIVADO**.
 4. **Historia del repo TFG:** la descripción de §2 conserva el estado inicial. En fases posteriores se enlazó y actualizó `origin/master`; los entregables de auditoría se publican por petición expresa del usuario.
 
-## 8. Árbol final del workspace (2 niveles)
+## 8. Árbol final del workspace (inventario recursivo solicitado)
 
-Comando PowerShell utilizado; enumera la raíz y un nivel interior, y omite únicamente el contenido interno de cada `.git`:
-
-```powershell
-Get-ChildItem -Force | Sort-Object Name | ForEach-Object {
-    $_.Name
-    if ($_.PSIsContainer -and $_.Name -ne '.git') {
-        Get-ChildItem -LiteralPath $_.FullName -Force |
-            Sort-Object Name |
-            ForEach-Object { "  $($_.Name)" }
-    }
-}
-```
+Inventario real de `auditoria/`, `infra/`, `referencias/`, `papers/` y `prompts_fase_A.md`, obtenido con `Get-ChildItem -Force -Recurse`:
 
 ```text
 TFG/
-├── .git/
 ├── auditoria/
+│   ├── cola_coda.md
+│   ├── cola_dualprompt.md
+│   ├── cola_l2p.md
+│   ├── cola_revision.md
+│   ├── comportamiento.md
+│   ├── comportamiento_coda.md
+│   ├── comportamiento_dualprompt.md
+│   ├── comportamiento_l2p.md
+│   ├── entorno.md
 │   ├── fuentes.md
 │   ├── piloto0.md
-│   └── plantilla.md
-├── codaprompt/
-│   ├── .git/
-│   ├── configs/
-│   ├── dataloaders/
-│   ├── experiments/
-│   ├── learners/
-│   ├── models/
-│   ├── utils/
-│   ├── .gitignore
-│   ├── data
-│   ├── install-requirements.sh
-│   ├── LICENSE
-│   ├── main-idea_coda-p.png
-│   ├── method_coda-p.png
-│   ├── README.md
-│   ├── requirements.txt
-│   ├── run.py
-│   ├── run-all.sh
-│   └── trainer.py
-├── l2p/
-│   ├── .git/
-│   ├── augment/
-│   ├── configs/
-│   ├── helper/
-│   ├── libml/
-│   ├── models/
-│   ├── CONTRIBUTING.md
-│   ├── dualprompt_illustration.png
-│   ├── l2p_illustration.png
-│   ├── LICENSE
-│   ├── main.py
-│   ├── README.md
-│   ├── requirements.txt
-│   └── train_continual.py
-├── mammoth/                         (vacío)
-├── mammothV2/
-│   ├── .git/
-│   ├── .github/
-│   ├── backbone/
-│   ├── checkpoints/                    (vacío)
-│   ├── datasets/
-│   ├── docs/
-│   ├── examples/
-│   ├── hub/
-│   ├── models/
-│   ├── scripts/
-│   ├── scripts_tfg/
-│   ├── tests/
-│   ├── utils/
-│   ├── .gitignore
-│   ├── __init__.py
-│   ├── AGENTS.md
-│   ├── gem_license
-│   ├── LICENSE
-│   ├── main.py
-│   ├── NOTICE.md
-│   ├── pyproject.toml
-│   ├── py.typed
-│   ├── README.md
-│   ├── REPRODUCIBILITY.md
-│   ├── requirements-optional.txt
-│   └── requirements.txt
+│   ├── plantilla.md
+│   ├── reconciliacion_fase_b.md
+│   ├── valores_coda.md
+│   ├── valores_dualprompt.md
+│   └── valores_l2p.md
+├── infra/
+│   └── servidor.md
+├── referencias/
+│   ├── dossier_metodologia_conflictos.md
+│   └── dossier_protocolo_cil.md
 ├── papers/
 │   ├── coda-prompt/
+│   │   ├── arxiv_2211.13218.pdf
+│   │   ├── arxiv_2211.13218_source.tar.gz
+│   │   ├── arxiv_api_2211.13218.xml
+│   │   └── source_v2/
+│   │       ├── cvpr.sty
+│   │       ├── figures/
+│   │       │   ├── capacity_sweep.tex
+│   │       │   ├── main_fig.tex
+│   │       │   ├── method_fig.tex
+│   │       │   └── source/
+│   │       │       ├── approach-new.pdf
+│   │       │       ├── cvpr-len-sweep.png
+│   │       │       ├── cvpr-pool-sweep.png
+│   │       │       └── key_idea.pdf
+│   │       ├── ieee_fullname.bst
+│   │       ├── main.bbl
+│   │       ├── main.tex
+│   │       ├── sections/
+│   │       │   ├── 0_abstract.tex
+│   │       │   ├── 1_intro.tex
+│   │       │   ├── 2_related.tex
+│   │       │   ├── 3_prelim.tex
+│   │       │   ├── 4_method.tex
+│   │       │   ├── 5_experiments.tex
+│   │       │   ├── 6_conclusions.tex
+│   │       │   └── 7_appendix.tex
+│   │       ├── tables/
+│   │       │   ├── ablations.tex
+│   │       │   ├── cifar100_domainnet.tex
+│   │       │   ├── domainshift.tex
+│   │       │   └── imagenet-r.tex
+│   │       └── tables_sup/
+│   │           ├── cifar100.tex
+│   │           └── imagenet-r_5.tex
 │   ├── dualprompt/
+│   │   ├── arxiv_2204.04799.pdf
+│   │   ├── arxiv_2204.04799_source.tar.gz
+│   │   ├── arxiv_api_2204.04799.xml
+│   │   └── source_v2/
+│   │       ├── axessibility.lua
+│   │       ├── axessibility.sty
+│   │       ├── comment.sty
+│   │       ├── dual_prompt_camera_ready.tex
+│   │       ├── figures/
+│   │       │   ├── dual_prompt.pdf
+│   │       │   ├── DualPrompts.pdf
+│   │       │   ├── DualPrompts_new.pdf
+│   │       │   ├── DualPrompts_new2.pdf
+│   │       │   ├── DualPrompts_new3.pdf
+│   │       │   ├── imagenet_r.pdf
+│   │       │   ├── intro_compare.pdf
+│   │       │   ├── method.pdf
+│   │       │   ├── overview.pdf
+│   │       │   ├── prompt_combiner.pdf
+│   │       │   ├── prompt_visualization.pdf
+│   │       │   ├── val_prompt_depth.pdf
+│   │       │   └── val_prompt_length.pdf
+│   │       ├── llncs.cls
+│   │       ├── math_commands.tex
+│   │       ├── refs.bib
+│   │       ├── ruler.sty
+│   │       └── splncs04.bst
 │   └── l2p/
-├── .gitignore
-├── PLAN_MAESTRO.md
+│       ├── arxiv_2112.08654.pdf
+│       ├── arxiv_2112.08654_source.tar.gz
+│       ├── arxiv_api_2112.08654.xml
+│       └── source_v2/
+│           ├── cvpr.sty
+│           ├── figures/
+│           │   ├── cifar_5datasets_hists.pdf
+│           │   ├── cifar100_ablation_N_L.pdf
+│           │   ├── five_datasets_ablation_N_L.pdf
+│           │   ├── method.pdf
+│           │   ├── overview.pdf
+│           │   ├── overview3.pdf
+│           │   └── promp_pool_size.pdf
+│           ├── ieee_fullname.bst
+│           ├── L2P_arxiv.tex
+│           ├── math_commands.tex
+│           └── README.md
 └── prompts_fase_A.md
 ```
-
-Ausencias intencionadas: `dualprompt/` (estaba vacío y se eliminó) y `repos_aux/` (no se usó la opción de clonar reimplementaciones).

@@ -6,6 +6,7 @@
 /results*/
 /data/
 /datasets/
+/PLAN_MAESTROANTIGUO.md
 *.pth
 __pycache__/
 .DS_Store

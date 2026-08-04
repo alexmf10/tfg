@@ -10,21 +10,21 @@ La validación programática de `valores_l2p.md`, `valores_dualprompt.md` y `val
 | DualPrompt | 83 | 26 | 47 | 10 | sí | 83/83 | 36/36 | C1=22; C2=0; C3=7; C4=17; C5=1 |
 | CODA-Prompt | 56 | 20 | 24 | 12 | sí | 56/56 | 32/32 | C1=12; C2=2; C3=2; C4=7; C5=1 |
 
-Todos los `CASO 3` llevan `REVISAR`; los `CASO 4`, `SOLO_PAPER` o `SOLO_REPO`; los `CASO 5`, `DEFAULT_MAMMOTH`. No se ha modificado ninguna tabla por anchura, nombre de caso o valor final. Las asimetrías semánticas de etiquetado se dejan abiertas abajo, conforme a la instrucción de no resolver contradicciones de contenido.
+Todos los `CASO 3` llevan `REVISAR`; los `CASO 4`, `SOLO_PAPER` o `SOLO_REPO`; los `CASO 5`, `DEFAULT_MAMMOTH`. No se ha modificado ninguna tabla por anchura, nombre de caso o valor final. Las asimetrías semánticas de etiquetado X-01…X-09 se cierran abajo por la sanación 4-ago / D34 rev.
 
-## Contradicciones y asimetrías detectadas — no resueltas
+## Contradicciones y asimetrías detectadas — resueltas
 
-| id | referencia | contradicción / asimetría abierta |
+| id | referencia | contradicción / asimetría y cierre |
 |---|---|---|
-| X-01 | `L2P-B24`; `cola_l2p.md` S-19 | S-19 cita B24 como persistencia/reducción, pero B24 solo lleva S-08; revisar trazabilidad, no cambiar severidad automáticamente. |
-| X-02 | `L2P-B19`, `L2P-B34`; `cola_l2p.md` NC-07/NC-09 | La cola los agrupa como no configurables, pero B19 es parcialmente configurable y B34 usa `NO_APLICA`, no `NO_CONFIGURABLE`. |
-| X-03 | L2P `BHV-06`; `HB-06` | BHV-06 cita B24/B25; HB-06 los omite y B24/B25 aparecen bajo HB-05. Falta decidir si es duplicación intencionada o pérdida de enlace. |
-| X-04 | `CODA-B19`; `comportamiento_coda.md` C-10; `cola_coda.md` S-08/S-19 | La fila y C-10 llaman MEDIA a preasignación/floor/resto; S-19 lo clasifica BAJA y S-08 lo absorbe en G-PROMPT ALTA. No se elige una severidad aquí. |
-| X-05 | CODA C-08; A05; S-06/Q-09 | C-08 propone S MEDIA condicional para las rutas custom de orden defectuosas, pero `valores_coda.md` y la cola solo enlazan orden general. Falta enlace explícito. |
-| X-06 | CODA E04/E05/E08/E10, B02, B18/B19, B23, A07/A08 | `comportamiento_coda.md` califica facetas como `NO_CONFIGURABLE`, mientras las filas no siempre contienen la etiqueta literal. Algunas filas son parcialmente configurables; se requiere etiquetado con alcance, no una sustitución mecánica. |
-| X-07 | CODA E09/B24 | E09 repo y B24 repo/Mammoth registran búsquedas negativas sin fichero/línea dentro de la celda. La ausencia es trazable al SHA, pero no satisface literalmente el localizador de H; completar el alcance de búsqueda en revisión. |
-| X-08 | Dual A «Backbone»; B semántica Pre-T, mask train, init, LR efectivo, pooling y persistencia | Las conductas están descritas como hardcodeadas o inertes, pero `NO_CONFIGURABLE` no siempre está en la fila. Debe decidirse un etiquetado por faceta para no declarar no configurable todo el parámetro. |
-| X-09 | `L2P-A19`, Dual «Precisión», `CODA-A17` | El mismo control `code_optimization` se marca `CUBO_DUDOSO` solo en L2P; Dual/CODA lo dejan A+LOW. La clasificación común queda abierta. |
+| X-01 | `L2P-B24`; `cola_l2p.md` S-19 | S-19 citaba B24 sin figurar en sus flags. Cierre: B24 incorpora `S-19 MEDIA`. **RESUELTO — sanación 4-ago / D34 rev.** |
+| X-02 | `L2P-B19`, `L2P-B34`; `cola_l2p.md` NC-07/NC-09 | Cierre: NC-07 explicita que B19 es `PARCIALMENTE_CONFIGURABLE`; NC-09 registra B34 como ausencia estructural (`NO_APLICA`). **RESUELTO — sanación 4-ago / D34 rev.** |
+| X-03 | L2P `BHV-06`; `HB-06` | Cierre: HB-06 incorpora B24/B25 y declara que el cruce con HB-05 es intencionado (origen BHV-05/BHV-06). **RESUELTO — sanación 4-ago / D34 rev.** |
+| X-04 | `CODA-B19`; `comportamiento_coda.md` C-10; `cola_coda.md` S-08/S-19 | Cierre: B19 separa `S-08 ALTA` para el grupo completo, `S:MEDIA` para preasignación/floor y `S-19 BAJA` para el resto no usado. **RESUELTO — sanación 4-ago / D34 rev.** |
+| X-05 | CODA C-08; A05; S-06/Q-09 | Cierre: S-06 enlaza C-08 y su S MEDIA condicional para las rutas custom defectuosas. **RESUELTO — sanación 4-ago / D34 rev.** |
+| X-06 | CODA E04/E05/E08/E10, B02, B18/B19, B23, A07/A08 | Cierre: las filas incorporan `PARCIALMENTE_CONFIGURABLE`/`NO_CONFIGURABLE`, según corresponda, con alcance de faceta; A17 hace explícito el alcance de `code_optimization`. **RESUELTO — sanación 4-ago / D34 rev.** |
+| X-07 | CODA E09/B24 | Cierre: E09 y B24 incorporan patrón y ámbito de las búsquedas negativas en repo y Mammoth. **RESUELTO — sanación 4-ago / D34 rev.** |
+| X-08 | Dual A «Backbone»; B semántica Pre-T, mask train, init, LR efectivo, pooling y persistencia | Cierre: cada faceta incorpora etiqueta literal y alcance sin declarar no configurable el parámetro entero cuando existen controles parciales. **RESUELTO — sanación 4-ago / D34 rev.** |
+| X-09 | `L2P-A19`, Dual «Precisión», `CODA-A17` | Cierre: `code_optimization` queda en cubo A + `LOW` en los tres métodos; se retira `CUBO_DUDOSO` de L2P. **RESUELTO — sanación 4-ago / D34 rev.** |
 
 ## `CONFLICTO→PAPER` y grupo acoplado
 
@@ -85,7 +85,7 @@ DualPrompt G-HEAD no se marca mixto: sus propuestas son solo-repo o coincidentes
 | SA-11 | L2P S-22 | `loadcheck` no restaura estado completo/cursor. | `L2P-A24`; L2P S-22. |
 | SA-12 | Dual S-01 | G-OPT: LR, batch, updates, scheduler y `drop_last` están acoplados. | Dual S-01; filas A/EJE/B G-OPT. |
 | SA-13 | Dual S-02 | G-PROMPT: E-length y semántica K/V discrepan. | Dual S-02; DP-BHV-01. |
-| SA-14 | Dual S-03 | Selección por muestra vs voto local24/Mammoth128. | Dual S-03; DP-BHV-03. |
+| SA-14 | Dual S-03 | Selección por muestra vs voto local24/Mammoth128. `distributed=dp` cambia el dominio del voto (por shard); cubierto por esta S. En CODA, voto batchwise `NO_APLICA`. | Dual S-03; DP-BHV-03. |
 | SA-15 | Dual S-04 | Reshape K/V–batch defectuoso y typo del YAML. | Fila permute fix; DP-BHV-07. |
 | SA-16 | Dual S-05 | Signo/métrica del matching ambiguos y no configurables. | Fila matching; DP-BHV-04. |
 | SA-17 | Dual S-06 | Segundo ViT y candidatos futuros no limitables. | Filas query/candidatos; DP-BHV-02. |
@@ -115,7 +115,7 @@ DualPrompt G-HEAD no se marca mixto: sus propuestas son solo-repo o coincidentes
 | SM-07 | L2P S-15 | Betas/epsilon/reset de Adam no cerrados. | `L2P-B27`, `B32`, `B45`. |
 | SM-08 | L2P S-17 | CLI L2P contiene flags inertes/rotos. | `L2P-B04`, `B10`, `B16`, `B19`, `B23`, `B40`, `B41`. |
 | SM-09 | L2P S-18 | Normalización/temperatura/dropout/head fijos. | `L2P-B33`–`B37`, `B42`, `B43`. |
-| SM-10 | L2P S-19 | Persistencia y reducción pull fijas; top-k escala loss. | `L2P-B17`–`B19`, `B46`; X-01 conserva duda sobre B24. |
+| SM-10 | L2P S-19 | Persistencia y reducción pull fijas; top-k escala loss. | `L2P-B17`–`B19`, `B24`, `B46`; X-01 resuelto por sanación 4-ago / D34 rev. |
 | SM-11 | L2P S-23 | Warmup repo0 y no conectado en Mammoth. | `L2P-E11`. |
 | SM-12 | Dual S-11 | Init/copia de E y keys no documentada/equivalente. | Filas init/copia; DP-BHV-08. |
 | SM-13 | Dual S-12 | Reset Adam e init de cabeza distintos. | Filas reset/head; DP-BHV-06. |
@@ -142,14 +142,14 @@ DualPrompt G-HEAD no se marca mixto: sus propuestas son solo-repo o coincidentes
 | SB-01 | L2P S-16 | λ pull0,5 vs1,0; paper reporta poca sensibilidad. | `L2P-B20`. |
 | SB-02 | Dual S-18 | CE/norm/temperatura/dropout coinciden efectivamente, pero no son configurables. | Filas loss/head. |
 | SB-03 | Dual S-19 | Pooling/capas solapadas/no-prefix/KV compartido; rutas fuera del preset. | DP-BHV-12. |
-| SB-04 | CODA S-19 | Resto `floor(M/N)` al cambiar pool/tareas; X-04 mantiene severidad abierta. | CODA B19. |
+| SB-04 | CODA S-19 | Resto `floor(M/N)` al cambiar pool/tareas; X-04 resuelto con los tres alcances explícitos en B19. | CODA B19; sanación 4-ago / D34 rev. |
 | SB-05 | CODA S-20 | Tipo CE solo repo y no configurable en Mammoth. | CODA B07. |
 
 ## `CUBO_DUDOSO`
 
 | id | referencia | cuestión abierta |
 |---|---|---|
-| CD-01 | `L2P-A19` | Confirmar si precisión/`code_optimization` es entorno A o receta B. |
+| CD-01 | `L2P-A19` | **RESUELTO:** cubo A, `LOW`; referencia D34 rev./test §3. |
 | CD-02 | Dual fila A «Precisión»; `CODA-A17`; X-09 | Decidir conjuntamente el mismo concepto: los otros dos métodos no llevan la marca, aunque la clasificación es idéntica. |
 | CD-03 | `CODA-A11` | Confirmar si `virtual_bs_iterations`, específico del método, permanece A por alterar batch efectivo o debe ir a B. No se cambia sin revisión. |
 | CD-04 | `L2P-A24`; entorno A-C28 | Reanudación obtuvo fila solo en L2P por evidencia demostrada; decidir si debe auditarse simétricamente para Dual/CODA o quedar como infraestructura allí. |
@@ -165,7 +165,7 @@ DualPrompt G-HEAD no se marca mixto: sus propuestas son solo-repo o coincidentes
 | NC-05 | L2P/DP universo de logits y heads; CODA head física; CB-06/07/17 | Fijar protocolo de cabeza/máscara/evaluación. |
 | NC-06 | L2P/DP init/copia/reset; CODA reset/GS; CB-04/06/16 | Aceptar estados iniciales y reinicios o parametrizarlos. |
 | NC-07 | L2P pull, Dual matching, CODA ortogonalidad; CB-14/16 | Fijar signo, reducción, fórmula y doble peso. |
-| NC-08 | L2P/Dual head transforms y pooling; X-02/X-08 | Resolver el alcance exacto de `NO_CONFIGURABLE` sin etiquetar como tal ramas `NO_APLICA` o controles indirectos. |
+| NC-08 | L2P/Dual head transforms y pooling; X-02/X-08 | Alcance exacto documentado por X-02/X-08; aceptar las conductas fijas o parametrizarlas sin etiquetar como `NO_CONFIGURABLE` ramas `NO_APLICA` o controles indirectos. |
 | NC-09 | L2P/Dual warmup; CODA warmup/cableado scheduler; E-C06–E-C10 | Aceptar ausencia/defecto o autorizar conexión del scheduler. |
 | NC-10 | Los tres `fitting_mode=time`; E-C17 | Prohibir el modo o implementar presupuesto/condición de salida. |
 | NC-11 | L2P flags inertes; Dual permute/pooling/KV; CODA `optim_mom`; CB-15 | Prohibir opciones engañosas o corregirlas antes de sweeps. |
@@ -212,7 +212,7 @@ Estas entradas consolidan las consultas del 2026-08-03. No cambian el eje, los v
 | id | tipo y filas de referencia | evidencia / cuestión que llega a reunión | estado |
 |---|---|---|---|
 | PD-01 | **Batch/OOM y árbol D31.** Entorno `A-C15`, `A-C17`; `L2P-A10/A12`; DualPrompt «Batch de train/eval CIFAR» y «Acumulación de gradiente»; `CODA-A10/A11`. | Batch128 está cerrado por D31: hecho previo 128 OOM/64 cabe (`PLAN_MAESTRO.md:163`), OOM v1 reproducido en Mammoth@cda7f236 (`infra/servidor.md`) y uniformidad común. El v2 demuestra ahora una secuencia completa a batch real64 con los tres bajo `best` diagnóstico; códigos0, diez tareas y `logs.pyd` en `piloto0.md`, «Cierre real». CODA tuvo el mayor pico *allocated* observado (8.705,77 MiB), con la limitación de que no es VRAM total. Q1 determina que no hay acumulación real común por CLI/config (`entorno.md:34`, `comportamiento.md:90-96`). Llevar a reunión la consecuencia del árbol D31 sin escribir aún batch64 como valor final. | **PENDIENTE→reunión**; batch128 **DECIDIDO→D31**. |
-| PD-02 | **Peldaño mínimo del eje.** Entorno `E-C01`, `E-C08`; `CODA-E01/E02/E05`; FD-04/HB-09. | E=1 es limpio para L2P/DualPrompt, pero CODA deriva `K=n_epochs` y exige K>1. El Piloto-0 v2 completa las diez tareas de CODA a E=2 con código0 (`piloto0.md`, «Cierre real»): prueba la viabilidad operativa de E=2, menor entero admitido por el código actual sin parche, pero no lo convierte en peldaño de la escalera ni demuestra CODA a E=1. Elegir humanamente entre `{2,5,20}` y autorizar un parche del scheduler; no presentar `iters` como equivalente. Evidencia estática: `reconciliacion_fase_b.md:60-82`, `entorno.md:51,58,91-100`. | **PENDIENTE→reunión**; D33 sin decidir. |
+| PD-02 | **Peldaño mínimo del eje.** Entorno `E-C01`, `E-C08`; `CODA-E01/E02/E05`; FD-04/HB-09. | E=1 es limpio para L2P/DualPrompt, pero CODA deriva `K=n_epochs` y exige K>1. El Piloto-0 v2 completa las diez tareas de CODA a E=2 con código0 (`piloto0.md`, «Cierre real»): prueba la viabilidad operativa de E=2, menor entero admitido por el código actual sin parche, pero no lo convierte en peldaño de la escalera ni demuestra CODA a E=1. Elegir humanamente entre `{2,5,20}` y autorizar un parche del scheduler; no presentar `iters` como equivalente. Evidencia estática: `reconciliacion_fase_b.md:60-82`, `entorno.md:51,58,91-100`. Informada por D39: escalera `{1,5,20}` firme salvo fallo de validación. | **PENDIENTE→reunión**. |
 | PD-03 | **Preprocesado común.** Entorno `A-C10`, `A-C12`, `A-C14`; L2P `A07/A08`; filas DualPrompt «Augmentación train CIFAR»/«Preprocesado de evaluación»; CODA `A07-A09`. | L2P/DualPrompt cargan YAML `l2p`; CODA carga `coda_prompt`. Difieren RRC/resize/crop/interpolación y la normalización de CODA depende de `best`. Tuberías observadas en `reconciliacion_fase_b.md:49-58`. Elegir una sola tubería en Fase D; no homogeneizarla en silencio. | **PENDIENTE→reunión**. |
 | PD-04 | **`model_config=best/default` frente a cascada.** `L2P-B15/B28/B29`; DualPrompt «Learning rate nominal/configurado — CIFAR», «Learning rate efectivo — CIFAR», longitud E y selección batchwise; `CODA-A09/E04-E08`; CP-01/02/04/05/07 y GM-01/03/06/07/09. | Los tres `best` son overlays de Mammoth; los YAML carecen de bloque `default`. No equivalen globalmente a las recetas originales. En DualPrompt, 0,03 es LR nominal del dump; el optimizador recibe 0,015 con batch128 y el `logs.pyd` del v2 registra 0,0075 con batch64 (`0,03 × batch / 256`). Las filas auditadas siguen `CASO 3 CONFLICTO→PAPER` con propuesta 0,005. El éxito operativo del v2 bajo `best` no valida el overlay ni cambia la cascada: construir la matriz solo desde `configuracion_final`. | **PENDIENTE→reunión**. |
 

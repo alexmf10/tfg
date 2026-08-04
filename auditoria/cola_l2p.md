@@ -69,9 +69,9 @@ Esta cola contiene únicamente decisiones humanas derivadas de `auditoria/valore
 | NC-04 | `L2P-A15`, `L2P-B24`, `L2P-B25` | Aceptar máscara/cabeza/alcance de logits Mammoth o autorizar parametrización. |
 | NC-05 | `L2P-B01`–`L2P-B03` | Aceptar inserción única y posiciones Mammoth o autorizar variante arquitectónica. |
 | NC-06 | `L2P-B13`, `L2P-B14` | Aceptar segundo ViT y coseno hardcodeados o autorizar arquitectura/matching alternativos; `embedding_key=cls` de B12 sí tiene override. |
-| NC-07 | `L2P-B17`–`L2P-B19`, `L2P-B24`, `L2P-B46` | Aceptar persistencia, CE/forma del pull y reducción fija de loss o autorizar opciones. |
+| NC-07 | `L2P-B17`–`L2P-B19`, `L2P-B24`, `L2P-B46` | Aceptar persistencia, CE/forma del pull y reducción fija de loss o autorizar opciones. `L2P-B19` es `PARCIALMENTE_CONFIGURABLE`. |
 | NC-08 | `L2P-B27`, `L2P-B32`, `L2P-B45` | Fijar la versión/defaults de Adam y aceptar reinicio por tarea o exponerlos. |
-| NC-09 | `L2P-B33`–`L2P-B37`, `L2P-B42`, `L2P-B43` | Aceptar normalización/weight norm/temperatura/init/dropout/reweight/pre-logits ausentes o fijos, o parametrizar la cabeza. |
+| NC-09 | `L2P-B33`–`L2P-B37`, `L2P-B42`, `L2P-B43` | Aceptar normalización/weight norm/temperatura/init/dropout/reweight/pre-logits ausentes o fijos, o parametrizar la cabeza. `L2P-B34` es ausencia estructural (`NO_APLICA`), no «no configurable». |
 | NC-10 | `L2P-B40`, `L2P-B41` | Retirar/ignorar argumentos sin efecto o conectarlos al modelo. |
 | NC-11 | `L2P-E11` | Aceptar warmup ausente o autorizar conexión de un scheduler con warmup. |
 
@@ -84,7 +84,7 @@ Esta cola contiene únicamente decisiones humanas derivadas de `auditoria/valore
 | HB-03 | `BHV-03`; `L2P-B12`–`L2P-B14` | Aceptar coste de dos ViT/forwards y matching fijo. |
 | HB-04 | `BHV-04`; `L2P-B15` | Resolver lookup instancewise frente a batchwise. |
 | HB-05 | `BHV-05`; `L2P-B17`–`L2P-B19`, `L2P-B24`, `L2P-B25`, `L2P-B27`, `L2P-B32`, `L2P-B45`, `L2P-B46` | Cerrar conjuntamente máscara de train, persistencia, reducción y estado/defaults de Adam. |
-| HB-06 | `BHV-06`; `L2P-A15`, `L2P-A16`, `L2P-A21`, `L2P-E17` | Fijar alcance de logits, tareas cubiertas, métricas y cadencia comparables. |
+| HB-06 | `BHV-06`; `L2P-A15`, `L2P-A16`, `L2P-A21`, `L2P-B24`, `L2P-B25`, `L2P-E17` | Fijar alcance de logits, tareas cubiertas, métricas y cadencia comparables. `L2P-B24`/`L2P-B25` cruzados intencionadamente con HB-05 (origen BHV-05/BHV-06). |
 | HB-07 | `BHV-07`; `L2P-B09`, `L2P-B11`, `L2P-B36` | Resolver escala/init de prompts, claves y cabeza. |
 | HB-08 | `BHV-08`; `L2P-A01`, `L2P-A02`, `L2P-B22`, `L2P-B23` | Ratificar backbone/CLS/checkpoint y tratamiento de la rama manual defectuosa. |
 | HB-09 | `BHV-09`; `L2P-B04`, `L2P-B10`, `L2P-B16`, `L2P-B19`, `L2P-B23`, `L2P-B40`, `L2P-B41` | Decidir si los flags engañosos/rotos se prohíben o se corrigen antes de ejecutar. |

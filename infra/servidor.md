@@ -32,7 +32,7 @@ Ejecución documentada sobre `galatzo`, rama `tfg-auditoria`, Mammoth `cda7f2368
 - Había dos kernels ajenos con 304 y 332 MiB; líneas 31-45. El paquete no demuestra si liberarlos o usar `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` habría hecho caber batch 128.
 - El lanzador v1 encadenaba L2P y DualPrompt y salía ante el primer fallo (`run_piloto0.sh:43-49,60-61`); DualPrompt no se ejecutó. CODA-Prompt no figuraba en ese lanzador.
 
-El paquete no contiene una corrida a batch 64. Que batch 64 cabe es un hecho previo registrado en `PLAN_MAESTRO.md:163`; no se presenta aquí como si lo demostrara el tar. El cierre de batch 128 combina ese hecho previo, el OOM v1 reproducido y la decisión de uniformidad de D31 (`PLAN_MAESTRO.md:220`). La premisa «CODA-Prompt es el método de mayor consumo» pertenece a esa decisión de diseño; el paquete v1 no contiene una medición CODA.
+El paquete no contiene una corrida a batch 64. Que batch 64 cabe es un hecho previo registrado en `PLAN_MAESTRO.md §10 (hecho duro)`; no se presenta aquí como si lo demostrara el tar. El cierre de batch 128 combina ese hecho previo, el OOM v1 reproducido y la decisión de uniformidad de D31 (`PLAN_MAESTRO.md §13 (D31)`). La premisa «CODA-Prompt es el método de mayor consumo» pertenece a esa decisión de diseño; el paquete v1 no contiene una medición CODA.
 
 ## CODA-Prompt a una época y volcado doble
 
