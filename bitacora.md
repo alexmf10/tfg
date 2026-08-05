@@ -314,3 +314,13 @@ Lo pendiente ya no son dudas del censo. Está en la lista única de `PLAN_MAESTR
 Se actualizaron los ledgers vigentes de `auditoria/cola_revision.md` y las tres colas por método para reflejar el cierre C1/C2: **231/231 valores finales escritos, 0 vacíos y 0 `REVISAR-MAESTRO`**. Las tablas de entrada situadas después de cada ledger se conservan como evidencia histórica y no se reescriben. `FC-01` figura ya como decidido y encolado, con su hueco de Fase C/D.
 
 Estado: **RESUELTO**. Evidencia: `auditoria/cola_revision.md`, `auditoria/cola_l2p.md`, `auditoria/cola_dualprompt.md`, `auditoria/cola_coda.md`.
+
+## 2026-08-05 · Definición de Fase C y continuidad de su ventana
+
+Fase C definida: criterio D43 ("los necesarios") en sustitución del tope; FC-02 aprobado por el usuario y encolado junto a FC-01; validación de D39 contabilizada como trabajo ya hecho; candidatos descartados registrados con motivo; suplencia del ejecutor (Claude Code) registrada para la ventana sin Codex; ventana de Fase C abierta durante Fase D.
+
+Estado: **DECIDIDO→D43**. La sustitución solicitada en §15 del punto «decidir la lista derivada de Fase C» no se aplicó porque ese literal no existe: la lista vigente ya contiene una acción concreta para preparar y ejecutar `FC-01`.
+
+## Parte de novedades para el usuario — Fase C definida — 2026-08-05
+
+Fase C deja de tener un cupo fijo: se harán únicamente las comprobaciones necesarias según D43. FC-01 y FC-02 quedan decididos para su ventana C/D, y la validación de D39 ya cuenta como trabajo realizado. También quedan registrados los descartes con su motivo y la suplencia de Claude Code durante la ventana sin cuota de Codex. En §15 no se sustituyó el punto pedido porque el texto literal no estaba presente; se conserva la acción vigente de `FC-01` para elevar el desajuste al maestro sin inferir una reescritura.
