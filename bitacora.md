@@ -324,3 +324,7 @@ Estado: **DECIDIDO→D43**. La sustitución solicitada en §15 del punto «decid
 ## Parte de novedades para el usuario — Fase C definida — 2026-08-05
 
 Fase C deja de tener un cupo fijo: se harán únicamente las comprobaciones necesarias según D43. FC-01 y FC-02 quedan decididos para su ventana C/D, y la validación de D39 ya cuenta como trabajo realizado. También quedan registrados los descartes con su motivo y la suplencia de Claude Code durante la ventana sin cuota de Codex. En §15 no se sustituyó el punto pedido porque el texto literal no estaba presente; se conserva la acción vigente de `FC-01` para elevar el desajuste al maestro sin inferir una reescritura.
+
+## 2026-08-05 · Precisión de §15
+
+Precisión de §15: FC-02 añadido junto a FC-01 en la acción de la ventana C/D (cierra el punto no aplicado del 5-ago).
