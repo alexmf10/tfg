@@ -4,22 +4,22 @@ Claves de evidencia: paper `2204.04799v2`; `R@dd8836e6` = repo oficial `dd8836e6
 
 ## Cierre de Fase B — 2026-08-05
 
-El ledger siguiente es el estado vigente; las tablas posteriores conservan la redacción de entrada a reunión como evidencia histórica. Un cierre administrativo no convierte en ejecutable un literal marcado `REVISAR-MAESTRO`.
+El ledger siguiente es el estado vigente; las tablas posteriores conservan la redacción de entrada a reunión como evidencia histórica. Tras C1/C2 no queda ninguna fila `REVISAR-MAESTRO`.
 
 | entradas | cierre |
 |---|---|
 | S-01 | **CERRADO→D41-B1/B6/D31/D15/D39/D40**. |
-| S-02 | **CERRADO→D41-B4/B6**; semántica Pre-T queda `REVISAR-MAESTRO`. |
+| S-02 | **CERRADO→D41-B4/B6/C1.4**; Pre-T usa longitud 20 por rama K/V. |
 | S-03 | **CERRADO→D41-B4**; el dominio de voto queda inerte con selección por muestra. |
 | S-04 | **CERRADO→D41-B4/B2**. |
-| S-05 | **CERRADO→D41-B4/B2**; signo/métrica queda `REVISAR-MAESTRO`. |
+| S-05 | **CERRADO→D41-B4/B2/C1.2**; matching `CE−λ·sim`, selección por máximo. |
 | S-06 | **CERRADO→D41-B2/D25**. |
 | S-07 | **CERRADO→D41-B2/D25/D28**. |
 | S-08 | **CERRADO→D41-B5/B2**. |
 | S-09 | **CERRADO→D41-B1/B3/D15/D39**. |
 | S-10 | **CERRADO→D19/D41-B3**. |
 | S-11 | **CERRADO→D41-B4/B6**. |
-| S-12 | **CERRADO→D41-B4/B2**; inicialización de cabeza queda `REVISAR-MAESTRO`. |
+| S-12 | **CERRADO→D41-B4/B2/C2-B-MARCO**; inicialización de cabeza = valor efectivo de Mammoth. |
 | S-13 | **CERRADO→D41-B4/B2**. |
 | S-14 | **CERRADO→D31/D41-a**. |
 | S-15 | **CERRADO→D41-B5/§9**. |
@@ -83,8 +83,8 @@ El ledger siguiente es el estado vigente; las tablas posteriores conservan la re
 ## Estado de `GRUPO_MIXTO`
 
 - **G-OPT — CERRADO→D41-B1/B6/D31/D15/D39/D40.** Combina elecciones paper para LR/betas con elecciones repo para weight decay, clipping y reset.
-- **G-PROMPT — CERRADO→D41-B4/B6.** Combina geometría/selección del paper con inicialización, copia de slots y otras conductas solo-repo; Pre-T permanece `REVISAR-MAESTRO`.
-- **G-MATCH — CERRADO→D41-B4/B6.** Combina el objetivo literal ambiguo del paper con keys, candidatos e inicializaciones especificados por el repo; el literal permanece `REVISAR-MAESTRO`.
+- **G-PROMPT — CERRADO→D41-B4/B6/C1.4.** Combina geometría/selección del paper con inicialización, copia de slots y otras conductas solo-repo; Pre-T usa longitud 20 por rama K/V.
+- **G-MATCH — CERRADO→D41-B4/B6/C1.2.** Combina keys, candidatos e inicializaciones del repo con la forma ejecutable `CE−λ·sim` y selección por máximo.
 
 No se marca G-HEAD como mixto: sus valores de cubo B provienen del repo o coinciden entre paper/repo; la diferencia repo–Mammoth del universo de logits se conserva en cubo A y comportamiento, no introduce una segunda fuente en `valor propuesto`.
 

@@ -18,13 +18,13 @@ El ledger siguiente es el estado vigente; las tablas posteriores conservan la re
 | S-06 | **CERRADO→D41-B2/D25**. |
 | S-07 | **CERRADO→D41-B4**; voto batchwise y dominio quedan `NO_APLICA`. |
 | S-08 | **CERRADO→D41-B2/D25/D28**. |
-| S-09 | **CERRADO→D41-B2/B4/B6**; inicialización de cabeza queda `REVISAR-MAESTRO`. |
+| S-09 | **CERRADO→D41-B2/B4/B6/C2-B-MARCO**; inicialización de cabeza = valor efectivo de Mammoth. |
 | S-10 | **CERRADO→D19/D41-B3**. |
 | S-11 | **CERRADO→D41-B5**. |
 | S-12 | **CERRADO→D31/D41-a**. |
 | S-13 | **CERRADO→D19/D25/D28**. |
 | S-14 | **CERRADO→D40**. |
-| S-15 | **CERRADO→D41-B2/B4/B6**; epsilon queda `REVISAR-MAESTRO`. |
+| S-15 | **CERRADO→D41-B2/B4/B6/C2-B-MARCO**; epsilon = valor efectivo de Mammoth en el entorno registrado. |
 | S-16 | **CERRADO→D41-B4**. |
 | S-17 | **CERRADO→D41-B3**. |
 | S-18, S-19 | **CERRADO→D41-B2/B4/B6**. |

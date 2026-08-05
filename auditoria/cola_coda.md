@@ -4,7 +4,7 @@ Claves de evidencia: paper `2211.13218v2`; `R@6417d4f` = repo oficial `6417d4f68
 
 ## Cierre de Fase B — 2026-08-05
 
-El ledger siguiente es el estado vigente; las tablas posteriores conservan la redacción de entrada a reunión como evidencia histórica. Las betas y la fórmula ortogonal permanecen `REVISAR-MAESTRO` aunque su entrada de cola quede administrativamente cerrada.
+El ledger siguiente es el estado vigente; las tablas posteriores conservan la redacción de entrada a reunión como evidencia histórica. Tras C1/C2 no queda ninguna fila `REVISAR-MAESTRO`.
 
 | entradas | cierre |
 |---|---|
@@ -19,7 +19,7 @@ El ledger siguiente es el estado vigente; las tablas posteriores conservan la re
 | S-09 | **CERRADO→D19**. |
 | S-10, S-11 | **CERRADO→D41-B2**. |
 | S-12 | **CERRADO→D41-B1/D25/D28**. |
-| S-13 | **CERRADO→D41-B4/B2**; el literal de betas queda `REVISAR-MAESTRO`. |
+| S-13 | **CERRADO→D41-B4/B2/C1.1**; betas finales `(0,9, 0,999)`. |
 | S-14 | **CERRADO→D41-B2/D25**. |
 | S-15 | **CERRADO→D41-B4**. |
 | S-16 | **CERRADO→D41-B5**. |
@@ -31,8 +31,8 @@ El ledger siguiente es el estado vigente; las tablas posteriores conservan la re
 | Q-04 | **CERRADO→D39**. |
 | Q-05 | **CERRADO→D31/D41-a**. |
 | Q-06 | **CERRADO→D41-B5**. |
-| Q-07 | **CERRADO→D41-B4**, sin convertir la errata del paper en betas ejecutables. |
-| Q-08 | **CERRADO→D41-B4**; diferencia de fórmula inerte con pesos cero. |
+| Q-07 | **CERRADO→D41-B4/C1.1**; errata verificada y único par ejecutable `(0,9, 0,999)`. |
+| Q-08 | **CERRADO→D41-B4/C1.3**; fórmula inaplicada con pesos cero. |
 | Q-09 | **CERRADO→D19**. |
 | Q-10 | **CERRADO→D41-B5/§9**. |
 | Q-11 | **CERRADO→D41-B3**. |
@@ -90,7 +90,7 @@ Las entradas están consolidadas por parámetro o grupo acoplado; no hay tope. U
 
 - **G-OPT — CERRADO→D41-B1/B6/D31/D15/D39/D40.**
 - **G-PROMPT — CERRADO→D41-B4/B6.** La coincidencia de 100/8/capas 1-5 se combina con las decisiones solo-paper/solo-repo ya registradas.
-- **G-ORTHO — CERRADO→D41-B4/B6.** El valor 0 hace inerte la diferencia de fórmula; B21 permanece `REVISAR-MAESTRO` para no confundir fórmula ejecutada y literal del paper.
+- **G-ORTHO — CERRADO→D41-B4/B6/C1.3.** La diferencia de fórmula queda documentada y la penalización inaplicada con `lambda_ortho=0` y `mu=0`.
 
 ## Lista agrupada de infraestructura
 

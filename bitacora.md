@@ -292,3 +292,25 @@ Acoplamientos presentes en código pero no nombrados por las tablas: (1) Dual `p
 **`REVISAR-MAESTRO`.** 65 filas: L2P 27 (`A01,A03,A14–A24,B36,B45,E04–E11,E17–E20`); Dual 20 (12 A de protocolo no cubiertas, 5 EJE mixtas/no mapeadas y B Pre-T/matching/init cabeza); CODA 18 (`A01,A03,A04,A12–A20,E09–E12,B02,B21`). Tres son cierres parciales con la parte decidida escrita; 62 quedan vacías. No se completó ninguna por inferencia.
 
 **Lista derivada de Fase C, sin decidir ejecución.** Permanece solo `FC-01`: A/B CODA scheduler truncado `T=20` frente a recalculado `T=E` (D17/D39). La pasada no produjo otro A/B empírico inequívoco; las tensiones Dual y LR–reanudación son primero revisiones/guardas de Fase D. El usuario/maestro decide si FC-01 se ejecuta.
+
+## 2026-08-05 · Compleción del censo de Fase B conforme al triaje del maestro
+
+Compleción de las filas del censo conforme al triaje del maestro con visto bueno del usuario: se aplicaron las cuatro decisiones C1 y se cerraron por clase las 61 filas C2. Se registraron la guarda de reanudación en D40, `FC-01` decidido y encolado en D41-j, D42 y los tres acoplamientos elevados. La bitácora anterior se conserva sin reescritura como estado histórico previo a este cierre.
+
+Recuento final por clase: **C1-DECISIÓN 4; A-COMÚN 24; A-FASE-D 3; A-PROTOCOLO 12; EJE-DERIVADO 0; EJE-NO-USADO 19; B-MARCO 3; total 65.** Desglose: L2P 27 (9/1/4/0/11/2, sin C1), DualPrompt 20 (7/1/5/0/4/1 + 2 C1) y CODA-Prompt 18 (8/1/3/0/4/0 + 2 C1). La clase EJE-DERIVADO queda a cero porque las filas de pasos de la escalera ya estaban cerradas antes de este censo. **`REVISAR-MAESTRO`: 0 filas.** Las marcas históricas `REVISAR` de la cascada permanecen como trazabilidad de conflictos ya resueltos, no como estados abiertos.
+
+Evidencia: `auditoria/valores_l2p.md`, `auditoria/valores_dualprompt.md`, `auditoria/valores_coda.md`; `PLAN_MAESTRO.md` D40–D42 y §15; fuentes locales `papers/dualprompt/source_v2/dual_prompt_camera_ready.tex:315-322,395,405-409,458-464,1458-1468`, `l2p/models/prompt.py:160-171,204-250`, `l2p/train_continual.py:285-295`, `papers/coda-prompt/source_v2/sections/7_appendix.tex:5` y `codaprompt/configs/cifar-100_prompt.yaml:10`.
+
+Estado: **RESUELTO→D40/D41/D42**. No se ejecutó ningún experimento.
+
+## Parte de novedades para el usuario — cierre completo del censo — 2026-08-05
+
+Se cerraron las 65 filas pendientes con una razón visible en cada una. En particular, CODA usa las betas ejecutables `(0,9, 0,999)`; DualPrompt usa longitud 20 en cada rama K y V y la forma de matching del código oficial; la regularización ortogonal de CODA queda inaplicada porque sus pesos son cero. No queda ninguna fila que deba volver al maestro.
+
+Lo pendiente ya no son dudas del censo. Está en la lista única de `PLAN_MAESTRO.md` §15 y tiene momento asignado: `FC-01` se prepara y ejecuta en su ventana de Fase C/D; después, en Fase D, se congelan backbone/checkpoint/preprocesado, se construye `configuracion_final.md`, se prueban agregación y piloto final, y solo entonces se lanza la matriz. La guarda de D40 obliga a pasar siempre el learning rate nominal al reanudar para evitar un segundo reescalado.
+
+## 2026-08-05 · Sincronización del estado vigente de las colas
+
+Se actualizaron los ledgers vigentes de `auditoria/cola_revision.md` y las tres colas por método para reflejar el cierre C1/C2: **231/231 valores finales escritos, 0 vacíos y 0 `REVISAR-MAESTRO`**. Las tablas de entrada situadas después de cada ledger se conservan como evidencia histórica y no se reescriben. `FC-01` figura ya como decidido y encolado, con su hueco de Fase C/D.
+
+Estado: **RESUELTO**. Evidencia: `auditoria/cola_revision.md`, `auditoria/cola_l2p.md`, `auditoria/cola_dualprompt.md`, `auditoria/cola_coda.md`.

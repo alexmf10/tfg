@@ -6,15 +6,15 @@ La validación programática de `valores_l2p.md`, `valores_dualprompt.md` y `val
 
 | método | filas | A | B | EJE | 12 columnas | `valor final` escrito / vacío | A/EJE sin caso/propuesta | casos B válidos |
 |---|---:|---:|---:|---:|---|---|---|---|
-| L2P | 92 | 24 | 46 | 22 | sí | 65 / 27 | 46/46 | C1=19; C2=0; C3=7; C4=18; C5=2 |
-| DualPrompt | 83 | 26 | 47 | 10 | sí | 64 / 19 | 36/36 | C1=22; C2=0; C3=7; C4=17; C5=1 |
-| CODA-Prompt | 56 | 20 | 24 | 12 | sí | 40 / 16 | 32/32 | C1=12; C2=2; C3=2; C4=7; C5=1 |
+| L2P | 92 | 24 | 46 | 22 | sí | 92 / 0 | 46/46 | C1=19; C2=0; C3=7; C4=18; C5=2 |
+| DualPrompt | 83 | 26 | 47 | 10 | sí | 83 / 0 | 36/36 | C1=22; C2=0; C3=7; C4=17; C5=1 |
+| CODA-Prompt | 56 | 20 | 24 | 12 | sí | 56 / 0 | 32/32 | C1=12; C2=2; C3=2; C4=7; C5=1 |
 
-La escritura de cierre conserva las 12 columnas y los casos de Fase A: 169 celdas finales tienen decisión explícita y 62 permanecen vacías. Otras tres filas compuestas contienen la parte decidida y la marca literal `REVISAR-MAESTRO`; por tanto el inventario conservador de revisión suma 65 filas (L2P 27, DualPrompt 20, CODA-Prompt 18). Todos los `CASO 3` conservan su marca histórica `REVISAR`; los `CASO 4`, `SOLO_PAPER` o `SOLO_REPO`; los `CASO 5`, `DEFAULT_MAMMOTH`. Las asimetrías X-01…X-09 siguen cerradas por la sanación 4-ago / D34 rev.
+La escritura final conserva las 12 columnas y los casos de Fase A: las **231/231** celdas de `valor final` tienen cierre explícito. El censo de 65 filas quedó completado el 5-ago (L2P 27, DualPrompt 20, CODA-Prompt 18) con recuento C1-DECISIÓN 4, A-COMÚN 24, A-FASE-D 3, A-PROTOCOLO 12, EJE-DERIVADO 0, EJE-NO-USADO 19 y B-MARCO 3. Quedan **0 filas `REVISAR-MAESTRO`**. Los `CASO 3` conservan su marca histórica `REVISAR` como trazabilidad, no como estado abierto; los `CASO 4`, `SOLO_PAPER` o `SOLO_REPO`; los `CASO 5`, `DEFAULT_MAMMOTH`. Las asimetrías X-01…X-09 siguen cerradas por la sanación 4-ago / D34 rev.
 
 ## Registro de cierre de Fase B — 2026-08-05
 
-Este ledger es el estado vigente y sustituye cualquier palabra «abierto» o «pendiente de reunión» que describiera la entrada a la reunión. No borra el motivo ni la evidencia histórica. `CERRADO` significa cierre administrativo contra D40/D41; las filas marcadas `REVISAR-MAESTRO` siguen fuera de una configuración ejecutable hasta que el maestro resuelva la tensión indicada.
+Este ledger es el estado vigente y sustituye cualquier palabra «abierto» o «pendiente de reunión» que describiera la entrada a la reunión. No borra el motivo ni la evidencia histórica. `CERRADO` significa cierre contra D40–D42 y el triaje completado; no queda ninguna fila fuera de la configuración por `REVISAR-MAESTRO`.
 
 ### Conflictos y grupos
 
@@ -22,8 +22,8 @@ Este ledger es el estado vigente y sustituye cualquier palabra «abierto» o «p
 |---|---|
 | CP-01, CP-02, CP-03, CP-05 | **CERRADO→D41-B4**; en CP-02 el dominio del voto queda `NO_APLICA` al fijarse selección por instancia. |
 | CP-04, CP-07 | **CERRADO→D40**. |
-| CP-06, CP-08 | **CERRADO→D41-B4/D41-B2**, con ejecutabilidad `REVISAR-MAESTRO` para el literal paper de signo/betas. |
-| CP-09 | **CERRADO→D41-B4/D41-B2**; la fórmula queda operacionalmente inerte con `lambda_ortho=0` y `mu=0`. |
+| CP-06, CP-08 | **CERRADO→C1.2/C1.1 (decisión del usuario, 5-ago)**: matching Dual en forma `CE−λ·sim`/máximo y betas CODA `(0,9, 0,999)`. |
+| CP-09 | **CERRADO→C1.3/D41-B4**; la fórmula queda inaplicada con `lambda_ortho=0` y `mu=0`. |
 | GM-01…GM-11 | **CERRADO→D41-B6**; GM-03/06/09 añaden D31/D15/D39/D40 y GM-11 añade D41-B4. |
 
 ### Sensibilidades consolidadas
@@ -33,7 +33,7 @@ Este ledger es el estado vigente y sustituye cualquier palabra «abierto» o «p
 | SA-01, SA-03, SA-05, SA-07, SA-17, SA-18, SA-28 | **CERRADO→D41-B2**. |
 | SA-02, SA-19, SA-23, SA-26 | **CERRADO→D41-B5**; SA-02 añade D41-B3 para la rama manual. |
 | SA-11 | **CERRADO→D28/D41-B2**; reanudación/loadcheck pasa como guarda de Fase D. |
-| SA-04, SA-06, SA-13, SA-14, SA-16, SA-24, SA-29 | **CERRADO→D41-B4/D41-B6**; SA-16/24 conservan `REVISAR-MAESTRO` donde el hardcode no ejecuta el literal propuesto. |
+| SA-04, SA-06, SA-13, SA-14, SA-16, SA-24, SA-29 | **CERRADO→D41-B4/D41-B6/C1**; las inicializaciones efectivas de Mammoth se cierran como B-MARCO y Pre-T/matching por C1.2/C1.4. |
 | SA-08 | **CERRADO→D40**. |
 | SA-09, SA-10 | **CERRADO→D41-B3**. |
 | SA-15 | **CERRADO→D41-B4/D41-B2**. |
@@ -86,9 +86,9 @@ Este ledger es el estado vigente y sustituye cualquier palabra «abierto» o «p
 | FD-01…FD-03 | **CERRADO→D41-B5/§9**; ImageNet-R fuera por defecto. |
 | FD-04 | **CERRADO→D39/D41-b**. |
 
-### Único candidato que no se cierra como decisión de ejecución
+### Único experimento decidido y encolado
 
-**FC-01 — A/B CODA scheduler truncado `T=20` frente a recalculado `T=E`: CANDIDATO PRE-REGISTRADO→Fase C; ejecución NO DECIDIDA (D17/D39/D41-f).** La pasada de acoplamientos no produjo otro A/B empírico inequívoco; las tensiones DualPrompt y LR–reanudación son primero guardas de ejecutabilidad de Fase D.
+**FC-01 — A/B CODA scheduler truncado `T=20` frente a recalculado `T=E`: DECIDIDO Y ENCOLADO por el usuario (5-ago), dos corridas cortas y 1 semilla; script por Modo E y ejecución del usuario en galatzo durante su hueco de Fase C/D, nunca antes (D17/D39/D41-j/D42-a).** La pasada de acoplamientos no produjo otro A/B empírico inequívoco.
 
 ## Contradicciones y asimetrías detectadas — resueltas
 
@@ -132,11 +132,11 @@ Las fuentes se indican solo para las filas B con propuesta; A/EJE permanecen sin
 | GM-04 | L2P / G-HEAD | **Coinciden:** B21–B24,B42. **Repo:** B25,B33–B37,B43. **Mammoth:** B40. | **CERRADO→D41-B2/B4/B6**. |
 | GM-05 | L2P / G-LOSS | **Coinciden:** B18,B19. **Paper:** B20. **Repo:** B46. | **CERRADO→D41-B4/B6**; λ y reducción permanecen acopladas. |
 | GM-06 | DualPrompt / G-OPT | 14 A/EJE: sin propuesta. En B: **coinciden:** optimizer y LR nominal IMR; **paper:** LR nominal CIFAR, LR efectivo CIFAR/IMR, betas; **repo:** WD, clipping, reset. | **CERRADO→D41-B1/B6/D31/D15/D39/D40**. |
-| GM-07 | DualPrompt / G-PROMPT | 2 A batch: sin propuesta. En B: **13 coincidentes** (composición, capas/tipo/pool y estados compatibles); **paper:** E-length CIFAR, semántica Pre-T, batchwise CIFAR; **repo:** candidatos de test, init prompt, copia E; **Mammoth:** permute-fix false. | **CERRADO→D41-B4/B6**; semántica Pre-T queda `REVISAR-MAESTRO`. |
-| GM-08 | DualPrompt / G-MATCH | **8 coincidentes:** top-k, mask train, query/forward, key aprendible, activación y λ; **paper:** signo/métrica; **repo:** candidatos de test, init key, no copia key. | **CERRADO→D41-B4/B6**; signo/métrica queda `REVISAR-MAESTRO`. |
-| GM-09 | CODA / G-OPT | A10/E01–E12: sin propuesta. En B: **coinciden:** B01,B03; **paper:** B02; **repo:** B04,B06. | **CERRADO→D41-B1/B6/D31/D15/D39/D40**; betas quedan `REVISAR-MAESTRO`. |
+| GM-07 | DualPrompt / G-PROMPT | 2 A batch: sin propuesta. En B: **13 coincidentes** (composición, capas/tipo/pool y estados compatibles); **paper:** E-length CIFAR, semántica Pre-T, batchwise CIFAR; **repo:** candidatos de test, init prompt, copia E; **Mammoth:** permute-fix false. | **CERRADO→D41-B4/B6/C1.4**; Pre-T usa longitud 20 por rama K/V. |
+| GM-08 | DualPrompt / G-MATCH | **8 coincidentes:** top-k, mask train, query/forward, key aprendible, activación y λ; **paper:** signo/métrica; **repo:** candidatos de test, init key, no copia key. | **CERRADO→D41-B4/B6/C1.2**; forma final `CE−λ·sim`, selección por máximo. |
+| GM-09 | CODA / G-OPT | A10/E01–E12: sin propuesta. En B: **coinciden:** B01,B03; **paper:** B02; **repo:** B04,B06. | **CERRADO→D41-B1/B6/D31/D15/D39/D40/C1.1**; betas `(0,9, 0,999)`. |
 | GM-10 | CODA / G-PROMPT | **Coinciden:** B09–B14,B16,B18. **Repo:** B15,B17,B19. **Paper:** B24. | **CERRADO→D41-B4/B6**. |
-| GM-11 | CODA / G-ORTHO | **Explicación autoral/repo:** B20,B22. **Paper:** B21. **Mammoth:** B23. | **CERRADO→D41-B4/B6**; fórmula `REVISAR-MAESTRO`, inerte con pesos cero. |
+| GM-11 | CODA / G-ORTHO | **Explicación autoral/repo:** B20,B22. **Paper:** B21. **Mammoth:** B23. | **CERRADO→D41-B4/B6/C1.3**; fórmula inaplicada con pesos cero. |
 
 Desglose nominal de los tres grupos DualPrompt, cuyas filas no tienen identificador alfanumérico en `valores_dualprompt.md`:
 
