@@ -1,7 +1,7 @@
 # Plan maestro del TFG
 ## Protocolo de comparación justa y plan operativo — v2.6
 
-**Última actualización:** miércoles 5 de agosto de 2026 · **Fase actual:** **FASE B COMPLETADA.** Censo de 65 filas completado conforme al triaje, D40–D42 registradas y `FC-01` decidido y encolado. El siguiente paso es ejecutar las acciones vivas únicamente en el hueco asignado de Fase C/D. Estado detallado y lista única de pendientes en la sección 15.
+**Última actualización:** miércoles 5 de agosto de 2026 · **Fase actual:** **FASE B COMPLETADA.** Censo de 65 filas completado conforme al triaje, D40–D43 registradas y `FC-01`/`FC-02` decididos y encolados. El siguiente paso es ejecutar las acciones vivas únicamente en el hueco asignado de Fase C/D. Estado detallado y lista única de pendientes en la sección 15.
 
 **FECHA LÍMITE DE ENTREGA: 22 de agosto de 2026** — todo ejecutado y borrador finalizado. Toda decisión de alcance se toma contra esta fecha (D36).
 
