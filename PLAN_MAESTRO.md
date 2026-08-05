@@ -130,7 +130,7 @@ Entregables: `auditoria/fuentes.md`, `plantilla.md`, `valores_l2p.md`, `valores_
 
 ### Fase C — Resolver los flags ejecutando (Modo E, presupuestada)
 
-Solo lo que el usuario/maestro haya decidido y esté encolado en las acciones vivas de §15. Por candidato: dos corridas cortas idénticas salvo en lo dudoso (si es grupo, grupo entero versión-paper vs versión-código), 1 semilla, presupuesto pequeño. La selección y ejecución se rigen por D43: se hacen los experimentos necesarios —ni uno más, ni uno menos— y el antiguo tope numérico queda únicamente como alarma de calendario. **Candidato decidido y encolado:** `FC-01`, A/B de scheduler CODA truncado `T=20` frente a recalculado `T=E`, dos corridas cortas y 1 semilla; script por Modo E y ejecución del usuario en galatzo durante su hueco de Fase C/D, nunca antes (D17/D39/D41-j/D42-a).
+Solo lo que el usuario/maestro haya decidido y esté encolado en las acciones vivas de §15. Por candidato: dos corridas cortas idénticas salvo en lo dudoso (si es grupo, grupo entero versión-paper vs versión-código), 1 semilla, presupuesto pequeño. La selección y ejecución se rigen por D43: se hacen los experimentos necesarios —ni uno más, ni uno menos— y el antiguo tope numérico queda únicamente como alarma de calendario. **Candidatos decididos y encolados:** `FC-01`, A/B de scheduler CODA truncado `T=20` frente a recalculado `T=E`, dos corridas cortas y 1 semilla (D17/D39/D41-j); y `FC-02`, A/B de learning rate en L2P y DualPrompt, cuatro corridas cortas y 1 semilla (D40/D41-k). Scripts por Modo E y ejecución del usuario en galatzo durante su hueco de Fase C/D, nunca antes (D42-a).
 
 ### Fase D — Congelar y diseñar
 

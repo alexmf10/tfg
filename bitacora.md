@@ -328,3 +328,7 @@ Fase C deja de tener un cupo fijo: se harán únicamente las comprobaciones nece
 ## 2026-08-05 · Precisión de §15
 
 Precisión de §15: FC-02 añadido junto a FC-01 en la acción de la ventana C/D (cierra el punto no aplicado del 5-ago).
+
+## 2026-08-06 · Precisión de §8/Fase C
+
+Precisión de §8/Fase C: FC-02 añadido junto a FC-01 en el párrafo de candidatos (coherencia con D41-k y §15).
