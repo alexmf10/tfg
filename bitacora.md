@@ -235,3 +235,19 @@ Estado: **RESUELTO**.
 
 - Las siete ediciones autorizadas quedaron aplicadas en `PLAN_MAESTRO.md`: desaparecen las condiciones pendientes de D39 y §15 incorpora el cierre validado.
 - La escalera `{1,5,20}` queda firme; el fallback `{2,5,20}` consta como no activado. La acción viva de validar D39 fue eliminada y la lista se renumeró.
+
+## 2026-08-05 · Muestreo personal D10 de Fase B completado
+
+El usuario completó un muestreo personal de 15 celdas, estratificado por caso y tipo sobre las tres tablas, con verificación independiente externa: **15/15 correctas, 0 fallos**. El usuario abrió personalmente los 15 enlaces a fuente primaria, cumpliendo D10.
+
+Los dos flecos de acceso del informe quedaron cerrados por el maestro con evidencia pública: los pines se cotejaron contra `auditoria/fuentes.md:54-57,133,140,149,154`, y el diff público `e75a491c..cda7f236` de `alexmf10/mammothV2` contiene únicamente `scripts_tfg/dump_config.py`.
+
+Evidencia: `auditoria/fuentes.md` §3.1 y §4; repos públicos `github.com/alexmf10/tfg` (`master`) y `github.com/alexmf10/mammothV2` (`tfg-auditoria`); verificación personal del usuario y cierre externo del maestro comunicados el 5-ago.
+
+Estado: **RESUELTO**.
+
+## Parte de novedades para el chat maestro — cierre del muestreo D10 — 2026-08-05
+
+- Muestreo D10 completado: 15 celdas estratificadas en tres tablas, 15/15 correctas y 0 fallos; el usuario abrió los 15 enlaces primarios.
+- Pines y procedencia quedaron cerrados con `auditoria/fuentes.md` y el diff público `e75a491c..cda7f236`, limitado a `scripts_tfg/dump_config.py`.
+- En §15 quedan cumplidas las acciones 1–5; la única acción viva es abrir la reunión de Fase B con el kit de traspaso.
