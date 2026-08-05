@@ -251,3 +251,44 @@ Estado: **RESUELTO**.
 - Muestreo D10 completado: 15 celdas estratificadas en tres tablas, 15/15 correctas y 0 fallos; el usuario abrió los 15 enlaces primarios.
 - Pines y procedencia quedaron cerrados con `auditoria/fuentes.md` y el diff público `e75a491c..cda7f236`, limitado a `scripts_tfg/dump_config.py`.
 - En §15 quedan cumplidas las acciones 1–5; la única acción viva es abrir la reunión de Fase B con el kit de traspaso.
+
+## 2026-08-05 · Cierre de la reunión de Fase B
+
+Reunión de Fase B celebrada; PD-01…04 resueltos; D40/D41 registradas; valores finales escritos en las tres tablas; cola cerrada; pasada de acoplamientos ejecutada (resultado: LR y pasos recalculados con `drop_last=false` cerrado; voto batchwise inerte con selección por instancia; tres acoplamientos ausentes elevados y 65 filas `REVISAR-MAESTRO`); FASE B COMPLETADA.
+
+Evidencia: `PLAN_MAESTRO.md` D40/D41 y §15; `auditoria/valores_{l2p,dualprompt,coda}.md`; `auditoria/cola_revision.md` y las tres colas por método; Mammoth `4353bc18897e71362a481ff24e59f025069c1817`.
+
+Estado: **RESUELTO→D40/D41**, con revisiones explícitas para el maestro y guardas de Fase D; ninguna implica ejecución automática.
+
+## Parte de novedades para el chat maestro — cierre de Fase B — 2026-08-05
+
+**D40, verificado estáticamente.** En Mammoth `4353bc1`, L2P (`models/l2p.py:66`) y DualPrompt (`models/dualprompt.py:71`) aplican exactamente `LR_aplicado = LR_nominal × batch_size / 256`; CODA entrega `self.args.lr` sin factor de batch a Adam (`models/coda_prompt.py:52-60`). Con batch 64: L2P **0,12→0,03**, DualPrompt **0,02→0,005**, CODA **0,001→0,001**. La cadena común termina en `models/utils/continual_model.py:285-297`.
+
+**Censo `CONFLICTO→PAPER` (7/7/2).** Abreviaturas: `PL`=`papers/l2p/source_v2/L2P_arxiv.tex`; `RL`=`l2p/configs/cifar100_l2p.py`; `PD`=`papers/dualprompt/source_v2/dual_prompt_camera_ready.tex`; `RD`=`l2p/configs/cifar100_dualprompt.py`; `PC`=`papers/coda-prompt/source_v2`; `RC`=`codaprompt`.
+
+| método/fila | paper | repo | final | localizadores paper / repo |
+|---|---|---|---|---|
+| L2P B06 Lp | 5 | 10 | 5 | `PL:565-567` / `RL:100` |
+| L2P B07 top-k | 5 | 4 | 5 | `PL:565-567` / `RL:101` |
+| L2P B08 tokens | 25 | 40 | 25 | `PL:565-567,296-301` / `RL:100-101`; `l2p/models/prompt.py:234-240` |
+| L2P B15 selección | por instancia | batchwise | por instancia | `PL:122,168,227-228,313-323` / `RL:109`; `l2p/models/prompt.py:210-216` |
+| L2P B20 λ pull | 0,5 | 1,0 | 0,5 | `PL:569-570` / `RL:121-122` |
+| L2P B29 LR aplicado | 0,03 | 0,015 con b128 | 0,12→0,03 con b64 | `PL:562-565` / `l2p/README.md:66`; `l2p/train_continual.py:593-595,637-648` |
+| L2P B38 params | 46.080 | 84.480 | 46.080 | `PL:567-570,289-301` / `RL:99-103`; `l2p/models/prompt.py:173-199` |
+| Dual L_e CIFAR | 20 | 5 | 20 | `PD:1315,1458-1468` / `RD:103-105`; `l2p/models/prompt.py:160-175` |
+| Dual Pre-T | L total dividido K/V | L por K y L por V | `REVISAR-MAESTRO` | `PD:395,405-409,1315` / `l2p/models/prompt.py:160-171` |
+| Dual batchwise CIFAR | por muestra | true | false | `PD:1296-1304` / `RD:113`; `l2p/models/prompt.py:211-216` |
+| Dual matching | `CE+λγ`, argmin (ambiguo) | `CE−λsim`, máximo | `REVISAR-MAESTRO` | `PD:315-322,458-464` / `l2p/models/prompt.py:204-250`; `l2p/train_continual.py:285-295` |
+| Dual LR nominal CIFAR | 0,005 | 0,03 | 0,02→0,005 | `PD:1315` / `RD:38` |
+| Dual LR aplicado CIFAR | 0,005 | `0,03×batch/256` | 0,02→0,005 | `PD:1315` / `l2p/train_continual.py:593-648` |
+| Dual LR aplicado IMR | 0,005 | `0,005×batch/256` | fuera por defecto | `PD:1315` / `l2p/configs/imr_dualprompt.py:25,38`; `l2p/train_continual.py:637-648` |
+| CODA B02 betas | β1=0,9 y β1=0,999; β2 ausente | (0,9,0,999) | `REVISAR-MAESTRO` | `PC/sections/7_appendix.tex:5` / `RC/configs/cifar-100_prompt.yaml:10`; `RC/learners/default.py:240-255` |
+| CODA B21 ortho | norma-2 | MSE medio | norma-2 (D41-B4); definición exacta `REVISAR-MAESTRO`, inerte | `PC/sections/4_method.tex:49-54` / `RC/models/zoo.py:178-198` |
+
+**Pasada de acoplamientos.** Con `drop_last=false`, 5.000/64 da **79 pasos/época** (último lote 8): `{79,395,1580}` por tarea y `{790,3950,15800}` en diez tareas. L2P `k=5`, `λ=0,5` y reducción sin `/k` implican escala aproximada `kλ=2,5`. La selección final por instancia vuelve `NO_APLICA` el voto batchwise y su dominio en L2P/Dual; CODA `mu=0` y `lambda_ortho=0` vuelven inerte norma-2 frente a MSE. L2P/Dual mantienen LR constante; CODA usa cosine por tarea con `K=E` (E=1 conserva LR base). Normalización+checkpoint siguen diferidos juntos a Fase D.
+
+Acoplamientos presentes en código pero no nombrados por las tablas: (1) Dual `pool_size–top_k–N_TASKS` (final 10–1–10 válido); (2) L2P/Dual mutan `args.lr` al aplicado y el checkpoint lo guarda: heredarlo sin volver a pasar el nominal lo reescala otra vez a 0,0075/0,00125 con b64; guarda bloqueante de Fase D; (3) la tabla Dual no explicita que `distributed=dp` haría el voto por shard, hoy inerte.
+
+**`REVISAR-MAESTRO`.** 65 filas: L2P 27 (`A01,A03,A14–A24,B36,B45,E04–E11,E17–E20`); Dual 20 (12 A de protocolo no cubiertas, 5 EJE mixtas/no mapeadas y B Pre-T/matching/init cabeza); CODA 18 (`A01,A03,A04,A12–A20,E09–E12,B02,B21`). Tres son cierres parciales con la parte decidida escrita; 62 quedan vacías. No se completó ninguna por inferencia.
+
+**Lista derivada de Fase C, sin decidir ejecución.** Permanece solo `FC-01`: A/B CODA scheduler truncado `T=20` frente a recalculado `T=E` (D17/D39). La pasada no produjo otro A/B empírico inequívoco; las tensiones Dual y LR–reanudación son primero revisiones/guardas de Fase D. El usuario/maestro decide si FC-01 se ejecuta.

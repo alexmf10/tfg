@@ -2,9 +2,43 @@
 
 Esta cola contiene únicamente decisiones humanas derivadas de `auditoria/valores_l2p.md` y hallazgos de `auditoria/comportamiento_l2p.md`. No rellena `valor final` ni ejecuta cambios/experimentos. `R:dd8836e6` identifica el repo oficial @ `dd8836e6e372df29f03d83bf3dc3a806114e9d8e`; `M:cda7f236`, Mammoth @ `cda7f23681f7bffacee460d99e990bc803bccf04`.
 
+## Cierre de Fase B — 2026-08-05
+
+El ledger siguiente es el estado vigente; las tablas posteriores conservan la redacción de entrada a reunión solo como evidencia histórica.
+
+| entradas | cierre |
+|---|---|
+| C-01…C-05, C-07 | **CERRADO→D41-B4**. |
+| C-06 | **CERRADO→D40**: nominal 0,12 → aplicado 0,03 con batch 64. |
+| GM-01…GM-05 | **CERRADO→D41-B6**; GM-03 añade D41-B1/D31/D15/D39/D40. |
+| S-01 | **CERRADO→D41-B2**. |
+| S-02 | **CERRADO→D41-B5/D41-B3**. |
+| S-03, S-05 | **CERRADO→D41-B2**. |
+| S-04 | **CERRADO→D41-B4/B6**. |
+| S-06 | **CERRADO→D41-B2/D25**. |
+| S-07 | **CERRADO→D41-B4**; voto batchwise y dominio quedan `NO_APLICA`. |
+| S-08 | **CERRADO→D41-B2/D25/D28**. |
+| S-09 | **CERRADO→D41-B2/B4/B6**; inicialización de cabeza queda `REVISAR-MAESTRO`. |
+| S-10 | **CERRADO→D19/D41-B3**. |
+| S-11 | **CERRADO→D41-B5**. |
+| S-12 | **CERRADO→D31/D41-a**. |
+| S-13 | **CERRADO→D19/D25/D28**. |
+| S-14 | **CERRADO→D40**. |
+| S-15 | **CERRADO→D41-B2/B4/B6**; epsilon queda `REVISAR-MAESTRO`. |
+| S-16 | **CERRADO→D41-B4**. |
+| S-17 | **CERRADO→D41-B3**. |
+| S-18, S-19 | **CERRADO→D41-B2/B4/B6**. |
+| S-20, S-21 | **CERRADO→D41-B3**. |
+| S-22 | **CERRADO→D28/D41-B2**; LR–reanudación pasa como guarda de Fase D. |
+| S-23 | **CERRADO→D41-B2**. |
+| CD-01 | **CERRADO→D34 rev.** |
+| FD-01 | **CERRADO→D41-B5/§9**. |
+| NC-01…NC-11 | **CERRADO**, respectivamente, por `D41-B2; D41-B5/B3; D31/D41-a; D41-B2; D41-B2; D41-B2/D25; D41-B2/B4; D41-B2/B4/B6; D41-B2/B4; D41-B3; D41-B2`. |
+| HB-01…HB-19 | **CERRADO**, respectivamente, por `D41-B2; D41-B2; D41-B2/D25; D41-B4; D41-B2/B4/B6; D41-B1/B2/D25/D28; D41-B2/B4; D41-B2/B5/B3; D41-B3; D19/D41-B3; D40; D15/D39/D41-B3; D31/D41-a; D41-B5; D41-B4; D41-B3; D41-B4; D41-B3; D28/D41-B2`. |
+
 ## Conflictos resueltos provisionalmente por la cascada
 
-| ítem | referencia de fila | decisión pendiente | evidencia mínima |
+| ítem | referencia de fila | cuestión que llegó pendiente | evidencia mínima |
 |---|---|---|---|
 | C-01 | `L2P-B06` | Confirmar longitud propuesta 5 frente a 10 del repo. | Paper `L2P_arxiv.tex:565-567`; R:dd8836e6 `configs/cifar100_l2p.py:100`. |
 | C-02 | `L2P-B07` | Confirmar top-k propuesto 5 frente a 4 del repo. | Paper `L2P_arxiv.tex:565-567`; R:dd8836e6 `configs/cifar100_l2p.py:101`. |
@@ -16,7 +50,7 @@ Esta cola contiene únicamente decisiones humanas derivadas de `auditoria/valore
 
 ## Grupos mixtos
 
-| ítem | grupo y filas | decisión pendiente | motivo |
+| ítem | grupo y filas | cuestión que llegó pendiente | motivo |
 |---|---|---|---|
 | GM-01 | `G-PROMPT`: `L2P-B01`–`L2P-B09`, `L2P-B38`, `L2P-B39` | Revisar el bloque completo antes de fijar longitud/top-k/inicialización. | La cascada toma longitud/top-k del paper, inicialización del repo y otros miembros coincidentes. |
 | GM-02 | `G-QUERY`: `L2P-B10`–`L2P-B17`, `L2P-B41`, `L2P-B44` | Revisar conjuntamente keys, selección batchwise, dominio de voto y clave predefinida. | La selección por instancia viene del paper; inicialización/clave externa/dominio local provienen del código oficial. |
@@ -49,19 +83,19 @@ Esta cola contiene únicamente decisiones humanas derivadas de `auditoria/valore
 | MEDIA | `S-17` · fidelidad de la CLI L2P | L2P · ambos | Booleans `type=bool`, `pull_constraint` sin conversor, mask rota, `freeze` mal tipado y `global_pool`/`predefined_key` ignorados pueden producir ejecuciones distintas a lo solicitado. | `L2P-B04`, `L2P-B10`, `L2P-B16`, `L2P-B19`, `L2P-B23`, `L2P-B40`, `L2P-B41`; M:cda7f236 `models/l2p.py:28-44`; `models/l2p_utils/l2p_model.py:23-37,116-134`. |
 | MEDIA | `S-18` · transformaciones antes/de la cabeza | L2P · ambos | Normalización, weight norm, temperatura, dropout, reweight y pre-logits están ausentes o fijos; son cambios directos del clasificador efectivo. | `L2P-B33`–`L2P-B35`, `L2P-B37`, `L2P-B42`, `L2P-B43`; R:dd8836e6 `models/vit.py:461-477`; M:cda7f236 `models/l2p_utils/vit_prompt.py:62-66,106-125`. |
 | MEDIA | `S-19` · persistencia y reducción de pérdida | L2P · ambos | Pool/cabeza, CE/forma del pull y reducción exacta están fijados; top-k escala también la magnitud del pull al no dividir por k. | `L2P-B17`–`L2P-B19`, `L2P-B24`, `L2P-B46`; M:cda7f236 `models/l2p_utils/prompt.py:103-110`; `models/l2p.py:71-89`. |
-| MEDIA | `S-23` · warmup | L2P · ambos | El repo fija cero y Mammoth no expone ni conecta warmup para L2P; al ser no configurable y poder cambiar la fase inicial de optimización, requiere decisión humana. | `L2P-E11`; R:dd8836e6 `configs/cifar100_l2p.py:43`; M:cda7f236 `utils/args.py:309-330`; `utils/schedulers.py:13-35,57-80`. |
+| MEDIA | `S-23` · warmup | L2P · ambos | El repo fija cero y Mammoth no expone ni conecta warmup para L2P; llegó a revisión por poder cambiar la fase inicial de optimización. | `L2P-E11`; R:dd8836e6 `configs/cifar100_l2p.py:43`; M:cda7f236 `utils/args.py:309-330`; `utils/schedulers.py:13-35,57-80`. |
 | BAJA | `S-16` · λ del pull | L2P · ambos | Hay conflicto 0,5 frente a 1,0, pero el propio paper reporta poca sensibilidad en un rango amplio. | `L2P-B20`; paper `L2P_arxiv.tex:569-570`; R:dd8836e6 `configs/cifar100_l2p.py:121-122`. |
 
 ## Cubo dudoso y fuente incompleta
 
-| ítem | referencia de fila | decisión pendiente |
+| ítem | referencia de fila | cuestión que llegó pendiente |
 |---|---|---|
 | CD-01 | `L2P-A19` | Confirmar si precisión/`code_optimization` queda en cubo A o debe tratarse como control de receta B; actualmente `LOW`, `CUBO_DUDOSO`. |
 | FD-01 | `L2P-A04`, `L2P-A11`, `L2P-E02` | Decidir si se excluye ImageNet-R de la ejecución L2P o se autoriza construir manualmente una receta; no existe preset comparable y batch/duración permanecen `NO_DETERMINABLE_ESTATICO`. |
 
 ## Valores/comportamientos no configurables en Mammoth
 
-| ítem | referencia de fila | decisión pendiente |
+| ítem | referencia de fila | cuestión que llegó pendiente |
 |---|---|---|
 | NC-01 | `L2P-A01`, `L2P-B22`, `L2P-B23` | Aceptar ViT-B/16, presencia de CLS y filtro prompt/head hardcodeados o autorizar cambio de código. |
 | NC-02 | `L2P-A02` | Elegir ruta timm funcional o reparar/descartar la rama manual del checkpoint. |
@@ -77,7 +111,7 @@ Esta cola contiene únicamente decisiones humanas derivadas de `auditoria/valore
 
 ## Hallazgos de comportamiento que requieren cierre
 
-| ítem | referencia | decisión pendiente |
+| ítem | referencia | cuestión que llegó pendiente |
 |---|---|---|
 | HB-01 | `BHV-01`; `L2P-B01`, `L2P-B02` | Ratificar que el objeto de estudio es L2P original de input prompting, no L2P++ prefix multicapa. |
 | HB-02 | `BHV-02`; `L2P-B03` | Elegir tratamiento posicional repo oficial o Mammoth. |

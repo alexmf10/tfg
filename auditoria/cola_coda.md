@@ -2,6 +2,45 @@
 
 Claves de evidencia: paper `2211.13218v2`; `R@6417d4f` = repo oficial `6417d4f68754be68b697c7ca2323ee61e791e1a3`; `M@e75a491` = implementación Mammoth base `e75a491c69fd729edeb01431afb753d9157d9a81` (la rama auditada está en `cda7f23681f7bffacee460d99e990bc803bccf04`).
 
+## Cierre de Fase B — 2026-08-05
+
+El ledger siguiente es el estado vigente; las tablas posteriores conservan la redacción de entrada a reunión como evidencia histórica. Las betas y la fórmula ortogonal permanecen `REVISAR-MAESTRO` aunque su entrada de cola quede administrativamente cerrada.
+
+| entradas | cierre |
+|---|---|
+| S-01 | **CERRADO→D41-B1/B6/D31/D15/D39/D40**. |
+| S-02 | **CERRADO→D41-B2/B5**. |
+| S-03 | **CERRADO→D41-B4/B6**; fórmula inerte con pesos cero. |
+| S-04 | **CERRADO→D31/D41-a**. |
+| S-05 | **CERRADO→D41-d/D41-B5**. |
+| S-06 | **CERRADO→D19/D41-B3**. |
+| S-07 | **CERRADO→D41-B2**. |
+| S-08 | **CERRADO→D41-B2/B4/B6**. |
+| S-09 | **CERRADO→D19**. |
+| S-10, S-11 | **CERRADO→D41-B2**. |
+| S-12 | **CERRADO→D41-B1/D25/D28**. |
+| S-13 | **CERRADO→D41-B4/B2**; el literal de betas queda `REVISAR-MAESTRO`. |
+| S-14 | **CERRADO→D41-B2/D25**. |
+| S-15 | **CERRADO→D41-B4**. |
+| S-16 | **CERRADO→D41-B5**. |
+| S-17 | **CERRADO→D41-B2**. |
+| S-18 | **CERRADO→D41-B3/D39**. |
+| S-19, S-20 | **CERRADO→D41-B2/B4**. |
+| Q-01 | **CERRADO→D41-B1/B6/D31/D15/D39/D40**. |
+| Q-02, Q-03 | **CERRADO→D41-B4/B6**. |
+| Q-04 | **CERRADO→D39**. |
+| Q-05 | **CERRADO→D31/D41-a**. |
+| Q-06 | **CERRADO→D41-B5**. |
+| Q-07 | **CERRADO→D41-B4**, sin convertir la errata del paper en betas ejecutables. |
+| Q-08 | **CERRADO→D41-B4**; diferencia de fórmula inerte con pesos cero. |
+| Q-09 | **CERRADO→D19**. |
+| Q-10 | **CERRADO→D41-B5/§9**. |
+| Q-11 | **CERRADO→D41-B3**. |
+| Q-12 | **CERRADO→D41-B5**. |
+| Q-13 | **CERRADO→D41-B2/B3**, según control. |
+| G-OPT | **CERRADO→D41-B1/B6/D31/D15/D39/D40**. |
+| G-PROMPT, G-ORTHO | **CERRADO→D41-B4/B6**. |
+
 ## Cola de sensibilidad S
 
 Las entradas están consolidadas por parámetro o grupo acoplado; no hay tope. Una entrada agrupada cubre todas las filas marcadas con esa S en `valores_coda.md`.
@@ -31,7 +70,7 @@ Las entradas están consolidadas por parámetro o grupo acoplado; no hay tope. U
 
 ## Cola de revisión por cascada y grupos
 
-| prioridad | elemento | disparador | por qué queda abierto | evidencia mínima para revisión humana |
+| prioridad | elemento | disparador | motivo de entrada a la reunión | evidencia mínima |
 |---|---|---|---|---|
 | ALTA | Q-01 · G-OPT | `GRUPO_MIXTO` | Betas se remiten literalmente al paper ambiguo; weight decay y reset proceden solo del repo; batch y duración son A/EJE sin propuesta. No se resuelve la mezcla. | Filas A10, E01-E12 y B01-B04/B06 de `valores_coda.md`; OBS-05. |
 | ALTA | Q-02 · G-ORTHO | `GRUPO_MIXTO` + CASO 3 | GS online y λ=0 vienen de la explicación autoral; la fórmula queda en paper; `mu` solo existe en Mammoth. | Filas B20-B23; paper `sections/4_method.tex:47-66`; repo `README.md:16-17`; Mammoth doble peso. |
@@ -49,9 +88,9 @@ Las entradas están consolidadas por parámetro o grupo acoplado; no hay tope. U
 
 ## Estado de `GRUPO_MIXTO`
 
-- **G-OPT:** abierto; no se toma una receta conjunta hasta revisión.
-- **G-PROMPT:** abierto; la coincidencia de 100/8/capas 1-5 no resuelve las decisiones solo-paper/solo-repo del grupo.
-- **G-ORTHO:** abierto; especialmente sensible porque el valor actual 0 hace inerte la diferencia de fórmula, mientras el paper muestra alto impacto al activar/ablar la regularización.
+- **G-OPT — CERRADO→D41-B1/B6/D31/D15/D39/D40.**
+- **G-PROMPT — CERRADO→D41-B4/B6.** La coincidencia de 100/8/capas 1-5 se combina con las decisiones solo-paper/solo-repo ya registradas.
+- **G-ORTHO — CERRADO→D41-B4/B6.** El valor 0 hace inerte la diferencia de fórmula; B21 permanece `REVISAR-MAESTRO` para no confundir fórmula ejecutada y literal del paper.
 
 ## Lista agrupada de infraestructura
 

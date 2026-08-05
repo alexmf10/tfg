@@ -4,13 +4,91 @@
 
 La validación programática de `valores_l2p.md`, `valores_dualprompt.md` y `valores_coda.md` da **PASS** para la estructura normativa:
 
-| método | filas | A | B | EJE | 12 columnas | `valor final` vacío | A/EJE sin caso/propuesta | casos B válidos |
+| método | filas | A | B | EJE | 12 columnas | `valor final` escrito / vacío | A/EJE sin caso/propuesta | casos B válidos |
 |---|---:|---:|---:|---:|---|---|---|---|
-| L2P | 92 | 24 | 46 | 22 | sí | 92/92 | 46/46 | C1=19; C2=0; C3=7; C4=18; C5=2 |
-| DualPrompt | 83 | 26 | 47 | 10 | sí | 83/83 | 36/36 | C1=22; C2=0; C3=7; C4=17; C5=1 |
-| CODA-Prompt | 56 | 20 | 24 | 12 | sí | 56/56 | 32/32 | C1=12; C2=2; C3=2; C4=7; C5=1 |
+| L2P | 92 | 24 | 46 | 22 | sí | 65 / 27 | 46/46 | C1=19; C2=0; C3=7; C4=18; C5=2 |
+| DualPrompt | 83 | 26 | 47 | 10 | sí | 64 / 19 | 36/36 | C1=22; C2=0; C3=7; C4=17; C5=1 |
+| CODA-Prompt | 56 | 20 | 24 | 12 | sí | 40 / 16 | 32/32 | C1=12; C2=2; C3=2; C4=7; C5=1 |
 
-Todos los `CASO 3` llevan `REVISAR`; los `CASO 4`, `SOLO_PAPER` o `SOLO_REPO`; los `CASO 5`, `DEFAULT_MAMMOTH`. No se ha modificado ninguna tabla por anchura, nombre de caso o valor final. Las asimetrías semánticas de etiquetado X-01…X-09 se cierran abajo por la sanación 4-ago / D34 rev.
+La escritura de cierre conserva las 12 columnas y los casos de Fase A: 169 celdas finales tienen decisión explícita y 62 permanecen vacías. Otras tres filas compuestas contienen la parte decidida y la marca literal `REVISAR-MAESTRO`; por tanto el inventario conservador de revisión suma 65 filas (L2P 27, DualPrompt 20, CODA-Prompt 18). Todos los `CASO 3` conservan su marca histórica `REVISAR`; los `CASO 4`, `SOLO_PAPER` o `SOLO_REPO`; los `CASO 5`, `DEFAULT_MAMMOTH`. Las asimetrías X-01…X-09 siguen cerradas por la sanación 4-ago / D34 rev.
+
+## Registro de cierre de Fase B — 2026-08-05
+
+Este ledger es el estado vigente y sustituye cualquier palabra «abierto» o «pendiente de reunión» que describiera la entrada a la reunión. No borra el motivo ni la evidencia histórica. `CERRADO` significa cierre administrativo contra D40/D41; las filas marcadas `REVISAR-MAESTRO` siguen fuera de una configuración ejecutable hasta que el maestro resuelva la tensión indicada.
+
+### Conflictos y grupos
+
+| entradas | cierre |
+|---|---|
+| CP-01, CP-02, CP-03, CP-05 | **CERRADO→D41-B4**; en CP-02 el dominio del voto queda `NO_APLICA` al fijarse selección por instancia. |
+| CP-04, CP-07 | **CERRADO→D40**. |
+| CP-06, CP-08 | **CERRADO→D41-B4/D41-B2**, con ejecutabilidad `REVISAR-MAESTRO` para el literal paper de signo/betas. |
+| CP-09 | **CERRADO→D41-B4/D41-B2**; la fórmula queda operacionalmente inerte con `lambda_ortho=0` y `mu=0`. |
+| GM-01…GM-11 | **CERRADO→D41-B6**; GM-03/06/09 añaden D31/D15/D39/D40 y GM-11 añade D41-B4. |
+
+### Sensibilidades consolidadas
+
+| entradas | cierre |
+|---|---|
+| SA-01, SA-03, SA-05, SA-07, SA-17, SA-18, SA-28 | **CERRADO→D41-B2**. |
+| SA-02, SA-19, SA-23, SA-26 | **CERRADO→D41-B5**; SA-02 añade D41-B3 para la rama manual. |
+| SA-11 | **CERRADO→D28/D41-B2**; reanudación/loadcheck pasa como guarda de Fase D. |
+| SA-04, SA-06, SA-13, SA-14, SA-16, SA-24, SA-29 | **CERRADO→D41-B4/D41-B6**; SA-16/24 conservan `REVISAR-MAESTRO` donde el hardcode no ejecuta el literal propuesto. |
+| SA-08 | **CERRADO→D40**. |
+| SA-09, SA-10 | **CERRADO→D41-B3**. |
+| SA-15 | **CERRADO→D41-B4/D41-B2**. |
+| SA-12, SA-22 | **CERRADO→D31/D15/D39/D40/D41-B1**, según método. |
+| SA-20 | **CERRADO→D15/D39/D41-B3**. |
+| SA-21 | **CERRADO→D19/D41-B3**. |
+| SA-25 | **CERRADO→D31/D41-a**. |
+| SA-27 | **CERRADO→D19**. |
+| SM-01, SM-02, SM-07, SM-09…SM-14, SM-17, SM-20, SM-21, SM-23, SM-24, SM-27 | **CERRADO→D41-B2/D41-B4/D41-B6**, según procedencia ya escrita en cada fila. |
+| SM-03 | **CERRADO→D19/D41-B3**. |
+| SM-04, SM-16, SM-26 | **CERRADO→D41-B5/§9**. |
+| SM-05, SM-15 | **CERRADO→D31/D41-a**. |
+| SM-06, SM-22 | **CERRADO→D25/D26/D28/D41-B1**. |
+| SM-08, SM-28 | **CERRADO→D41-B3**; SM-28 añade D39. |
+| SM-18 | **CERRADO→D41-B2**. |
+| SM-19 | **CERRADO→D19**. |
+| SM-25 | **CERRADO→D41-B4**. |
+| SB-01 | **CERRADO→D41-B4**. |
+| SB-02, SB-04, SB-05 | **CERRADO→D41-B2/D41-B4**. |
+| SB-03 | **CERRADO→D41-B2/D41-B4**. |
+
+### CD, NC, HB y FD
+
+| entradas | cierre |
+|---|---|
+| CD-01 | **CERRADO→D34 rev.** |
+| CD-02 | **CERRADO→D34 rev./D41-B2**. |
+| CD-03 | **CERRADO→D31/D41-a**. |
+| CD-04 | **CERRADO→D28/D41-B2**; la reanudación con LR mutado pasa como guarda de Fase D. |
+| NC-01…NC-03 | **CERRADO→D41-B2/B4/B5** según arquitectura, receta y checkpoint. |
+| NC-04 | **CERRADO→D31/D41-a**. |
+| NC-05…NC-08 | **CERRADO→D41-B2/B4/B6/D25/D28** según la procedencia ya registrada. |
+| NC-09 | **CERRADO→D39/D41-B2**. |
+| NC-10 | **CERRADO→D41-B3**. |
+| NC-11 | **CERRADO→D41-B3** para overrides L2P; **D41-B2** para conductas fijas Dual/CODA. |
+| NC-12 | **CERRADO→D19/D41-B3**. |
+| NC-13 | **CERRADO→D41-B5/§9**. |
+| HB-01…HB-07 | **CERRADO→D41-B2/B4/B5/B6/D25/D28**, según su referencia consolidada. |
+| HB-08 | **CERRADO→D40**. |
+| HB-09 | **CERRADO→D39/D41-b**. |
+| HB-10 | **CERRADO→D41-B3**. |
+| HB-11 | **CERRADO→D31/D41-a/D41-B2**. |
+| HB-12 | **CERRADO→D41-c/D41-d/D41-B5**. |
+| HB-13 | **CERRADO→D19/D41-B3**. |
+| HB-14 | **CERRADO→D41-B4/B6**. |
+| HB-15 | **CERRADO→D41-B3**. |
+| HB-16, HB-17 | **CERRADO→D41-B2/B4/B6**. |
+| HB-18 | **CERRADO→D41-B2/D25**. |
+| HB-19 | **CERRADO→D41-B3** para `disable_log=1`; reanudación **D28/D41-B2**. |
+| FD-01…FD-03 | **CERRADO→D41-B5/§9**; ImageNet-R fuera por defecto. |
+| FD-04 | **CERRADO→D39/D41-b**. |
+
+### Único candidato que no se cierra como decisión de ejecución
+
+**FC-01 — A/B CODA scheduler truncado `T=20` frente a recalculado `T=E`: CANDIDATO PRE-REGISTRADO→Fase C; ejecución NO DECIDIDA (D17/D39/D41-f).** La pasada de acoplamientos no produjo otro A/B empírico inequívoco; las tensiones DualPrompt y LR–reanudación son primero guardas de ejecutabilidad de Fase D.
 
 ## Contradicciones y asimetrías detectadas — resueltas
 
@@ -30,7 +108,7 @@ Todos los `CASO 3` llevan `REVISAR`; los `CASO 4`, `SOLO_PAPER` o `SOLO_REPO`; l
 
 Cada línea agrupa los conflictos que deben revisarse en bloque; no altera el valor propuesto de Fase A.
 
-| id | método / grupo | miembros `CASO 3` | decisión pendiente y evidencia |
+| id | método / grupo | miembros `CASO 3` | cuestión que llegó pendiente y evidencia |
 |---|---|---|---|
 | CP-01 | L2P / G-PROMPT | `L2P-B06`, `B07`, `B08`, `B38` | Longitud5 vs10, top-k5 vs4 y derivados25 tokens/46.080 params frente a40/84.480; paper `L2P_arxiv.tex:565-567`, repo `configs/cifar100_l2p.py:99-101`. |
 | CP-02 | L2P / G-QUERY | `L2P-B15` | Lookup por instancia del paper frente a voto batchwise de repo/Mammoth; paper `:122,313-323`, R `models/prompt.py:210-216`. |
@@ -48,17 +126,17 @@ Las fuentes se indican solo para las filas B con propuesta; A/EJE permanecen sin
 
 | id | grupo | miembros y fuente de `valor propuesto` | estado |
 |---|---|---|---|
-| GM-01 | L2P / G-PROMPT | **Coinciden:** B01,B02,B04,B05. **Paper:** B06–B08,B38. **Repo:** B03,B09,B39. | Abierto; revisar geometría e inicialización en bloque. |
-| GM-02 | L2P / G-QUERY | **Coinciden:** B10,B12–B14,B16–B17. **Paper:** B15. **Repo:** B11,B41,B44. | Abierto; incluye selección y dominio de voto. |
-| GM-03 | L2P / G-OPT | A10–A12/E01–E16/E21–E22: sin propuesta. En B: **coinciden:** B26,B28; **paper:** B27,B29; **repo:** B30–B32; **Mammoth:** B45. | Abierto; batch–LR–Adam–duración. |
-| GM-04 | L2P / G-HEAD | **Coinciden:** B21–B24,B42. **Repo:** B25,B33–B37,B43. **Mammoth:** B40. | Abierto; lectura, CLS, máscara y transformaciones de cabeza. |
-| GM-05 | L2P / G-LOSS | **Coinciden:** B18,B19. **Paper:** B20. **Repo:** B46. | Abierto; λ y reducción `/batch` sin `/k` no deben separarse. |
-| GM-06 | DualPrompt / G-OPT | 14 A/EJE: sin propuesta. En B: **coinciden:** optimizer y LR nominal IMR; **paper:** LR nominal CIFAR, LR efectivo CIFAR/IMR, betas; **repo:** WD, clipping, reset. | Abierto; 23 filas totales. |
-| GM-07 | DualPrompt / G-PROMPT | 2 A batch: sin propuesta. En B: **13 coincidentes** (composición, capas/tipo/pool y estados compatibles); **paper:** E-length CIFAR, semántica Pre-T, batchwise CIFAR; **repo:** candidatos de test, init prompt, copia E; **Mammoth:** permute-fix false. | Abierto; 22 filas totales. |
-| GM-08 | DualPrompt / G-MATCH | **8 coincidentes:** top-k, mask train, query/forward, key aprendible, activación y λ; **paper:** signo/métrica; **repo:** candidatos de test, init key, no copia key. | Abierto; 12 filas. |
-| GM-09 | CODA / G-OPT | A10/E01–E12: sin propuesta. En B: **coinciden:** B01,B03; **paper:** B02; **repo:** B04,B06. | Abierto; 18 filas totales. |
-| GM-10 | CODA / G-PROMPT | **Coinciden:** B09–B14,B16,B18. **Repo:** B15,B17,B19. **Paper:** B24. | Abierto; 12 filas. |
-| GM-11 | CODA / G-ORTHO | **Explicación autoral/repo:** B20,B22. **Paper:** B21. **Mammoth:** B23. | Abierto; cuatro filas y alta sensibilidad. |
+| GM-01 | L2P / G-PROMPT | **Coinciden:** B01,B02,B04,B05. **Paper:** B06–B08,B38. **Repo:** B03,B09,B39. | **CERRADO→D41-B6**; geometría e inicialización ratificadas como mezcla operativa. |
+| GM-02 | L2P / G-QUERY | **Coinciden:** B10,B12–B14,B16–B17. **Paper:** B15. **Repo:** B11,B41,B44. | **CERRADO→D41-B6/B4**; selección por instancia vuelve inerte el dominio de voto. |
+| GM-03 | L2P / G-OPT | A10–A12/E01–E16/E21–E22: sin propuesta. En B: **coinciden:** B26,B28; **paper:** B27,B29; **repo:** B30–B32; **Mammoth:** B45. | **CERRADO→D41-B1/B6/D31/D15/D39/D40**. |
+| GM-04 | L2P / G-HEAD | **Coinciden:** B21–B24,B42. **Repo:** B25,B33–B37,B43. **Mammoth:** B40. | **CERRADO→D41-B2/B4/B6**. |
+| GM-05 | L2P / G-LOSS | **Coinciden:** B18,B19. **Paper:** B20. **Repo:** B46. | **CERRADO→D41-B4/B6**; λ y reducción permanecen acopladas. |
+| GM-06 | DualPrompt / G-OPT | 14 A/EJE: sin propuesta. En B: **coinciden:** optimizer y LR nominal IMR; **paper:** LR nominal CIFAR, LR efectivo CIFAR/IMR, betas; **repo:** WD, clipping, reset. | **CERRADO→D41-B1/B6/D31/D15/D39/D40**. |
+| GM-07 | DualPrompt / G-PROMPT | 2 A batch: sin propuesta. En B: **13 coincidentes** (composición, capas/tipo/pool y estados compatibles); **paper:** E-length CIFAR, semántica Pre-T, batchwise CIFAR; **repo:** candidatos de test, init prompt, copia E; **Mammoth:** permute-fix false. | **CERRADO→D41-B4/B6**; semántica Pre-T queda `REVISAR-MAESTRO`. |
+| GM-08 | DualPrompt / G-MATCH | **8 coincidentes:** top-k, mask train, query/forward, key aprendible, activación y λ; **paper:** signo/métrica; **repo:** candidatos de test, init key, no copia key. | **CERRADO→D41-B4/B6**; signo/métrica queda `REVISAR-MAESTRO`. |
+| GM-09 | CODA / G-OPT | A10/E01–E12: sin propuesta. En B: **coinciden:** B01,B03; **paper:** B02; **repo:** B04,B06. | **CERRADO→D41-B1/B6/D31/D15/D39/D40**; betas quedan `REVISAR-MAESTRO`. |
+| GM-10 | CODA / G-PROMPT | **Coinciden:** B09–B14,B16,B18. **Repo:** B15,B17,B19. **Paper:** B24. | **CERRADO→D41-B4/B6**. |
+| GM-11 | CODA / G-ORTHO | **Explicación autoral/repo:** B20,B22. **Paper:** B21. **Mammoth:** B23. | **CERRADO→D41-B4/B6**; fórmula `REVISAR-MAESTRO`, inerte con pesos cero. |
 
 Desglose nominal de los tres grupos DualPrompt, cuyas filas no tienen identificador alfanumérico en `valores_dualprompt.md`:
 
@@ -156,7 +234,7 @@ DualPrompt G-HEAD no se marca mixto: sus propuestas son solo-repo o coincidentes
 
 ## Valores y conductas `NO_CONFIGURABLE`
 
-| id | métodos / referencia | cierre humano requerido |
+| id | métodos / referencia | cierre solicitado al entrar en reunión |
 |---|---|---|
 | NC-01 | L2P/DP/CODA backbones y checkpoints; CB-01 | Aceptar los ViT internos/artefactos o autorizar cambio de código. |
 | NC-02 | L2P/DP/CODA doble forward/query; CB-03 | Aceptar coste y matching/candidatos fijos. |
@@ -174,7 +252,7 @@ DualPrompt G-HEAD no se marca mixto: sus propuestas son solo-repo o coincidentes
 
 ## Comportamiento relevante
 
-| id | referencia consolidada | revisión requerida |
+| id | referencia consolidada | revisión solicitada al entrar en reunión |
 |---|---|---|
 | HB-01 | `comportamiento.md` CB-01 | Ratificar backbone/checkpoint interno de cada método. |
 | HB-02 | CB-02 | Ratificar input prompting L2P y semántica Pre-T/CODA. |
@@ -211,10 +289,10 @@ Estas entradas consolidan las consultas del 2026-08-03. No cambian el eje, los v
 
 | id | tipo y filas de referencia | evidencia / cuestión que llega a reunión | estado |
 |---|---|---|---|
-| PD-01 | **Batch/OOM y árbol D31.** Entorno `A-C15`, `A-C17`; `L2P-A10/A12`; DualPrompt «Batch de train/eval CIFAR» y «Acumulación de gradiente»; `CODA-A10/A11`. | Batch128 está cerrado por D31: hecho previo 128 OOM/64 cabe (`PLAN_MAESTRO.md:163`), OOM v1 reproducido en Mammoth@cda7f236 (`infra/servidor.md`) y uniformidad común. El v2 demuestra ahora una secuencia completa a batch real64 con los tres bajo `best` diagnóstico; códigos0, diez tareas y `logs.pyd` en `piloto0.md`, «Cierre real». CODA tuvo el mayor pico *allocated* observado (8.705,77 MiB), con la limitación de que no es VRAM total. Q1 determina que no hay acumulación real común por CLI/config (`entorno.md:34`, `comportamiento.md:90-96`). Llevar a reunión la consecuencia del árbol D31 sin escribir aún batch64 como valor final. | **PENDIENTE→reunión**; batch128 **DECIDIDO→D31**. |
-| PD-02 | **Peldaño mínimo del eje.** Entorno `E-C01`, `E-C08`; `CODA-E01/E02/E05`; FD-04/HB-09. | E=1 es limpio para L2P/DualPrompt, pero CODA deriva `K=n_epochs` y exige K>1. El Piloto-0 v2 completa las diez tareas de CODA a E=2 con código0 (`piloto0.md`, «Cierre real»): prueba la viabilidad operativa de E=2, menor entero admitido por el código actual sin parche, pero no lo convierte en peldaño de la escalera ni demuestra CODA a E=1. Elegir humanamente entre `{2,5,20}` y autorizar un parche del scheduler; no presentar `iters` como equivalente. Evidencia estática: `reconciliacion_fase_b.md:60-82`, `entorno.md:51,58,91-100`. Informada por D39: escalera `{1,5,20}` firme salvo fallo de validación. | **PENDIENTE→reunión**. |
-| PD-03 | **Preprocesado común.** Entorno `A-C10`, `A-C12`, `A-C14`; L2P `A07/A08`; filas DualPrompt «Augmentación train CIFAR»/«Preprocesado de evaluación»; CODA `A07-A09`. | L2P/DualPrompt cargan YAML `l2p`; CODA carga `coda_prompt`. Difieren RRC/resize/crop/interpolación y la normalización de CODA depende de `best`. Tuberías observadas en `reconciliacion_fase_b.md:49-58`. Elegir una sola tubería en Fase D; no homogeneizarla en silencio. | **PENDIENTE→reunión**. |
-| PD-04 | **`model_config=best/default` frente a cascada.** `L2P-B15/B28/B29`; DualPrompt «Learning rate nominal/configurado — CIFAR», «Learning rate efectivo — CIFAR», longitud E y selección batchwise; `CODA-A09/E04-E08`; CP-01/02/04/05/07 y GM-01/03/06/07/09. | Los tres `best` son overlays de Mammoth; los YAML carecen de bloque `default`. No equivalen globalmente a las recetas originales. En DualPrompt, 0,03 es LR nominal del dump; el optimizador recibe 0,015 con batch128 y el `logs.pyd` del v2 registra 0,0075 con batch64 (`0,03 × batch / 256`). Las filas auditadas siguen `CASO 3 CONFLICTO→PAPER` con propuesta 0,005. El éxito operativo del v2 bajo `best` no valida el overlay ni cambia la cascada: construir la matriz solo desde `configuracion_final`. | **PENDIENTE→reunión**. |
+| PD-01 | **Batch/OOM y árbol D31.** Entorno `A-C15`, `A-C17`; `L2P-A10/A12`; DualPrompt «Batch de train/eval CIFAR» y «Acumulación de gradiente»; `CODA-A10/A11`. | Batch128 está cerrado por D31: hecho previo 128 OOM/64 cabe (`PLAN_MAESTRO.md`, §10), OOM v1 reproducido en Mammoth@cda7f236 (`infra/servidor.md`) y uniformidad común. El v2 demuestra ahora una secuencia completa a batch real64 con los tres bajo `best` diagnóstico; códigos0, diez tareas y `logs.pyd` en `piloto0.md`, «Cierre real». CODA tuvo el mayor pico *allocated* observado (8.705,77 MiB), con la limitación de que no es VRAM total. Q1 determina que no hay acumulación real común por CLI/config (`entorno.md:34`, `comportamiento.md:90-96`). | **DECIDIDO→D31/D40/D41-a**. |
+| PD-02 | **Peldaño mínimo del eje.** Entorno `E-C01`, `E-C08`; `CODA-E01/E02/E05`; FD-04/HB-09. | D39 validado permite E=1 y conserva la semántica oficial; escalera común `{1,5,20}`. | **DECIDIDO→D15/D39/D41-b**. |
+| PD-03 | **Preprocesado común.** Entorno `A-C10`, `A-C12`, `A-C14`; L2P `A07/A08`; filas DualPrompt «Augmentación train CIFAR»/«Preprocesado de evaluación»; CODA `A07-A09`. | Principio común ratificado; checkpoint y tubería concreta se deciden juntos en Fase D con evidencia. | **DECIDIDO→D2/D41-c/D41-B5**. |
+| PD-04 | **`model_config=best/default` frente a cascada.** `L2P-B15/B28/B29`; DualPrompt «Learning rate nominal/configurado — CIFAR», «Learning rate efectivo — CIFAR», longitud E y selección batchwise; `CODA-A09/E04-E08`; CP-01/02/04/05/07 y GM-01/03/06/07/09. | La matriz usará `configuracion_final.md` explícita y nunca overlays `best/default` en bloque; D40 precompensa el LR nominal. | **DECIDIDO→D40/D41-d**. |
 
 ## Embudo global
 
@@ -251,7 +329,7 @@ Comprobación: `231 + 67 + 49 = 347`. Los 67 controles de infraestructura conser
 ## Recuento de la cola consolidada
 
 - Conflictos `CASO 3`: 16 filas, consolidadas en 9 entradas de grupo (L2P7 + Dual7 + CODA2).
-- Grupos mixtos abiertos: 11 (L2P5 + Dual3 + CODA3).
+- Grupos mixtos cerrados administrativamente por D41-B6: 11 (L2P5 + Dual3 + CODA3).
 - Propuestas S: 62 (29 ALTA + 28 MEDIA + 5 BAJA), sin tope artificial.
 - Cubos dudosos: 4 entradas de revisión, una marcada originalmente y tres surgidas de la comparación transversal.
 - Hallazgos de comportamiento consolidados: 19, con matriz de cobertura completa en `comportamiento.md`.
