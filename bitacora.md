@@ -350,3 +350,25 @@ Estado: **RESUELTO**; los cinco elevados quedan a decisión del maestro tras la 
 **Elevado al maestro (5).** (1) `cola_revision.md`, sección «Único experimento decidido y encolado»: solo recoge FC-01 pese a declararse «estado vigente»; propuesta — retitular a «Experimentos decididos y encolados» y añadir una línea FC-02 conforme a D41-k. (2) Las dos últimas entradas de bitácora («Precisión de §15», «Precisión de §8/Fase C») carecen de línea «Estado:» exigida por D30; añadirla retroactivamente tensiona el append-only — decide el maestro (propuesta: «Estado: RESUELTO» en ambas, o darlas por cubiertas con esta constancia). (3) D5 conserva «el tope (2–4) aplica solo a la ejecución en Fase C» sin marca de revisión pese a que D43 lo sustituye; propuesta: añadir «(rev.: tope sustituido por D43)». (4) D38 ídem con «(tope 2–4 experimentos)». (5) 13 filas ImageNet-R de las tres tablas cierran con «fuera por defecto (§9)», referencia de sección sin Dxx/clase explícita; es convención uniforme y §9 registra la decisión (D41-B5/D21), pero enriquecerlas a «(§9, D41-B5)» tocaría celdas de valor final y no se aplica sin instrucción.
 
 **Próximos pasos según §15.** 1) Preparar por Modo E los scripts de FC-01 (dos corridas, T=20 vs T=E) y FC-02 (cuatro corridas del A/B de LR) y ejecutarlos en galatzo solo en su hueco de Fase C/D, previa confirmación del usuario (D41-j/k, D42-a/c). 2) Fase D: congelar conjuntamente backbone/checkpoint/preprocesado con `entorno.md` delante, incorporar los tiempos del Piloto-0, cerrar la matriz, producir `configuracion_final.md`, probar agregación y superar el piloto de receta final (D20/D28/D41-c,d,h). 3) FLOPs analíticos y validación FLOPs/tiempo; plan B wall-clock (D25). 4) `.bib` y ajustes de redacción en paralelo. 5) Lanzar la matriz tras los criterios de salida. 6) NMC con la matriz corriendo; si se complica, fuera (D26).
+
+## 2026-08-06 · Rectificación de forma: estados de las dos precisiones
+
+Las entradas «2026-08-05 · Precisión de §15» y «2026-08-06 · Precisión de §8/Fase C» se registraron sin línea de estado (D30). Ambas acciones constan aplicadas y verificadas; el estado de ambas es RESUELTO. Las entradas originales no se modifican (append-only).
+
+Estado: **RESUELTO**.
+
+## 2026-08-06 · Resolución de los elevados de la auditoría de traspaso
+
+El maestro trió los cinco elevados del parte de traspaso y el usuario dio el visto bueno (6-ago): (1) ledger vigente de `auditoria/cola_revision.md` retitulado a «Experimentos decididos y encolados» con línea FC-02 conforme a D41-k; (2) marcas rev. en D5 y D38 (tope sustituido por D43); (3) adenda de estados de las dos precisiones (entrada anterior); (4) las 13 celdas «fuera por defecto (§9)» se ratifican sin cambio — trazabilidad a un salto vía §9 (D41-B5/D21); tocarlas sería reapertura sin ganancia (D34(b)); (5) remate: fecha de cabecera refrescada y entrada datada [6 ago] en §15. Ejecutor suplente: Claude Code (D30).
+
+Evidencia: `PLAN_MAESTRO.md` cabecera, §13 (D5, D38) y §15; `auditoria/cola_revision.md`; esta bitácora.
+
+Estado: **RESUELTO**.
+
+## Parte de novedades para el chat maestro — resolución de los elevados del traspaso — 2026-08-06
+
+- `auditoria/cola_revision.md`: el ledger vigente pasa a «Experimentos decididos y encolados» e incorpora, tras el párrafo de FC-01, la línea FC-02 conforme a D41-k (receta D40 frente al aplicado por defecto de Mammoth; cuatro corridas cortas E=5, batch 64, 1 semilla; hueco de Fase C/D; D40/D41-k/D42-a).
+- `PLAN_MAESTRO.md`: D5 y D38 llevan marca «rev. 6-ago: tope sustituido por D43»; cabecera refrescada a jueves 6 de agosto de 2026; §15 incorpora la entrada datada [6 ago 2026] con el cierre de la auditoría de traspaso y la resolución de los cinco elevados.
+- `bitacora.md`: dos entradas nuevas — adenda de estados (RESUELTO) de las dos precisiones que carecían de línea de estado, y resolución de los cinco elevados con visto bueno del usuario (6-ago). Las 13 celdas «fuera por defecto (§9)» quedan ratificadas sin cambio (trazabilidad a un salto vía §9, D41-B5/D21; tocarlas sería reapertura sin ganancia, D34(b)): cero ediciones en `valores_l2p.md`, `valores_dualprompt.md` y `valores_coda.md`.
+- Verificación: literales DESPUÉS confirmados uno a uno sobre los ficheros; `git diff --numstat` limitado a `PLAN_MAESTRO.md`, `auditoria/cola_revision.md` y `bitacora.md`; `bitacora.md` con 0 borrados (append-only).
+- Commit: único commit sobre `3869992`, mensaje «Resuelve los elevados de la auditoría de traspaso (visto bueno 6-ago)». Su hash no puede constar dentro del propio commit; queda consignado en el informe de aplicación del chat y es verificable como HEAD de `origin/master` inmediatamente posterior a `3869992`.

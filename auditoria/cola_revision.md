@@ -86,9 +86,11 @@ Este ledger es el estado vigente y sustituye cualquier palabra «abierto» o «p
 | FD-01…FD-03 | **CERRADO→D41-B5/§9**; ImageNet-R fuera por defecto. |
 | FD-04 | **CERRADO→D39/D41-b**. |
 
-### Único experimento decidido y encolado
+### Experimentos decididos y encolados
 
 **FC-01 — A/B CODA scheduler truncado `T=20` frente a recalculado `T=E`: DECIDIDO Y ENCOLADO por el usuario (5-ago), dos corridas cortas y 1 semilla; script por Modo E y ejecución del usuario en galatzo durante su hueco de Fase C/D, nunca antes (D17/D39/D41-j/D42-a).** La pasada de acoplamientos no produjo otro A/B empírico inequívoco.
+
+**FC-02 — A/B del learning rate en L2P y DualPrompt — receta D40 (aplicado = publicado; nominales 0,12/0,02) frente al aplicado por defecto de Mammoth (nominales 0,03/0,005 → aplicados 0,0075/0,00125): DECIDIDO Y ENCOLADO por el usuario (5-ago), cuatro corridas cortas (E=5, batch 64) y 1 semilla; script por Modo E y ejecución del usuario en galatzo durante su hueco de Fase C/D, nunca antes (D40/D41-k/D42-a).**
 
 ## Contradicciones y asimetrías detectadas — resueltas
 
